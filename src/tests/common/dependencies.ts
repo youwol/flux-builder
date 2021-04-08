@@ -25,4 +25,13 @@ let loadingGraphResponses = [
     ]
 ] as Array<[KeyLoadingGraphStore,LoadingGraphSchema]>
 
-export let environment = new MockEnvironment({projectsDB:projects, fluxPacks:[testPack], loadingGraphResponses})
+export let environment = new MockEnvironment({   
+    projectsDB: projects, 
+    fluxPacks: [testPack], 
+    loadingGraphResponses,
+    console: {
+        log: () => {},
+        error: (...args) => { console.error(args)},
+        warn: (...args) => { console.warn(args)}
+    }
+})

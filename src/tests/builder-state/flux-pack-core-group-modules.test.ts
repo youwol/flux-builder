@@ -49,7 +49,8 @@ test('group modules module creation', done => {
             configuration:conf,
             workflowGetter: (_)=>appStore.project.workflow,
             layerId:"child-layer",
-            ready$:appObservables.ready$})
+            ready$:appObservables.ready$,
+            environment})
         let connections = groupModule.getConnections()
         expect(connections.implicits.inputs.length).toEqual(1)
         expect(connections.implicits.outputs.length).toEqual(2)

@@ -11,7 +11,7 @@ test('should return an empty workflow', () => {
 
   AppDebugEnvironment.getInstance().debugOn = false
 
-  let appStore : AppStore = AppStore.getInstance(undefined)
+  let appStore : AppStore = AppStore.getInstance(environment)
   expect(appStore.project.workflow.modules).toEqual([])
   expect(appStore.project.workflow.connections).toEqual([])
   expect(appStore.project.workflow.plugins).toEqual([])
