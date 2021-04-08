@@ -26,7 +26,7 @@ let a = await cdn.fetchBundles(
     {
         'lodash': '4.17.15',
         "grapes": '0.16.2',
-        "@youwol/flux-core": '0.0.3',
+        "@youwol/flux-core": '0.0.5',
         "@youwol/flux-svg-plots": '0.0.0',
         '@youwol/flux-view': '0.0.6',
         "@youwol/fv-group": "0.0.3",
@@ -40,7 +40,7 @@ let a = await cdn.fetchBundles(
     window
 )
 let toRescope = ["_", 'rxjs', '@youwol/cdn-client', '@youwol/flux-core',  '@youwol/flux-svg-plots', '@youwol/flux-view', '@youwol/fv-group',
-'@youwol/fv-tree', '@youwol/fv-button', '@youwol/fv-tabs', '@youwol/fv-context-menu', 'codemirror']
+'@youwol/fv-tree', '@youwol/fv-button', "@youwol/fv-input", '@youwol/fv-tabs', '@youwol/fv-context-menu', 'codemirror']
 
 window['flux-builder'] = {}
 
