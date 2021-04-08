@@ -10,17 +10,25 @@ import { ContextMenu } from '@youwol/fv-context-menu';
 import { AppStore, AppObservables, UiState, AppDebugEnvironment, 
     LogLevel, AppBuildViewObservables } from './builder-editor/builder-state/index';
 import { WorkflowPlotter } from './builder-editor/builder-plots/index';
-import { createAttributesPanel, ContextMenuState, ExplorerTreeState } from './builder-editor/index'
+import { createAttributesPanel, ContextMenuState } from './builder-editor/index'
 
 import { createLayoutEditor, initLayoutEditor, setDynamicComponentsBlocks,
     replaceTemplateElements, removeTemplateElements, autoAddElementInLayout  } from './layout-editor/index';
 
 import { Notifier } from './notification';
+import { AssetsExplorerView } from './builder-editor/views/assets-explorer.view';
 
 
 let {appStore, appObservables, layoutEditor} = await initializeRessources()
 
 let workflowPlotter = initDrawingArea(appStore,appObservables)
+
+AssetsExplorerView.singletonState = new AssetsExplorerView.State({
+    appStore
+})
+let contextState = new ContextMenuState( appStore, workflowPlotter.drawingArea )
+new ContextMenu.View({state:contextState, class:"fv-bg-background"} as any)
+
 
 connectStreams(appStore, workflowPlotter, layoutEditor, appObservables )
 

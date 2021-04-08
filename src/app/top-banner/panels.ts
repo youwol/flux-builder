@@ -1,5 +1,6 @@
-import { shareProjectURIView } from "../builder-editor/index"
+
 import { AppStore } from '../builder-editor/builder-state/index'
+import { ShareUriView } from '../builder-editor/views/share-uri.view'
 
 export function getGeneralPanels(appStore: AppStore) {
 
@@ -17,7 +18,7 @@ export function getGeneralPanels(appStore: AppStore) {
         id: 'share-uri',
         className: 'btn-share-uri',
         label: '<i class="fas fa-link panel-action" data-toggle="tooltip" title="share uri" ></i>',
-        command(editor: any) { shareProjectURIView(appStore) }
+        command(editor: any) { ShareUriView.popupModal(appStore) }
       },
       {
         id: 'undo',

@@ -7,8 +7,10 @@ import { toCssName } from '@youwol/flux-svg-plots';
 import {render, attr$, child$} from '@youwol/flux-view'
 
 import { AppObservables, AppStore } from './builder-state/index';
-import { codeEditorModal} from './views/modals/code-editor/code-editor.view';
+
 import { grapesButton } from './utils.view';
+import { CodePropertyEditorView } from './views/code-property-editor.view';
+import { AdaptorEditoView } from './views/adaptor-editor.view';
 
 declare var _ : any
 
@@ -413,7 +415,20 @@ function code(
     }
 
     bttn.onclick =() =>{   
-        codeEditorModal(selection, value, selection instanceof(ModuleFlow) ? onUpdateMdle : onUpdateAdaptor, appStore)
+        if( selection instanceof(ModuleFlow)) {
+            CodePropertyEditorView.popupModal({
+                mdle:selection,
+                initialCode: value,
+                onUpdate: onUpdateMdle
+            })
+        }
+        else{
+            AdaptorEditoView.popupModal({
+                connection: selection,
+                appStore,
+                onUpdate: onUpdateAdaptor
+            })
+        }
     } 
     return div
 }
