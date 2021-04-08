@@ -1,5 +1,5 @@
 import { Project, LayerTree, Workflow, BuilderRendering, ModuleView,
-    ModuleFlow, GroupModules} from '@youwol/flux-core';
+    ModuleFlow, GroupModules, IEnvironment} from '@youwol/flux-core';
     
 import { uuidv4 } from './utils';
 import { AppDebugEnvironment, LogLevel } from './app-debug.environment';
@@ -37,7 +37,9 @@ export function createLayer(
     currentLayerId : string,
     Factory,
     configuration,
-    workflowGetter):{project:Project, layer:LayerTree}{
+    workflowGetter,
+    environment: IEnvironment
+    ):{project:Project, layer:LayerTree}{
     
     let debugSingleton = AppDebugEnvironment.getInstance()
     debugSingleton.debugOn && 
@@ -65,7 +67,8 @@ export function createLayer(
         configuration:configuration,
         Factory: Factory,
         workflowGetter: workflowGetter,
-        layerId: layer.layerId})
+        layerId: layer.layerId,
+        environment})
         
     let workflow = new Workflow([...project.workflow.modules, grpMdle ],project.workflow.connections,project.workflow.plugins, rootLayerTreeNew)
 

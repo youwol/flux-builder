@@ -234,7 +234,7 @@ export class AppStore {
     }
 
     addPlugin( Factory, parentModule ) : ModuleFlow {
-        let project = addPlugin(Factory, parentModule,this.project, this.appObservables.ready$)
+        let project = addPlugin(Factory, parentModule,this.project, this.appObservables.ready$, this.environment)
         this.updateProject(project)
         return  project.workflow.plugins.slice(-1)[0]
     }
@@ -630,7 +630,7 @@ export class AppStore {
         let dBox = new DescriptionBox(uuidv4(),"grouped module",moduleIds,"",new DescriptionBoxProperties(undefined))
         let config = new GroupModules["Configuration"]({title:dBox.title})
         let {project} = createLayer(dBox.title,dBox.modulesId.map(mid=>this.getModule(mid)), this.project,
-            this.activeLayerId, GroupModules,config, (_)=> this.project.workflow)
+            this.activeLayerId, GroupModules,config, (_)=> this.project.workflow, this.environment)
         this.updateProject(project)
     }
 
@@ -638,7 +638,7 @@ export class AppStore {
         let dBox = new DescriptionBox(uuidv4(),"component",moduleIds,"",new DescriptionBoxProperties(undefined))
         let config = new Component["Configuration"]({title:dBox.title})
         let {project} = createLayer(dBox.title,dBox.modulesId.map(mid=>this.getModule(mid)),this.project,
-            this.activeLayerId, Component, config, (_)=> this.project.workflow)
+            this.activeLayerId, Component, config, (_)=> this.project.workflow, this.environment)
         this.updateProject(project)
     }
 

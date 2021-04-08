@@ -1,5 +1,5 @@
 
-import { PluginFlow, Workflow, Project} from '@youwol/flux-core'
+import { PluginFlow, Workflow, Project, IEnvironment} from '@youwol/flux-core'
 import { AppDebugEnvironment, LogLevel } from './app-debug.environment'
 import { uuidv4 } from './utils'
 
@@ -22,13 +22,13 @@ export function getPlugins( moduleId: string, project:Project) : Array<PluginFlo
         plugin.parentModule.moduleId === moduleId)
 }
 
-export function addPlugin( Factory, parentModule , project, ready$ ) {
+export function addPlugin( Factory, parentModule , project, ready$, environment: IEnvironment ) {
 
     let debugSingleton = AppDebugEnvironment.getInstance()
 
     let configuration  = new Factory.Configuration()
     let moduleId       = Factory.id + "_" + uuidv4()
-    let plugin         = new Factory.Module( {parentModule, moduleId, configuration, Factory, ready$ }) 
+    let plugin         = new Factory.Module( {parentModule, moduleId, configuration, Factory, ready$, environment}) 
     
     debugSingleton.debugOn && 
     debugSingleton.logWorkflowBuilder( {  

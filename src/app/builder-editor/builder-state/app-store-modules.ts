@@ -1,7 +1,7 @@
 import { LogLevel, AppDebugEnvironment } from './app-debug.environment'
 import { uuidv4 } from './utils'
 import { ModuleView, Workflow, BuilderRendering, Project, ModuleFlow, GroupModules,
-    ModuleConfiguration, PluginFlow, Connection, RunnerRendering, DescriptionBox, LayerTree } 
+    ModuleConfiguration, PluginFlow, Connection, RunnerRendering, DescriptionBox, LayerTree, IEnvironment } 
     from '@youwol/flux-core'
 import { Subscription } from 'rxjs'
 import { cloneLayerTree, getLayer, cleanChildrenLayers } from './app-store-layer'
@@ -67,7 +67,7 @@ export function instantiateModules( modulesData, modulesFactory, appObservables 
     return modules
 }
 */
-export function addModule( Factory,coors, project: Project , activeLayerId, ready$ : any, environment: any) {
+export function addModule( Factory,coors, project: Project , activeLayerId, ready$ : any, environment: IEnvironment) {
 
     let debugSingleton = AppDebugEnvironment.getInstance()
 
