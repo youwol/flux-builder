@@ -3,7 +3,7 @@ import { combineLatest, merge, ReplaySubject } from 'rxjs';
 import { filter } from 'rxjs/operators';
 import * as grapesjs from 'grapesjs'
 
-import { ModuleFlow, FluxExtensionAPIs, Environment } from '@youwol/flux-core';
+import { ModuleFlow, FluxExtensionAPIs, Environment, ModuleError } from '@youwol/flux-core';
 import { createDrawingArea } from '@youwol/flux-svg-plots';
 import { ContextMenu } from '@youwol/fv-context-menu';
 
@@ -16,6 +16,7 @@ import { createLayoutEditor, initLayoutEditor, setDynamicComponentsBlocks,
     replaceTemplateElements, removeTemplateElements, autoAddElementInLayout  } from './layout-editor/index';
 
 import { plugNotifications } from './notification';
+import { AssetsBrowserClient } from './clients/assets-browser.client';
 import { AssetsExplorerView } from './builder-editor/views/assets-explorer.view';
 
 
@@ -24,6 +25,8 @@ let {appStore, appObservables, layoutEditor} = await initializeRessources()
 let workflowPlotter = initDrawingArea(appStore,appObservables)
 
 plugNotifications(appStore, workflowPlotter)
+AssetsBrowserClient.appStore = appStore
+// A single instance of assets browser to keep in memory expandeds nodes etc
 AssetsExplorerView.singletonState = new AssetsExplorerView.State({
     appStore
 })
@@ -69,9 +72,6 @@ export async function initializeRessources() :
     })
     
     let appStore = AppStore.getInstance( environment )
-
-    // install extensions
-    //prettyDebug.factory.install( appStore.appExtensionsObservables )
 
     return { 
         appStore,
@@ -146,7 +146,6 @@ export function connectStreams(appStore:AppStore, workflowPlotter: WorkflowPlott
 
     appObservables.ready$.subscribe(() => {
         document.getElementById("attributes-panel").appendChild(createAttributesPanel(appStore, appObservables))
-        installExtensionAPI()
     })
 
     layoutEditor$.subscribe( r => {
@@ -158,8 +157,8 @@ export function initDrawingArea(appStore: AppStore, appObservables: AppObservabl
 
     let plottersObservables = AppBuildViewObservables.getInstance()
     
-    let width = 1000//parentDiv.clientWidth
-    let height = 1000//parentDiv.clientHeight
+    let width = 1000
+    let height = 1000
     let drawingArea = createDrawingArea(
       {
         containerDivId: "wf-builder-view",
@@ -173,14 +172,8 @@ export function initDrawingArea(appStore: AppStore, appObservables: AppObservabl
         overflowDisplay: { left: 1e8, right: 1e8, top: 1e8, bottom: 1e8 }
       })
           
-    // A single instance of assets browser to keep in memory expandeds nodes etc
-    appStore['assetsExplorerState'] = new ExplorerTreeState(appStore)
-    let contextState = new ContextMenuState( appStore, drawingArea )
-    new ContextMenu.View({state:contextState, class:"fv-bg-background"} as any)
-
     return new WorkflowPlotter(drawingArea, appObservables, plottersObservables, appStore)
 }
-
 
 function getUrlParams() {
 
