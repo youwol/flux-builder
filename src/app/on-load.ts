@@ -15,7 +15,7 @@ import { createAttributesPanel, ContextMenuState } from './builder-editor/index'
 import { createLayoutEditor, initLayoutEditor, setDynamicComponentsBlocks,
     replaceTemplateElements, removeTemplateElements, autoAddElementInLayout  } from './layout-editor/index';
 
-import { Notifier } from './notification';
+import { plugNotifications } from './notification';
 import { AssetsExplorerView } from './builder-editor/views/assets-explorer.view';
 
 
@@ -23,6 +23,7 @@ let {appStore, appObservables, layoutEditor} = await initializeRessources()
 
 let workflowPlotter = initDrawingArea(appStore,appObservables)
 
+plugNotifications(appStore, workflowPlotter)
 AssetsExplorerView.singletonState = new AssetsExplorerView.State({
     appStore
 })
@@ -180,24 +181,6 @@ export function initDrawingArea(appStore: AppStore, appObservables: AppObservabl
     return new WorkflowPlotter(drawingArea, appObservables, plottersObservables, appStore)
 }
 
-
-export class ExtensionAPI{
-
-    static message( {message, title, actions} ){
-        Notifier.notify({message, title, actions})
-    }
-    static warning( {message, title, actions} ){
-        Notifier.warning({ message, title, actions})
-    }  
-    static error( {message, title, actions} ){
-        Notifier.error({ message, title, actions})
-    }
-}
-
-
-export function installExtensionAPI(){ 
-    FluxExtensionAPIs.registerAPI('Host', ExtensionAPI)
-}
 
 function getUrlParams() {
 
