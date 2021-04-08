@@ -1,8 +1,8 @@
 import { createObservableFromFetch } from "@youwol/flux-core";
 import { from, Observable, of } from "rxjs";
 import { map, mergeMap, tap } from "rxjs/operators";
-import { AppStore } from "../../builder-state/index";
 import { fetchBundles } from "@youwol/cdn-client"
+import { AppStore } from "../builder-editor/builder-state";
 
 export interface AssetResp {
     assetId: string
