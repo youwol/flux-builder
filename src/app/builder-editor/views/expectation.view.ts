@@ -2,6 +2,7 @@ import { AllOf, AnyOf, Contract, ExpectationStatus, Of, OptionalsOf } from "@you
 import { VirtualDOM } from "@youwol/flux-view";
 import { ImmutableTree } from "@youwol/fv-tree";
 import { BehaviorSubject } from "rxjs";
+import { DataTreeView } from "./data-tree.view";
 
 
 export namespace ExpectationView{
@@ -196,6 +197,33 @@ export namespace ExpectationView{
             ]
         }
     }
+    export function journalWidget(data: ExpectationStatus<unknown>) : VirtualDOM {
+
+        let dataState = new DataTreeView.State({
+            title: "incoming data",
+            data: data.fromValue,
+            expandedNodes: ["incoming data_0"]
+        })
+
+        let expectationState = new ExpectationView.State({
+            status: data
+        })
+        
+        return {
+            children:[
+                {
+                    class: 'd-flex justify-content-around w-100',
+                    style:{'white-space': 'nowrap'},
+                    children: [
+                        new DataTreeView.View({state: dataState}),
+                        {class:'px-4'},
+                        new ExpectationView.View({ state: expectationState })
+                    ]
+                }
+            ]
+        }
+    }
+
 
     function headerView(_: ImmutableTree.State<ExpectationNode>, node: ExpectationNode) {
 
