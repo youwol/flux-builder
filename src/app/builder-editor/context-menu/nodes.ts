@@ -1,6 +1,7 @@
 import { ImmutableTree } from '@youwol/fv-tree'
 import { AssetsExplorerView } from '../views/assets-explorer.view'
 import { ImportModulesView } from '../views/import-modules.view'
+import { JournalsView } from '../views/journals.view'
 import { ContextMenuState } from "./context-menu"
 
 
@@ -8,7 +9,7 @@ export class ContextTreeNode extends ImmutableTree.Node{
 
     public readonly faIcon
     public readonly name
-    
+
     constructor({id, children, name, faIcon} : {id:string, children: Array<ContextTreeNode>, name:string, faIcon:string}) {
         super({id,children})
         this.name = name
@@ -71,13 +72,15 @@ export class AddPluginsNode extends ContextTreeNode{
     }
 }
 
-
-export class HelpNode extends ContextTreeNode{
+export class JournalsNode extends ContextTreeNode{
 
     constructor() {
-        super({id:'help',children:undefined, name:'help', faIcon:'fas fa-question'})
+        super({id:'journals',children:undefined, name:'journals', faIcon:'fas fa-newspaper'})
     }
 
-    execute(state: ContextMenuState){ console.log("HelpNode")}
+    execute(state: ContextMenuState){
+        let module = state.appState.getModuleSelected()
+        JournalsView.popupModal({module})
+    }
 }
 

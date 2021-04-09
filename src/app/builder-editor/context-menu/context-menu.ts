@@ -5,26 +5,26 @@ import { fromEvent, Observable } from "rxjs";
 import { tap } from "rxjs/operators";
 import { AppStore } from '../builder-state/index';
 import { DrawingArea } from "@youwol/flux-svg-plots";
-import { AddPluginsNode, ContextTreeNode, HelpNode, NewModulesNode, ContextRootNode } from "./nodes";
+import { AddPluginsNode, ContextTreeNode, NewModulesNode, 
+    ContextRootNode, JournalsNode } from "./nodes";
 
 
 
 let ALL_ACTIONS = {
     newModules: {
         createNode: () => new NewModulesNode(),
-        applicable: ( state: AppStore) =>{            
-            return state.getModulesSelected().length >= 0
-        }            
+        applicable: ( state: AppStore) => state.getModulesSelected().length >= 0
     },
     addPlugins: {
         createNode: () => new AddPluginsNode(),
-        applicable: ( state: AppStore) =>{            
-            return state.getModulesSelected().length == 1
-        }            
+        applicable: ( state: AppStore) => state.getModulesSelected().length == 1
     },
-    help: {
-        createNode: () => new HelpNode(),
-        applicable: ( state: AppStore) => true  
+    journals: {
+        createNode: () => new JournalsNode(),
+        applicable: ( state: AppStore) => {
+            return state.getModulesSelected().length == 1  &&
+            state.getModuleSelected().journals.length > 0 
+        }
     },
 }
 export class ContextMenuState extends ContextMenu.State{
