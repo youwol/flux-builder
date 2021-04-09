@@ -10,6 +10,7 @@ import { DataTreeView } from "./data-tree.view";
 import { InputStatusView } from "./input-status.view";
 import { Button } from "@youwol/fv-button";
 import { Modal } from "@youwol/fv-group";
+import { ModalView } from "./modal.view";
 
 export namespace AdaptorEditoView{
 
@@ -321,55 +322,19 @@ export namespace AdaptorEditoView{
         appStore: AppStore,
         onUpdate: (string) => void
     }){
-
-        let okBttn = new Button.View({
-            state: new Button.State(),
-            contentView: () => ({ innerText: 'Update'}),
-            class: "fv-btn fv-btn-primary fv-bg-focus mr-2"
-        } as any)
-
-        let cancelBttn = Button.simpleTextButton('Cancel')
-        
-        let contentState = new State({connection, initialCode, appStore})
-
-        let modalState = new Modal.State()
-        let view = new Modal.View({
-            state: modalState,
-            contentView: () => {
-                return {
-                    class:'border rounded fv-text-primary fv-bg-background d-flex flex-column',
-                    style: { height:'50vh', width:'90vw', 'max-width':'1500px'},
-                    children:[
-                        new View({
-                            state: contentState, 
-                            options:{
-                                containerClass: 'p-3 d-flex flex-grow-1 w-100',
-                                containerStyle: {'min-height':'0px'}
-                            }
-                        }),
-                        {
-                            class:'d-flex p-2',
-                            children:[
-                                okBttn,
-                                cancelBttn
-                            ]
-                        }
-                    ]
-                }
+        let state = new State({connection, initialCode, appStore})
+        let view = new View({
+            state: state, 
+            options:{
+                containerClass: 'p-3 d-flex flex-grow-1 w-100',
+                containerStyle: {'min-height':'0px'}
             }
-        }as any)
-
-        let modalDiv = render(view)
-        okBttn.state.click$.subscribe( () => modalState.ok$.next())
-        cancelBttn.state.click$.subscribe( () => modalState.cancel$.next())
-
-        document.querySelector("body").appendChild(modalDiv)
-        modalState.cancel$.subscribe( () => modalDiv.remove() )
-
-        modalState.ok$.subscribe( () => {
-            onUpdate( contentState.codeEditorState.content$.getValue())
-            modalDiv.remove()
+        })
+        ModalView.popup({
+            view,
+            style: { height:'50vh', width:'90vw', 'max-width':'1500px'}
+        }).subscribe( () => {
+            onUpdate( state.codeEditorState.content$.getValue())
         })
     }
-
 }

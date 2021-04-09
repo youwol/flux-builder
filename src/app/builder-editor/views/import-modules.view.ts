@@ -5,6 +5,7 @@ import { BehaviorSubject, Subject } from "rxjs"
 import { scan } from "rxjs/operators"
 import { AppStore } from "../builder-state"
 import { AssetsExplorerView } from "./assets-explorer.view"
+import { ModalView } from "./modal.view"
 
 
 
@@ -150,36 +151,19 @@ export namespace ImportModulesView{
         appStore: AppStore,
         onImport: (Factory)=> void 
         ) {
-
-
-        let modalState = new Modal.State()
-        let contentState = new State({
-            ok$:modalState.ok$
+        let import$ = new Subject<MouseEvent>()
+        let state = new State({
+            ok$:import$
         })
+        let view =  new View({state:state})
 
-        modalState.ok$.subscribe( () => {
-            onImport(contentState.buffer$.getValue())
+        ModalView.popup({
+            view,
+            ok$: import$,
+            options: {displayOk: false, displayCancel: false}
+        }).subscribe( () => {
+            onImport(state.buffer$.getValue())
         })
-
-        let view = new Modal.View({
-            state: modalState,
-            contentView: () => { 
-                return {
-                    class:'fv-text-primary fv-bg-background border rounded',
-                    style: {
-                        height: '50vh', 
-                        width: '50vw'
-                    },
-                    children:[
-                        new View({state:contentState})
-                    ] 
-                }
-            }
-        })
-        let modalDiv = render(view)
-        document.querySelector("body").appendChild(modalDiv)
-        modalState.cancel$.subscribe( () => modalDiv.remove() )
-        modalState.ok$.subscribe( () => modalDiv.remove() )
     }
 
 }
