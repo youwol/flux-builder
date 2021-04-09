@@ -425,6 +425,7 @@ function code(
         else{
             AdaptorEditoView.popupModal({
                 connection: selection,
+                initialCode: value,
                 appStore,
                 onUpdate: onUpdateAdaptor
             })

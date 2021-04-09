@@ -69,14 +69,15 @@ export namespace AdaptorEditoView{
 
         constructor({
             connection,
+            initialCode,
             appStore
         }:{
             connection: Connection,
+            initialCode: string,
             appStore: AppStore
         }){
             this.appStore = appStore
             this.connection = connection
-            let initialCode = connection.adaptor.configuration.data.code
             let codeContent$ = new BehaviorSubject<string>(initialCode)
             this.codeEditorState = new CodeEditorView.State({
                 content$:codeContent$
@@ -311,10 +312,12 @@ export namespace AdaptorEditoView{
 
     export function popupModal({
         connection, 
+        initialCode,
         appStore,
         onUpdate
     }: {
         connection: Connection, 
+        initialCode: string,
         appStore: AppStore,
         onUpdate: (string) => void
     }){
@@ -327,7 +330,7 @@ export namespace AdaptorEditoView{
 
         let cancelBttn = Button.simpleTextButton('Cancel')
         
-        let contentState = new State({connection, appStore})
+        let contentState = new State({connection, initialCode, appStore})
 
         let modalState = new Modal.State()
         let view = new Modal.View({
