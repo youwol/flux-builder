@@ -1,4 +1,5 @@
-import { ConfigurationStatus, Context, ErrorLog, ExpectationStatus, Log, ModuleError, uuidv4 } from "@youwol/flux-core";
+import { ConfigurationStatus, Context, ErrorLog, ExpectationStatus, Log, 
+    ModuleError, uuidv4, ContextStatus, Journal } from "@youwol/flux-core";
 import { render, VirtualDOM } from "@youwol/flux-view";
 import { Button } from "@youwol/fv-button";
 import { Modal } from "@youwol/fv-group";
@@ -6,6 +7,7 @@ import { ImmutableTree } from "@youwol/fv-tree";
 import { ConfigurationStatusView } from "./configuration-status.view";
 import { DataTreeView } from "./data-tree.view";
 import { ExpectationView } from "./expectation.view";
+import { ModalView } from "./modal.view";
 
 
 export namespace ContextView{
@@ -87,7 +89,7 @@ export namespace ContextView{
         return node.parent ? nodePath(node.parent).concat([node.id]) : [node.id]
     }
 
-    class State extends ImmutableTree.State<NodeBase>{
+    export class State extends ImmutableTree.State<NodeBase>{
 
         public readonly tStart: number
         public readonly tEnd: number
@@ -98,7 +100,7 @@ export namespace ContextView{
             {   
                 context : Context, 
                 expandedNodes: Array<string>,
-                selectedNode: string
+                selectedNode?: string
             }){
             super({
                 rootNode: nodeFactory(context.root()),
@@ -108,7 +110,7 @@ export namespace ContextView{
             this.context = context 
             this.tStart = this.rootCtx.startTimestamp
             this.tEnd = this.rootCtx.startTimestamp + this.rootCtx.elapsed()
-            this.selectedNode$.next(this.getNode(selectedNode))
+            selectedNode &&  this.selectedNode$.next(this.getNode(selectedNode))
         }
     }
 
@@ -122,11 +124,12 @@ export namespace ContextView{
     export class View implements VirtualDOM{
 
         static defaultOptions  = {
-            containerClass: 'p-4 fv-bg-background fv-text-primary border rounded',
+            containerClass: 'p-4 fv-bg-background fv-text-primary',
             containerStyle: { width: "100%", height: "100%"},
             treeViewClass: 'h-100 overflow-auto',
             treeViewStyle: {}
         }
+        public readonly domId: string = 'contextView-view'
         public readonly state: State
         public readonly children: Array<VirtualDOM>
 
@@ -153,6 +156,11 @@ export namespace ContextView{
                 headerView,
                 class:styling.treeViewClass,
                 style:styling.treeViewStyle,
+                options: {
+                    classes: { 
+                        header: "d-flex align-items-baseline fv-tree-header fv-hover-bg-background-alt "
+                    }
+                }
             } as any)
 
             this.children = [
@@ -164,59 +172,55 @@ export namespace ContextView{
     export function displayModuleErrorModal(errorLog: ErrorLog<ModuleError>){
 
         let context = errorLog.context
-
-        let exitBttn = new Button.View({
-            state: new Button.State(),
-            contentView: () => ({ innerText: 'Exit' }),
-            class: "fv-btn fv-btn-primary fv-bg-focus ml-2"
-        } as any)
-        
-        let modalState = new Modal.State(exitBttn.state.click$, exitBttn.state.click$)
-
-        let expandedNodes = nodePath(context).concat(errorLog.id)
-
-        let contextViewState = new State({
+        let state = new State({
             context,
-            expandedNodes,
+            expandedNodes: nodePath(context).concat(errorLog.id),
             selectedNode:  errorLog.id
         })
-        let view = new Modal.View({
-            state: modalState,
-            contentView: () => new View({
-                state: contextViewState,
-                options: {
-                    containerStyle:{width:'75vw', height:'75vh'}
-                }
-            }),
-            connectedCallback: (elem) => {
-                elem.subscriptions.push(
-                    modalState.cancel$.subscribe( () => elem.remove())
-                )
-                elem.subscriptions.push(
-                    modalState.ok$.subscribe( () => elem.remove())
-                )
-            }
-        } as any)
+        let view = new View({
+            state,
+        })
+        ModalView.popup({
+            view,
+            style: { 'max-height':'75vh', width:'75vw' },
+            options: {displayCancel:false, displayOk: false}
 
-    let modalDiv = render(view)
-    document.querySelector("body").appendChild(modalDiv)
+        })
     }
 
     function headerView( state:State, node: NodeBase){
-
-        let classes = 'fv-pointer'
+        let heightBar = '3px'
         if (node instanceof ContextNode){
+
             let tStart = node.context.startTimestamp - state.rootCtx.startTimestamp
             let left =  100 * tStart / (state.tEnd - state.tStart)
             let width = 100 * node.context.elapsed() / (state.tEnd - state.tStart)
             let elapsed = Math.floor(100 * node.context.elapsed()) / 100
+            let classes = {
+                [ContextStatus.FAILED] : "fas fa-times fv-text-error",
+                [ContextStatus.SUCCESS] : "fas fa-check fv-text-success",
+                [ContextStatus.RUNNING] : "fas fa-cog fa-spin",
+
+            }
             return { 
-                class:'w-100 pb-3',
+                class:'w-100 pb-2',
                 children:[
-                    {innerText: node.context.title +`  - ${elapsed} ms`, class: classes},
+                    {   class: "d-flex align-items-center",
+                        children: [
+                            {
+                                tag: 'i',
+                                class: classes[node.context.status()]
+                            },                            
+                            {
+                                innerText: node.context.title +`  - ${elapsed} ms`, 
+                                class: 'fv-pointer px-2',
+                                style: {'font-family': 'fantasy'}
+                        }]
+                    },
                     {   class: 'fv-bg-success',
                         style: {
-                            height:'5px',
+                            top: '0px',
+                            height:heightBar,
                             width: width+'%',
                             position:'absolute',
                             left: left+'%'
@@ -227,6 +231,9 @@ export namespace ContextView{
         }
         if (node instanceof LogNodeBase){
 
+            let tStart = node.log.timestamp - state.rootCtx.startTimestamp
+            let left =  100 * tStart / (state.tEnd - state.tStart)
+
             let classes = 'fv-text-primary fas fa-info'
             
             if(node instanceof LogNodeError){
@@ -236,10 +243,24 @@ export namespace ContextView{
                 classes = 'fv-text-focus fas fa-exclamation'
             }
             return { 
-                class: 'd-flex align-items-center',
+                class:'pb-1 fv-pointer w-100',
                 children:[
-                    { class: classes},
-                    { innerText: node.log.text, class:'px-2'}
+                    {
+                        class: 'd-flex align-items-center',
+                        children:[
+                            { class: classes},
+                            { innerText: node.log.text, class:'px-2'},
+                        ] 
+                    },
+                    {   class: 'fv-bg-success rounded',
+                        style: {
+                            height:heightBar,
+                            width: heightBar,
+                            top: '0px',
+                            position:'absolute',
+                            left: `calc( ${left}% - 5px)`
+                        }
+                    }
                 ]
             }
         }
@@ -290,7 +311,6 @@ export namespace ContextView{
                 title: "data",
                 data: node.data
             })
-
             return {
                 children: [
                     new DataTreeView.View({state: dataState})
