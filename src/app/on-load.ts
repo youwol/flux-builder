@@ -3,14 +3,14 @@ import { combineLatest, merge, ReplaySubject } from 'rxjs';
 import { filter } from 'rxjs/operators';
 import * as grapesjs from 'grapesjs'
 
-import { ModuleFlow, FluxExtensionAPIs, Environment, ModuleError } from '@youwol/flux-core';
+import { ModuleFlow, FluxExtensionAPIs, Environment, ModuleError, Journal, JournalWidget, ConfigurationStatus, ExpectationStatus } from '@youwol/flux-core';
 import { createDrawingArea } from '@youwol/flux-svg-plots';
 import { ContextMenu } from '@youwol/fv-context-menu';
 
 import { AppStore, AppObservables, UiState, AppDebugEnvironment, 
     LogLevel, AppBuildViewObservables } from './builder-editor/builder-state/index';
 import { WorkflowPlotter } from './builder-editor/builder-plots/index';
-import { createAttributesPanel, ContextMenuState } from './builder-editor/index'
+import { createAttributesPanel, ContextMenuState, ConfigurationStatusView, ExpectationView } from './builder-editor/index'
 
 import { createLayoutEditor, initLayoutEditor, setDynamicComponentsBlocks,
     replaceTemplateElements, removeTemplateElements, autoAddElementInLayout  } from './layout-editor/index';
@@ -18,6 +18,7 @@ import { createLayoutEditor, initLayoutEditor, setDynamicComponentsBlocks,
 import { plugNotifications } from './notification';
 import { AssetsBrowserClient } from './clients/assets-browser.client';
 import { AssetsExplorerView } from './builder-editor/views/assets-explorer.view';
+import { render } from '@youwol/flux-view';
 
 
 let {appStore, appObservables, layoutEditor} = await initializeRessources()
@@ -25,14 +26,9 @@ let {appStore, appObservables, layoutEditor} = await initializeRessources()
 let workflowPlotter = initDrawingArea(appStore,appObservables)
 
 plugNotifications(appStore, workflowPlotter)
-AssetsBrowserClient.appStore = appStore
-// A single instance of assets browser to keep in memory expandeds nodes etc
-AssetsExplorerView.singletonState = new AssetsExplorerView.State({
-    appStore
-})
+
 let contextState = new ContextMenuState( appStore, workflowPlotter.drawingArea )
 new ContextMenu.View({state:contextState, class:"fv-bg-background"} as any)
-
 
 connectStreams(appStore, workflowPlotter, layoutEditor, appObservables )
 
@@ -73,6 +69,25 @@ export async function initializeRessources() :
     
     let appStore = AppStore.getInstance( environment )
 
+    AssetsBrowserClient.appStore = appStore
+    // A single instance of assets browser to keep in memory expandeds nodes etc
+    AssetsExplorerView.singletonState = new AssetsExplorerView.State({
+        appStore
+    })
+
+    Journal.widgets.push(
+        new JournalWidget<ConfigurationStatus<unknown>>(
+            (data) => data instanceof ConfigurationStatus,
+            (data: ConfigurationStatus<unknown>) => 
+                render(ConfigurationStatusView.journalWidget(data))
+        ),
+        new JournalWidget<ExpectationStatus<unknown>>(
+            (data) => data instanceof ExpectationStatus,
+            (data: ExpectationStatus<unknown>) => 
+                render(ExpectationView.journalWidget(data))
+        )
+    )
+    
     return { 
         appStore,
         appObservables,

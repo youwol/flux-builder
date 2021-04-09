@@ -266,50 +266,22 @@ export namespace ContextView{
         }
         if (node instanceof DataNodeBase){
 
-            if (node.data instanceof ConfigurationStatus){
-
-                let dataState = new DataTreeView.State({
-                    title: "merged configuration",
-                    data: node.data.result
-                })
-                let configurationState = new ConfigurationStatusView.State({
-                    status:node.data
-                })
-
+            let views = Journal.widgets
+            .filter( widget => widget.isCompatible(node.data) )
+            .map( widget => widget.view(node.data))
+            
+            if(views.length>0)
                 return {
                     class: 'd-flex justify-content-around w-100',
                     style:{'white-space': 'nowrap'},
-                    children: [
-                        new DataTreeView.View({state: dataState}),
-                        new ConfigurationStatusView.View({state:configurationState})
-                    ]
+                    children: 
+                        views
                 }
-            }
-            if (node.data instanceof ExpectationStatus){
-
-                let dataState = new DataTreeView.State({
-                    title: "incoming data",
-                    data: node.data.fromValue,
-                    expandedNodes: ["incoming data_0"]
-                })
-
-                let expectationState = new ExpectationView.State({
-                    status: node.data
-                })
-                
-                return {
-                    class: 'd-flex justify-content-around w-100',
-                    style:{'white-space': 'nowrap'},
-                    children: [
-                        new DataTreeView.View({state: dataState}),
-                        new ExpectationView.View({ state: expectationState })
-                    ]
-                }
-            }
 
             let dataState = new DataTreeView.State({
-                title: "data",
-                data: node.data
+                title: "",
+                data: node.data,
+                expandedNodes:['_0']
             })
             return {
                 children: [
