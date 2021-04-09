@@ -93,6 +93,32 @@ export namespace ConfigurationStatusView{
                 : views            
         }
     }
+
+    export function journalWidget( data: ConfigurationStatus<unknown>) : VirtualDOM{
+
+        let dataState = new DataTreeView.State({
+            title: "merged configuration",
+            data: data.result
+        })
+        let configurationState = new ConfigurationStatusView.State({
+            status:data
+        })
+
+        return {
+            children:[
+                {
+                    class: 'd-flex justify-content-around w-100',
+                    style:{'white-space': 'nowrap'},
+                    children: [
+                        new DataTreeView.View({state: dataState}),
+                        {class:'px-4'},
+                        new ConfigurationStatusView.View({state:configurationState})
+                    ]
+                }
+            ]
+        }
+    }
+
 /*
     function headerView(status: ConfigurationStatus<unknown>){
 
