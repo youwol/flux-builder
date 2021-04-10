@@ -32,7 +32,7 @@ new ContextMenu.View({state:contextState, class:"fv-bg-background"} as any)
 
 connectStreams(appStore, workflowPlotter, layoutEditor, appObservables )
 
-let projectId = getUrlParams()["id"]
+let projectId = new URLSearchParams(window.location.search).get("id")
 
 appStore.loadProject(projectId)
 
@@ -189,13 +189,3 @@ export function initDrawingArea(appStore: AppStore, appObservables: AppObservabl
           
     return new WorkflowPlotter(drawingArea, appObservables, plottersObservables, appStore)
 }
-
-function getUrlParams() {
-
-    let urlParams: any = {}
-    window.location.href.replace(/[?&]+([^=&]+)=([^&]*)/gi, (m, key, value) => {
-      urlParams[key] = value;
-      return value
-    });
-    return urlParams
-  }
