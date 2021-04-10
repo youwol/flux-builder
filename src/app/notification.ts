@@ -11,7 +11,8 @@ function focusAction(
     mdle: ModuleFlow, 
     appStore: AppStore, 
     workflowPlotter: WorkflowPlotter,
-    toggledClass: string) {
+    toggledClass: string,
+    duration: number = 5000 ) {
      
     let root = appStore.project.workflow.rootLayerTree
     let layer = root.getLayerRecursive((layer) => layer.moduleIds.includes(mdle.moduleId) )
@@ -22,7 +23,7 @@ function focusAction(
         let bBox = g.getBoundingClientRect()
         workflowPlotter.drawingArea.lookAt( 0.5*(bBox.left + bBox.right),  0.5*(bBox.top + bBox.bottom))
         g.classList.toggle(toggledClass)
-        setTimeout( () => g.classList.toggle(toggledClass), 5000 )
+        setTimeout( () => g.classList.toggle(toggledClass), duration )
     }, 0 )
 }
 
