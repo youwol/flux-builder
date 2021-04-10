@@ -2,6 +2,7 @@
   "name": "@youwol/flux-builder",
   "version": "0.0.0",
   "description": "Front end side of the Flux builder application",
+  "author": "greinisch@youwol.com",
   "scripts": {
     "build": "yarn build:dev",
     "build:dev": "del-cli dist && webpack --mode development",
