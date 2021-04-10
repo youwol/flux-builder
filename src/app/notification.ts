@@ -6,7 +6,19 @@ import { AppStore } from './builder-editor/builder-state';
 import { ContextView } from './builder-editor/views/context.view';
 
 
-
+/**
+ * Focus a module in the workflow by toggeling a provided class on the module's svg group element for 
+ * a provided duration. Focusing means: 
+ * -    the active layer is changed to the mdoule's containing layer if need be
+ * -    the builder canvas is translated such that the module is located at its center
+ * -    if styles are associated to the toggeling class, those are applied during the specified duration
+ * 
+ * @param mdle module to focus
+ * @param appStore reference to the appStore of the application
+ * @param workflowPlotter reference to the workflow plotter of the application
+ * @param toggledClass name of the toggeling class
+ * @param duration duration of the focus
+ */
 function focusAction(
     mdle: ModuleFlow, 
     appStore: AppStore, 
@@ -27,15 +39,17 @@ function focusAction(
     }, 0 )
 }
 
-
+/**
+ * Plug the notification system to the application environment.
+ * For now, only module's errors (ModuleError in flux-core) are handled.
+ * 
+ * @param appStore reference to the appStore of the application
+ * @param workflowPlotter reference to the workflow plotter of the application
+ */
 export function plugNotifications(
     appStore: AppStore,
     workflowPlotter: WorkflowPlotter){
 
-    let notifier = new Notifier(appStore)
-    appStore.environment.errors$.subscribe(e => {
-        console.log(e)
-    })
     appStore.environment.errors$.pipe(
         filter(  (log:ErrorLog) => log.error instanceof ModuleError )
     ).subscribe(
@@ -56,6 +70,30 @@ export function plugNotifications(
     )
 }
 
+/**
+ * Interface for notifier's action
+ */
+export interface INotifierAction{
+
+    /**
+     * displayed name of the action
+     */
+    name : string
+
+    /**
+     * execution function 
+     */
+    exe : () => void
+}
+
+/**
+ * This class provides a notification system that popups message in the 
+ * HTML document.
+ * 
+ * For now, only module's errors (ModuleError in flux-core) are handled.
+ * 
+ * Notification can be associated to custom [[INotifierAction | action]]
+ */
 export class Notifier{
 
     static classesIcon={
@@ -70,23 +108,59 @@ export class Notifier{
     constructor( public readonly appStore: AppStore){
 
     }
-
-    static notify({message, title, actions}){
+    /**
+     * Popup a notification with level=='Info'
+     * 
+     * @param message content
+     * @param title title
+     * @param actions available actions
+     */
+    static notify({message, title, actions}:{
+        message: string,
+        title: string
+        actions: INotifierAction[]
+    }){
 
         Notifier.popup( { message, title, actions, classIcon:"", classBorder:"" } )
     }
-
-    static error( {message, title, actions}){
+    /**
+     * Popup a notification with level=='Error'
+     * 
+     * @param message content
+     * @param title title
+     * @param actions available actions
+     */
+    static error( {message, title, actions}:{
+        message: string,
+        title: string
+        actions: INotifierAction[]
+    }){
 
         Notifier.popup( { message, title, actions, classIcon:Notifier.classesIcon[4], classBorder:Notifier.classesBorder[4] } )
     }
-
-    static warning( {message, title, actions}){
+    /**
+     * Popup a notification with level=='Warning'
+     * 
+     * @param message content
+     * @param title title
+     * @param actions available actions
+     */
+    static warning( {message, title, actions}:{
+        message: string,
+        title: string
+        actions: INotifierAction[]
+    }){
 
         Notifier.popup( { message, title, actions, classIcon:Notifier.classesIcon[3], classBorder:Notifier.classesBorder[3] } )
     }
 
-    private static popup( { message, title, actions, classIcon, classBorder } ){
+    private static popup( { message, title, actions, classIcon, classBorder } :{
+        message: string,
+        title: string
+        actions: INotifierAction[],
+        classIcon: string,
+        classBorder: string
+    }){
 
         let view = {
             class:"m-2 p-2 my-1 bg-white " + classBorder,
