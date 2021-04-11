@@ -1,4 +1,4 @@
-import { ErrorLog, ModuleError, ModuleFlow } from '@youwol/flux-core';
+import { ErrorLog, ModuleError, ModuleFlux } from '@youwol/flux-core';
 import { render } from '@youwol/flux-view';
 import { filter } from 'rxjs/operators';
 import { WorkflowPlotter } from './builder-editor/builder-plots';
@@ -20,7 +20,7 @@ import { ContextView } from './builder-editor/views/context.view';
  * @param duration duration of the focus
  */
 function focusAction(
-    mdle: ModuleFlow, 
+    mdle: ModuleFlux, 
     appStore: AppStore, 
     workflowPlotter: WorkflowPlotter,
     toggledClass: string,

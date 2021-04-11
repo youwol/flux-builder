@@ -1,7 +1,7 @@
 
 import { Subject, combineLatest } from "rxjs";
 import * as operators from "rxjs/operators";
-import { ModuleFlow, Connection, GroupModules, createHTMLElement} from '@youwol/flux-core';
+import { ModuleFlux, Connection, GroupModules, createHTMLElement} from '@youwol/flux-core';
 import { DrawingArea,LinkPlot,toCssName } from '@youwol/flux-svg-plots';
 
 import { PlotterConnectionEntity } from "./models-view";
@@ -122,7 +122,7 @@ function drawConnections(connections , modulesGroup, drawingArea : DrawingArea, 
     return undefined
 }
 
-function getSlot(mdle: ModuleFlow, domPlugElement, plugType){
+function getSlot(mdle: ModuleFlux, domPlugElement, plugType){
 
     let slotId = domPlugElement.getAttribute("slotId") || domPlugElement.getAttribute("slotid")
     let slot = mdle.getSlot( slotId )
@@ -144,7 +144,7 @@ function getSlot(mdle: ModuleFlow, domPlugElement, plugType){
     return slot
 }
 
-function getMdlWithGroup(plugSvgElement:SVGElement, appStore: AppStore) : [ModuleFlow, HTMLElement]{
+function getMdlWithGroup(plugSvgElement:SVGElement, appStore: AppStore) : [ModuleFlux, HTMLElement]{
     
     let containerSlot = plugSvgElement.parentElement
     let mdl = appStore.getModuleOrPlugin(containerSlot.getAttribute("moduleId") || containerSlot.getAttribute("id")) 

@@ -1,7 +1,7 @@
 
 import {Requirements, 
     Project,Workflow,BuilderRendering,RunnerRendering,
-    Component, Connection, ModuleFlow, PluginFlow,  ModuleConfiguration, 
+    Component, Connection, ModuleFlux, PluginFlux,  ModuleConfiguration, 
     DescriptionBox, LayerTree, AdaptorConfiguration, instanceOfSideEffects, 
     GroupModules, DescriptionBoxProperties,  FluxExtensionAPIs, loadProjectDatabase$, loadProjectURI$, ProjectSchema, IEnvironment } from '@youwol/flux-core';
 
@@ -84,9 +84,9 @@ export class AppStore {
     pluginsFactory : Map<string,any> 
     packages        = []
 
-    implicitModules         : Array<ModuleFlow> = []
-    moduleSelected          : ModuleFlow = undefined
-    modulesSelected         : Array<ModuleFlow> = []
+    implicitModules         : Array<ModuleFlux> = []
+    moduleSelected          : ModuleFlux = undefined
+    modulesSelected         : Array<ModuleFlux> = []
     connectionSelected      : Connection =undefined
     descriptionBoxSelected  : DescriptionBox =undefined
 
@@ -229,43 +229,43 @@ export class AppStore {
         return getAvailablePlugins( mdle , this.pluginsFactory )
     }
 
-    getPlugins( moduleId ) : Array<PluginFlow<any>> {
+    getPlugins( moduleId ) : Array<PluginFlux<any>> {
         return getPlugins(moduleId,this.project)
     }
 
-    addPlugin( Factory, parentModule ) : ModuleFlow {
+    addPlugin( Factory, parentModule ) : ModuleFlux {
         let project = addPlugin(Factory, parentModule,this.project, this.appObservables.ready$, this.environment)
         this.updateProject(project)
         return  project.workflow.plugins.slice(-1)[0]
     }
 
-    addModule( moduleFactory, coors = [0,0] ) : ModuleFlow{
+    addModule( moduleFactory, coors = [0,0] ) : ModuleFlux{
 
         let project = addModule( moduleFactory, coors, this.project , this.activeLayerId,this.appObservables.ready$, this.environment)
         this.updateProject(project)
         return project.workflow.modules.slice(-1)[0]
     }
 
-    updateModule(mdle:ModuleFlow, configuration: ModuleConfiguration) {
+    updateModule(mdle:ModuleFlux, configuration: ModuleConfiguration) {
         
         let project = updateModule(mdle,configuration, this.project,this.allSubscriptions,this.appObservables.ready$)
         this.unselect()
         this.updateProject(project)
     }
 
-    duplicateModules( modules : Array<ModuleFlow>) {
+    duplicateModules( modules : Array<ModuleFlux>) {
 
         let project = duplicateModules(modules, this.project, this.appObservables.ready$ )
         this.updateProject(project)
     }
 
-    alignH( modules : Array<ModuleFlow>) {
+    alignH( modules : Array<ModuleFlux>) {
 
         let project = alignH(modules.map(m=>m.moduleId), this.project, this.appObservables.ready$ )
         this.updateProject(project)
     } 
 
-    alignV( modules : Array<ModuleFlow>) {
+    alignV( modules : Array<ModuleFlux>) {
 
         let project = alignV(modules.map(m=>m.moduleId), this.project, this.appObservables.ready$ )
         this.updateProject(project)
@@ -277,7 +277,7 @@ export class AppStore {
         this.updateProject(project)
     }
 
-    getModuleSelected(): ModuleFlow{
+    getModuleSelected(): ModuleFlux{
         if(this.moduleSelected )
             return this.moduleSelected 
         if(this.modulesSelected.length == 1)
@@ -285,7 +285,7 @@ export class AppStore {
         return undefined
     }
 
-    getModulesSelected(): Array<ModuleFlow>{
+    getModulesSelected(): Array<ModuleFlux>{
         if(this.moduleSelected )
             return [this.moduleSelected]
         if(this.modulesSelected.length > 0)
@@ -362,13 +362,13 @@ export class AppStore {
         this.modulesSelected.forEach( m => this.appObservables.moduleSelected$.next(m))
     }
 
-    getModuleOrPlugin(moduleId:string):ModuleFlow{
+    getModuleOrPlugin(moduleId:string):ModuleFlux{
         let allModules= this.getModulesAndPlugins()
         let m = allModules.find( m => m.moduleId === moduleId)
         return m
     }
 
-    getModule(moduleId:string):ModuleFlow{
+    getModule(moduleId:string):ModuleFlux{
 
         let m = this.getModulesAndPlugins().find( m => m.moduleId === moduleId)
         if(m)
@@ -377,7 +377,7 @@ export class AppStore {
         return m
     }
     
-    deleteModules(modulesDeleted:Array<ModuleFlow>){
+    deleteModules(modulesDeleted:Array<ModuleFlux>){
         
         this.unselect()
         let project = deleteModules(modulesDeleted,this.project)
@@ -394,7 +394,7 @@ export class AppStore {
         this.updateProject(project)            
     }
         
-    deleteModule(mdle:ModuleFlow){
+    deleteModule(mdle:ModuleFlux){
         
         if(mdle==this.moduleSelected)
             this.unselect()
@@ -463,7 +463,7 @@ export class AppStore {
 
         let mdle = this.getModule(moduleId)
         if( this.project.workflow.plugins.map(plugin=>plugin.moduleId).includes(mdle.moduleId))
-            mdle = (mdle as PluginFlow<any>).parentModule
+            mdle = (mdle as PluginFlux<any>).parentModule
 
         let layer = this.project.workflow.rootLayerTree.getLayerRecursive( layer=>layer.moduleIds.includes(mdle.moduleId))
         if(!layer)
@@ -477,7 +477,7 @@ export class AppStore {
         return all
     }
 
-    getModulesAndPlugins(): Array<ModuleFlow>{
+    getModulesAndPlugins(): Array<ModuleFlux>{
         return this.project.workflow.modules.concat(this.project.workflow.plugins)
     }
 

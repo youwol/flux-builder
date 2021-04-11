@@ -1,4 +1,4 @@
-import { ModuleFlow, Journal } from "@youwol/flux-core";
+import { ModuleFlux, Journal } from "@youwol/flux-core";
 import { child$, VirtualDOM } from "@youwol/flux-view";
 import { Select } from "@youwol/fv-input";
 import { BehaviorSubject } from "rxjs";
@@ -11,10 +11,10 @@ export namespace JournalsView{
 
     export class State{
 
-        public readonly module: ModuleFlow
+        public readonly module: ModuleFlux
         
         constructor({ module}: {
-            module: ModuleFlow
+            module: ModuleFlux
         }){
             this.module = module
         }
@@ -136,7 +136,7 @@ export namespace JournalsView{
     export function popupModal({
         module
     }: {
-        module: ModuleFlow
+        module: ModuleFlux
     }){
 
         let state = new State({module})

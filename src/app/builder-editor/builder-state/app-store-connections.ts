@@ -1,5 +1,5 @@
 import { Connection, Workflow, Project, Adaptor, AdaptorConfiguration, 
-     ModuleFlow, BuilderRendering,} from '@youwol/flux-core';
+     ModuleFlux, BuilderRendering,} from '@youwol/flux-core';
      
 import { AppDebugEnvironment, LogLevel } from './app-debug.environment';
 import { Subscription } from 'rxjs';
@@ -7,7 +7,7 @@ import { uuidv4 } from './utils';
 
 
 export function subscribeConnections(  allSubscriptions : Map<Connection, Subscription> , delta : {removedElements,createdElements },
-    modules:Array<ModuleFlow> , plugins:Array<ModuleFlow>){
+    modules:Array<ModuleFlux> , plugins:Array<ModuleFlux>){
 
     let flatInputSlots  = modules.concat( plugins).reduce( (acc,e)=> acc.concat(e.inputSlots) , [])
     let flatOutputSlots = modules.concat( plugins).reduce( (acc,e)=> acc.concat(e.outputSlots) , [])

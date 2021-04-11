@@ -1,4 +1,4 @@
-import { ModuleFlow } from "@youwol/flux-core"
+import { ModuleFlux } from "@youwol/flux-core"
 import { render, VirtualDOM } from "@youwol/flux-view"
 import { Button } from "@youwol/fv-button"
 import { Modal } from "@youwol/fv-group"
@@ -12,14 +12,14 @@ export namespace CodePropertyEditorView{
 
     export class State{
 
-        public readonly mdle: ModuleFlow
+        public readonly mdle: ModuleFlux
         public readonly codeEditorState: CodeEditorView.State
 
         constructor({
             mdle,
             initialCode
         } : {
-            mdle: ModuleFlow,
+            mdle: ModuleFlux,
             initialCode: string
         }){
             this.mdle = mdle 
@@ -87,7 +87,7 @@ export namespace CodePropertyEditorView{
         initialCode, 
         onUpdate
     }: {
-        mdle: ModuleFlow, 
+        mdle: ModuleFlux, 
         initialCode: string, 
         onUpdate: (string) => void
     }){

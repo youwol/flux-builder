@@ -1,7 +1,7 @@
 
 import { BehaviorSubject, merge } from 'rxjs';
 
-import { ModuleFlow, Connection,Schema, Property, AdaptorConfiguration, Adaptor,
+import { ModuleFlux, Connection,Schema, Property, AdaptorConfiguration, Adaptor,
     flattenSchemaWithValue, uuidv4} from '@youwol/flux-core';
 import { toCssName } from '@youwol/flux-svg-plots';
 import {render, attr$, child$} from '@youwol/flux-view'
@@ -69,7 +69,7 @@ function flattenPropertiesNative( schema : any, data:any, suffix: string , Facto
 }
 
 
-function moduleControls(d : ModuleFlow, appStore : AppStore, panelDiv:HTMLDivElement ): [Array<any>, any]{
+function moduleControls(d : ModuleFlux, appStore : AppStore, panelDiv:HTMLDivElement ): [Array<any>, any]{
 
     let flattened = flattenSchemaWithValue(d.configuration.data)
     let titleDiv    = input("wf-config-title","wf-config-title","title","", [ {type:"string"}, d.configuration.title ])
@@ -143,7 +143,7 @@ export function createAttributesPanel(appStore: AppStore, appObservables: AppObs
             let panelDiv    = document.getElementById("attributes-panel") as HTMLDivElement
             var container   = document.createDocumentFragment();
             let [attrControls, validationBtn] = d.moduleId?
-                moduleControls(d as ModuleFlow,appStore,panelDiv) :
+                moduleControls(d as ModuleFlux,appStore,panelDiv) :
                 connectionControls(d as Connection,appStore,panelDiv)
             // All but the validation button
             panelDiv.appendChild(validationBtn)
@@ -377,7 +377,7 @@ export class ExternalCode extends Code {
 }
 */
 function code(
-    selection: ModuleFlow | Connection, id: string, classe: string, label: string, path: string, value: string, 
+    selection: ModuleFlux | Connection, id: string, classe: string, label: string, path: string, value: string, 
     fullType: string , appStore: AppStore) : HTMLDivElement {
 
     let innerHtml=`
@@ -397,7 +397,7 @@ function code(
 
     let onUpdateMdle = (content) => {
         let pathElems = path.split('/')
-        let mdle = selection as ModuleFlow
+        let mdle = selection as ModuleFlux
         let lastRed = pathElems
         .slice(0,-1)
         .reduce( (acc:any,elem:any) => acc[elem], mdle.configuration.data)
@@ -415,7 +415,7 @@ function code(
     }
 
     bttn.onclick =() =>{   
-        if( selection instanceof(ModuleFlow)) {
+        if( selection instanceof(ModuleFlux)) {
             CodePropertyEditorView.popupModal({
                 mdle:selection,
                 initialCode: value,

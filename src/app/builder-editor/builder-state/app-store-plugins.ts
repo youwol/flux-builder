@@ -1,5 +1,5 @@
 
-import { PluginFlow, Workflow, Project, IEnvironment} from '@youwol/flux-core'
+import { PluginFlux, Workflow, Project, IEnvironment} from '@youwol/flux-core'
 import { AppDebugEnvironment, LogLevel } from './app-debug.environment'
 import { uuidv4 } from './utils'
 
@@ -16,7 +16,7 @@ export function getAvailablePlugins( mdle , pluginsFactory ) {
     return plugins
 }
 
-export function getPlugins( moduleId: string, project:Project) : Array<PluginFlow<any>> {
+export function getPlugins( moduleId: string, project:Project) : Array<PluginFlux<any>> {
 
     return project.workflow.plugins.filter( plugin => 
         plugin.parentModule.moduleId === moduleId)

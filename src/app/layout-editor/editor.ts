@@ -1,5 +1,5 @@
 
-import { ModuleFlow } from '@youwol/flux-core'
+import { ModuleFlux } from '@youwol/flux-core'
 
 import { AppDebugEnvironment, LogLevel, AppStore } from '../builder-editor/builder-state/index'
 
@@ -183,7 +183,7 @@ export function setDynamicComponentsBlocks( appStore: AppStore, editor: grapesjs
   modulesToRender.forEach( m =>  editor.BlockManager.add(m.moduleId, toDynamicBlock(m)) )
 }
 
-function toDynamicBlock(mdle :ModuleFlow){
+function toDynamicBlock(mdle :ModuleFlux){
   
   return {
     id: mdle.moduleId,

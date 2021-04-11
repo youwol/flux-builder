@@ -1,6 +1,6 @@
 import { Subject, ReplaySubject } from "rxjs";
 import { LogLevel, AppDebugEnvironment } from "./app-debug.environment";
-import { Connection, ModuleFlow,ModuleView } from '@youwol/flux-core';
+import { Connection, ModuleFlux,ModuleView } from '@youwol/flux-core';
 
 
 export class AppBuildViewObservables{
@@ -23,9 +23,9 @@ export class AppBuildViewObservables{
     connectionsDrawn$ = new ReplaySubject<any>(1)
     descriptionsBoxesDrawn$ = new ReplaySubject<any>(1)
     activeLayerDrawn$ = new ReplaySubject<any>(1)
-    modulesViewCompleted$ = new Subject<Array<ModuleFlow>>()
-    plugsViewCompleted$ = new Subject<Array<ModuleFlow>>()
-    connectionsViewCompleted$ = new Subject<Array<ModuleFlow>>()
+    modulesViewCompleted$ = new Subject<Array<ModuleFlux>>()
+    plugsViewCompleted$ = new Subject<Array<ModuleFlux>>()
+    connectionsViewCompleted$ = new Subject<Array<ModuleFlux>>()
 
     
     moduleEvent$ = new Subject<any>()

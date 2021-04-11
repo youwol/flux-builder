@@ -1,5 +1,5 @@
 import { Subject, ReplaySubject } from "rxjs";
-import { Package, Connection, ModuleFlow, DescriptionBox  }from '@youwol/flux-core';
+import { Package, Connection, ModuleFlux, DescriptionBox  }from '@youwol/flux-core';
 
 import { AppDebugEnvironment, LogLevel } from "./app-debug.environment";
 import { UiState } from './app-store';
@@ -22,10 +22,10 @@ export class AppObservables{
     uiStateUpdated$             = new ReplaySubject<UiState>(1)
     packagesUpdated$            = new Subject<Array<Package>>()
     connectionsUpdated$         = new Subject<Array<Connection>>()
-    modulesUpdated$             = new Subject<{createdElements: Array<ModuleFlow>, removedElements:  Array<ModuleFlow>}>()
-    moduleAdded$                = new Subject<ModuleFlow>()
-    moduleSelected$             = new Subject<ModuleFlow>()
-    modulesUnselected$          = new Subject<Array<ModuleFlow>>()
+    modulesUpdated$             = new Subject<{createdElements: Array<ModuleFlux>, removedElements:  Array<ModuleFlux>}>()
+    moduleAdded$                = new Subject<ModuleFlux>()
+    moduleSelected$             = new Subject<ModuleFlux>()
+    modulesUnselected$          = new Subject<Array<ModuleFlux>>()
     moduleSettingsEdited$       = new Subject<any>()
     adaptorEdited$              = new Subject<any>()
     connectionSelected$         = new Subject<Connection>()

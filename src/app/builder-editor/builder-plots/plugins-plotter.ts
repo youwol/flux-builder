@@ -1,12 +1,12 @@
 
-import { PluginFlow } from '@youwol/flux-core';
+import { PluginFlux } from '@youwol/flux-core';
 import { DrawingArea } from '@youwol/flux-svg-plots';
 
 import { AppObservables,AppBuildViewObservables, AppDebugEnvironment, LogLevel,
     AppStore } from '../builder-state/index';
 
 
-function drawPlugin(plugin :PluginFlow<any>, containerGroup, appStore: AppStore ) {
+function drawPlugin(plugin :PluginFlux<any>, containerGroup, appStore: AppStore ) {
 
     let display = new plugin.Factory.BuilderView()
     let pluginGroup = display.render(plugin)

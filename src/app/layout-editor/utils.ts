@@ -1,5 +1,5 @@
 import { AppDebugEnvironment, LogLevel, AppStore } from '../builder-editor/builder-state/index'
-import { ModuleFlow, Component } from '@youwol/flux-core'
+import { ModuleFlux, Component } from '@youwol/flux-core'
 
 declare var _ : any
 
@@ -23,11 +23,11 @@ export function getAllComponentsRec(editor, component = undefined) {
   return rList.reduce( (acc,e)=>Object.assign({},acc,{[e.ccid]:e}),{})
 }
 
-export function removeTemplateElements(modules: Array<ModuleFlow>,editor) {
+export function removeTemplateElements(modules: Array<ModuleFlux>,editor) {
 
   let allGjs = getAllComponentsRec(editor)
   let modulesToRemove = modules
-  .filter((m:ModuleFlow)=>m.Factory.RenderView )
+  .filter((m:ModuleFlux)=>m.Factory.RenderView )
   
   let debugSingleton = AppDebugEnvironment.getInstance()
   debugSingleton.debugOn &&
@@ -42,7 +42,7 @@ export function removeTemplateElements(modules: Array<ModuleFlow>,editor) {
   .forEach( mdle => allGjs[mdle.moduleId].remove())
 }
 
-export function replaceTemplateElements(moduleIds: Array<string>, editor:any, appStore:any): Array<ModuleFlow> {
+export function replaceTemplateElements(moduleIds: Array<string>, editor:any, appStore:any): Array<ModuleFlux> {
   
   let allGjsComponents = getAllComponentsRec(editor)
 
@@ -99,7 +99,7 @@ export function replaceTemplateElements(moduleIds: Array<string>, editor:any, ap
 }
 
 
-export function getDynamicBlockWrapperDiv(mdle:ModuleFlow){
+export function getDynamicBlockWrapperDiv(mdle:ModuleFlux){
 
   let attr =  mdle.Factory.RenderView.wrapperDivAttributes
 
@@ -134,20 +134,20 @@ export function addComponentPlaceholder(appStore, editor, allGjsComponents, mdle
     return allGjsComponents[container.moduleId].append(htmlContent, { at: 0 })
 }
 
-export function autoAddElementInLayout(diff:{removedElements: Array<ModuleFlow>, createdElements: Array<ModuleFlow>}, editor:any, appStore:AppStore) {
+export function autoAddElementInLayout(diff:{removedElements: Array<ModuleFlux>, createdElements: Array<ModuleFlux>}, editor:any, appStore:AppStore) {
 
   let views = diff.createdElements
-  .filter((mdle:ModuleFlow)=>mdle.Factory.RenderView )
+  .filter((mdle:ModuleFlux)=>mdle.Factory.RenderView )
   let removedIds = diff.removedElements.map(m =>m.moduleId)
   
   let news = views
-  .filter((mdle:ModuleFlow)=>!removedIds.includes(mdle.moduleId) )
+  .filter((mdle:ModuleFlux)=>!removedIds.includes(mdle.moduleId) )
    // element are added automatically only if in the root layer
    // it also allows to handle the case of a group actually not displayed
-  .filter((mdle:ModuleFlow)=> appStore.project.workflow.rootLayerTree.moduleIds.includes(mdle.moduleId) )
+  .filter((mdle:ModuleFlux)=> appStore.project.workflow.rootLayerTree.moduleIds.includes(mdle.moduleId) )
 
   let toReplace = views
-  .filter((mdle:ModuleFlow)=>removedIds.includes(mdle.moduleId) )
+  .filter((mdle:ModuleFlux)=>removedIds.includes(mdle.moduleId) )
 
   if(toReplace.length>0)
     replaceTemplateElements(toReplace.map( mdle=>mdle.moduleId),editor, appStore)
@@ -169,7 +169,7 @@ export function autoAddElementInLayout(diff:{removedElements: Array<ModuleFlow>,
       object: { unitModules, components }
     })
 
-  unitModules.forEach( (mdle: ModuleFlow) => addComponentPlaceholder(appStore, editor, allGjsComponents,mdle) )
+  unitModules.forEach( (mdle: ModuleFlux) => addComponentPlaceholder(appStore, editor, allGjsComponents,mdle) )
   
   let allChildrenId = components.reduce( (acc,mdle:Component.Module) => acc.concat(mdle.getAllChildren().map(m=>m.moduleId)), [])
 

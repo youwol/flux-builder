@@ -1,7 +1,7 @@
 import { LogLevel, AppDebugEnvironment } from './app-debug.environment'
 import { uuidv4 } from './utils'
-import { ModuleView, Workflow, BuilderRendering, Project, ModuleFlow, GroupModules,
-    ModuleConfiguration, PluginFlow, Connection, RunnerRendering, DescriptionBox, LayerTree, IEnvironment } 
+import { ModuleView, Workflow, BuilderRendering, Project, ModuleFlux, GroupModules,
+    ModuleConfiguration, PluginFlux, Connection, RunnerRendering, DescriptionBox, LayerTree, IEnvironment } 
     from '@youwol/flux-core'
 import { Subscription } from 'rxjs'
 import { cloneLayerTree, getLayer, cleanChildrenLayers } from './app-store-layer'
@@ -28,7 +28,7 @@ export function isGroupingModule(moduleData){
 }
 /*
 export function instantiateModules( modulesData, modulesFactory, appObservables : AppObservables,
-     environment, workflowGetter ): Array<ModuleFlow>{
+     environment, workflowGetter ): Array<ModuleFlux>{
 
     let debugSingleton = AppDebugEnvironment.getInstance()
 
@@ -129,7 +129,7 @@ function duplicate( { mdle ,  ready$, configuration, parent, workflow } :{ mdle,
     let isPlugin = "parentModule" in mdle 
     return isPlugin ? 
         new mdle.Factory.Module( { 
-            parentModule : parent ? parent : (mdle as PluginFlow<any>).parentModule,
+            parentModule : parent ? parent : (mdle as PluginFlux<any>).parentModule,
             moduleId: mdle.moduleId,configuration, 
             ready$, 
             Factory,
@@ -138,7 +138,7 @@ function duplicate( { mdle ,  ready$, configuration, parent, workflow } :{ mdle,
         new mdle.Factory.Module( Object.assign({}, mdle, {workflow: workflow, configuration, ready$, Factory}))
 }
 
-export function updateModule(mdle:ModuleFlow, 
+export function updateModule(mdle:ModuleFlux, 
     configuration: ModuleConfiguration, 
     project: Project ,
     allConnectionsSubscription:Map<Connection, Subscription>,
@@ -157,7 +157,7 @@ export function updateModule(mdle:ModuleFlow,
         getLayer(undefined, layerTree, newModule.layerId)[0].title = newModule.configuration.title
     }
 
-    let getChildrenRec = ( mdle:ModuleFlow) : Array<any> => {
+    let getChildrenRec = ( mdle:ModuleFlux) : Array<any> => {
             let directChildren =  project.workflow.plugins.filter( plugin => plugin.parentModule.moduleId == mdle.moduleId )
             let indirectChildren = directChildren.map( child => getChildrenRec(child)).filter( d => d.length>0 )
             if(indirectChildren.length >0)
@@ -247,14 +247,14 @@ export function alignV(moduleIds:Array<string>, project: Project ,ready$){
     )  
     return projectNew
 }
-export function duplicateModules(modules:Array<ModuleFlow>, 
+export function duplicateModules(modules:Array<ModuleFlux>, 
     project: Project ,
     ready$) : Project  {        
 
     let debugSingleton  = AppDebugEnvironment.getInstance()
     let wf              = project.workflow
     let tree            = project.workflow.rootLayerTree
-    let newModules      = modules.map( (m:ModuleFlow) => { 
+    let newModules      = modules.map( (m:ModuleFlux) => { 
 
         let configuration = new m.Factory.Configuration({
             title: m.configuration.title,
@@ -270,7 +270,7 @@ export function duplicateModules(modules:Array<ModuleFlow>,
     let views =  project.builderRendering.modulesView.filter( mView => modules.map(m=>m.moduleId).includes(mView.moduleId))
     let maxYWorld = Math.max(...views.map( mView => mView.yWorld ))
     let maxXWorld = Math.max(...views.map( mView => mView.xWorld ))
-    let newViews   = modules.map( (m:ModuleFlow,i) => {
+    let newViews   = modules.map( (m:ModuleFlux,i) => {
         let newView = new ModuleView(newModules[i].moduleId,maxXWorld+ (i+1)*50,maxYWorld + (i+1)*50,  m.Factory)
         return newView
     })
@@ -359,7 +359,7 @@ function getIncludedModule(grpMdle:GroupModules.Module, workflow:Workflow){
     return getModulesRec(layer)
 }
 
-export function deleteModules(modulesDeleted:Array<ModuleFlow>, project:Project ): Project{
+export function deleteModules(modulesDeleted:Array<ModuleFlux>, project:Project ): Project{
 
     let debugSingleton = AppDebugEnvironment.getInstance()
 

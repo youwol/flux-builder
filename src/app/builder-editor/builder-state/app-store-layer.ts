@@ -1,5 +1,5 @@
 import { Project, LayerTree, Workflow, BuilderRendering, ModuleView,
-    ModuleFlow, GroupModules, IEnvironment} from '@youwol/flux-core';
+    ModuleFlux, GroupModules, IEnvironment} from '@youwol/flux-core';
     
 import { uuidv4 } from './utils';
 import { AppDebugEnvironment, LogLevel } from './app-debug.environment';
@@ -32,7 +32,7 @@ export function cleanChildrenLayers(layerTree: LayerTree, moduleIds = undefined)
 }
 export function createLayer(
     title: string,
-    modules: Array<ModuleFlow>,
+    modules: Array<ModuleFlux>,
     project:Project, 
     currentLayerId : string,
     Factory,

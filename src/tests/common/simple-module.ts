@@ -1,5 +1,5 @@
 
-import { ModuleFlow, Property, Flux, BuilderView, Pipe, RenderView, PluginFlow, freeContract, FluxPack} from '@youwol/flux-core';
+import { ModuleFlux, Property, Flux, BuilderView, Pipe, RenderView, PluginFlux, freeContract, FluxPack} from '@youwol/flux-core';
 
 export let testPack = new FluxPack({
     name:'flux-test',
@@ -35,7 +35,7 @@ export namespace SimpleModule {
         namespace:      SimpleModule,
         render : (mdle) => "<div type='test-div'></div>"
     })
-    export class Module extends ModuleFlow{
+    export class Module extends ModuleFlux{
         
         output0$ : Pipe<any>
     
@@ -84,7 +84,7 @@ export namespace SimpleModule2 {
         namespace:      SimpleModule2,
         render : (mdle) => "<div type='test-div'></div>"
     })
-    export class Module extends ModuleFlow{
+    export class Module extends ModuleFlux{
         
         output0$ : Pipe<any>
     
@@ -149,7 +149,7 @@ export namespace SimplePlugin {
         namespace:      SimplePlugin,
         render : (mdle) => "<div type='test-div'></div>"
     })
-    export class Module extends PluginFlow<SimpleModule2.Module>{
+    export class Module extends PluginFlux<SimpleModule2.Module>{
 
         constructor(params){ 
             super(params)    

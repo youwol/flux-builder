@@ -1,4 +1,4 @@
-import { Connection, Contract, IExpectation, ModuleFlow } from "@youwol/flux-core";
+import { Connection, Contract, IExpectation, ModuleFlux } from "@youwol/flux-core";
 import { child$, render, VirtualDOM } from "@youwol/flux-view";
 import { BehaviorSubject, combineLatest, Observable } from "rxjs";
 import { debounceTime, map } from "rxjs/operators";
@@ -61,8 +61,8 @@ export namespace AdaptorEditoView{
         public readonly appStore: AppStore
         public readonly connection: Connection
         public readonly codeEditorState: CodeEditorView.State
-        public readonly mdleStart: ModuleFlow
-        public readonly mdleEnd: ModuleFlow
+        public readonly mdleStart: ModuleFlux
+        public readonly mdleEnd: ModuleFlux
         public readonly contract: IExpectation<unknown>
         public readonly rawInput$: Observable<{data, configuration, context}>
 

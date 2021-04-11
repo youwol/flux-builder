@@ -26,7 +26,7 @@ let a = await cdn.fetchBundles(
     {
         'lodash': '4.17.15',
         "grapes": '0.16.2',
-        "@youwol/flux-core": '0.0.5',
+        "@youwol/flux-core": '0.0.6',
         "@youwol/flux-svg-plots": '0.0.0',
         '@youwol/flux-view': '0.0.6',
         "@youwol/fv-group": "0.0.3",

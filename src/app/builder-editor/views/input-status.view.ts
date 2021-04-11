@@ -1,4 +1,4 @@
-import { ConfigurationStatus, ConsistentConfiguration, ExpectationStatus, IExpectation, mergeConfiguration, ModuleFlow, UnconsistentConfiguration } from "@youwol/flux-core";
+import { ConfigurationStatus, ConsistentConfiguration, ExpectationStatus, IExpectation, mergeConfiguration, ModuleFlux, UnconsistentConfiguration } from "@youwol/flux-core";
 import { VirtualDOM } from "@youwol/flux-view";
 import { Tabs } from "@youwol/fv-tabs";
 import { BehaviorSubject, Observable } from "rxjs";
@@ -33,7 +33,7 @@ export namespace InputStatusView{
             contract,
             selectedTabId$
         }:{
-            mdle: ModuleFlow,
+            mdle: ModuleFlux,
             contract: IExpectation<unknown>,
             adaptedInput : {data, configuration, context},
             selectedTabId$?: BehaviorSubject<string>

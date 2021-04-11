@@ -3,7 +3,7 @@ import { combineLatest, merge, ReplaySubject } from 'rxjs';
 import { filter } from 'rxjs/operators';
 import * as grapesjs from 'grapesjs'
 
-import { ModuleFlow, FluxExtensionAPIs, Environment, ModuleError, Journal, JournalWidget, ConfigurationStatus, ExpectationStatus } from '@youwol/flux-core';
+import { ModuleFlux, FluxExtensionAPIs, Environment, ModuleError, Journal, JournalWidget, ConfigurationStatus, ExpectationStatus } from '@youwol/flux-core';
 import { createDrawingArea } from '@youwol/flux-svg-plots';
 import { ContextMenu } from '@youwol/fv-context-menu';
 
@@ -127,7 +127,7 @@ export function connectStreams(appStore:AppStore, workflowPlotter: WorkflowPlott
         let notReplaced = diff.removedElements.filter( mdle => !diff.createdElements.map(m =>m.moduleId).includes(mdle.moduleId) )
         removeTemplateElements(notReplaced, editor)
         if(loading)
-            replaceTemplateElements(diff.createdElements.map( (m:ModuleFlow)=> m.moduleId), editor,appStore)
+            replaceTemplateElements(diff.createdElements.map( (m:ModuleFlux)=> m.moduleId), editor,appStore)
         if(!loading)
             autoAddElementInLayout(diff, editor,appStore )
         

@@ -1,4 +1,4 @@
-import { Component, PluginFlow, Workflow, Project, GroupModules, ModuleFlow} from '@youwol/flux-core';
+import { Component, PluginFlux, Workflow, Project, GroupModules, ModuleFlux} from '@youwol/flux-core';
 import { filter } from 'rxjs/operators';
 import { serializeWorkflow, toProjectData } from './factory-utils';
 
@@ -28,7 +28,7 @@ export function uuidv4() {
   export function packageAssetComponent(component: Component.Module | GroupModules.Module, project: Project) {
 
     let allModules = [component, ...component.getAllChildren()]
-    let modules = allModules.filter( m=>!(m instanceof PluginFlow))
+    let modules = allModules.filter( m=>!(m instanceof PluginFlux))
     let moduleIds = modules.map( m=>m.moduleId)
     let plugins = project.workflow.plugins.filter( m=>moduleIds.includes(m.parentModule.moduleId))
 
@@ -92,7 +92,7 @@ export function uuidv4() {
   }
 
 
-  export function plugBuilderViewsSignals(modules: Array<ModuleFlow>, actions, redirections$){
+  export function plugBuilderViewsSignals(modules: Array<ModuleFlux>, actions, redirections$){
 
       modules.forEach( mdle => {
 
