@@ -43,26 +43,23 @@ module.exports = {
         ]
     },
     externals : [
-        {   /*
-            We load the version used by flux-builder in window['flux-builder'] to not
-            mix with the dependencies the project will load
-            */
+        {   
             "grapesjs": "window['grapesjs']",
-            "lodash": "window['flux-builder']['_']",
-            "d3":"window['flux-builder']['d3']",
-            "rxjs": "window['flux-builder']['rxjs']",
-            "rxjs/operators": "window['flux-builder']['rxjs']['operators']",
-            "@youwol/cdn-client": "window['flux-builder']['@youwol/cdn-client']",
-            "@youwol/flux-core": "window['flux-builder']['@youwol/flux-core']",
-            "@youwol/flux-svg-plots": "window['flux-builder']['@youwol/flux-svg-plots']",
-            "@youwol/flux-view": "window['flux-builder']['@youwol/flux-view']",
-            '@youwol/fv-group':"window['flux-builder']['@youwol/fv-group']",
-            '@youwol/fv-input':"window['flux-builder']['@youwol/fv-input']",
-            '@youwol/fv-tree':"window['flux-builder']['@youwol/fv-tree']",
-            '@youwol/fv-button':"window['flux-builder']['@youwol/fv-button']",    
-            '@youwol/fv-tabs':"window['flux-builder']['@youwol/fv-tabs']",    
-            '@youwol/fv-context-menu':"window['flux-builder']['@youwol/fv-context-menu']", 
-            'codemirror':"window['flux-builder']['codemirror']", 
+            "lodash": "window['_']",
+            "d3":"window['d3']",
+            "rxjs": "window['rxjs']",
+            "rxjs/operators": "window['rxjs']['operators']",
+            "@youwol/cdn-client": "window['@youwol/cdn-client']",
+            "@youwol/flux-core": "window['@youwol/flux-core']",
+            "@youwol/flux-svg-plots": "window['@youwol/flux-svg-plots']",
+            "@youwol/flux-view": "window['@youwol/flux-view']",
+            '@youwol/fv-group':"window['@youwol/fv-group']",
+            '@youwol/fv-input':"window['@youwol/fv-input']",
+            '@youwol/fv-tree':"window['@youwol/fv-tree']",
+            '@youwol/fv-button':"window['@youwol/fv-button']",    
+            '@youwol/fv-tabs':"window['@youwol/fv-tabs']",    
+            '@youwol/fv-context-menu':"window['@youwol/fv-context-menu']", 
+            'codemirror':"window['codemirror']", 
         }
       ],
     module: {

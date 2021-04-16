@@ -39,14 +39,6 @@ let a = await cdn.fetchBundles(
     },
     window
 )
-let toRescope = ["_", 'rxjs', '@youwol/cdn-client', '@youwol/flux-core',  '@youwol/flux-svg-plots', '@youwol/flux-view', '@youwol/fv-group',
-'@youwol/fv-tree', '@youwol/fv-button', "@youwol/fv-input", '@youwol/fv-tabs', '@youwol/fv-context-menu', 'codemirror']
-
-window['flux-builder'] = {}
-
-toRescope.forEach( name => {
-    window['flux-builder'][name] = window[name]
-})
 
 await import('./on-load')
 
