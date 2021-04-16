@@ -201,7 +201,7 @@ export namespace AdaptorEditoView{
                         this.state.adaptedInput$,
                         ( input ) => {
 
-                            if (input instanceof ExecutionError)
+                            if (input instanceof ExecutionError || !input.data)
                                 return invalidParsingView(input)
 
                             let state = new InputStatusView.State({
