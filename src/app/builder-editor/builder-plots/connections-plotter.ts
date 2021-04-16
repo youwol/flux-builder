@@ -280,7 +280,6 @@ export class ConnectionsPlotter{
         .attr( "y1",drawingConnection.yOrigin)
         .attr( "x2", coors[0])
         .attr( "y2",coors[1])
-        console.log('coors:',coordinates[1], coors[1])
     }
 
     
