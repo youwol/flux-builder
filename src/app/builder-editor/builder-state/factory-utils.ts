@@ -33,10 +33,8 @@ export function serializeWorkflow(workflow: Workflow) : WorkflowSchema {
             c.adaptor ? 
             {  adaptor : {
                 adaptorId: c.adaptor.adaptorId,
-                configuration: { title: c.adaptor.configuration.title,
-                    description:c.adaptor.configuration.description,
-                    data:c.adaptor.configuration.data }
-                } 
+                mappingFunction: c.adaptor.toString()
+                }
             }: {})
         ),
         plugins:workflow.plugins.map( plugin=>({

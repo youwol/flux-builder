@@ -231,7 +231,7 @@ export let projects : {[key:string]:ProjectSchema}={
                   moduleId: "module1"
                 },
                 adaptor: {
-                  configuration: {title: "adaptor", description: "", data: {code:"return (r)=>r"}},
+                  mappingFunction: "return (r)=>r",
                   adaptorId: "fake adaptor"
                 }
             },{

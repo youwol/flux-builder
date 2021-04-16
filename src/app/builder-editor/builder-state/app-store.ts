@@ -2,7 +2,7 @@
 import {Requirements, 
     Project,Workflow,BuilderRendering,RunnerRendering,
     Component, Connection, ModuleFlux, PluginFlux,  ModuleConfiguration, 
-    DescriptionBox, LayerTree, AdaptorConfiguration, instanceOfSideEffects, 
+    DescriptionBox, LayerTree, instanceOfSideEffects, 
     GroupModules, DescriptionBoxProperties,  FluxExtensionAPIs, loadProjectDatabase$, loadProjectURI$, ProjectSchema, IEnvironment } from '@youwol/flux-core';
 
 import { AppObservables } from './app-observables.service';
@@ -559,8 +559,8 @@ export class AppStore {
             */
     }
 
-    updateAdaptor(connection : Connection, configuration: AdaptorConfiguration ){
-        let project = updateAdaptor(connection, configuration, this.project, this.allSubscriptions)
+    updateAdaptor(connection : Connection, mappingFunction: string ){
+        let project = updateAdaptor(connection, mappingFunction, this.project, this.allSubscriptions)
         this.updateProject(project)
         this.appObservables.connectionsUpdated$.next(this.project.workflow.connections)
     }

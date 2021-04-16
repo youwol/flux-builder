@@ -1,5 +1,5 @@
 
-import { Connection, Adaptor, AdaptorConfiguration, MockEnvironment } from '@youwol/flux-core'
+import { Connection, Adaptor } from '@youwol/flux-core'
 import  './dependencies'
 import { AppDebugEnvironment, AppStore } from '../../app/builder-editor/builder-state'
 
@@ -42,11 +42,10 @@ test('add 2 module + connection + adaptator', () => {
         configuration:configuration
     })
     `
-    let confAdaptor = new AdaptorConfiguration( "adaptor title","", { code : code} )
-    let adaptor = new Adaptor( "adaptorId", confAdaptor)
+    let adaptor = new Adaptor( "adaptorId", code)
     appStore.addAdaptor(adaptor,connection)
     let connectionAdapted = appStore.project.workflow.connections[0]
-    expect(connectionAdapted.adaptor.configuration).toEqual(confAdaptor)
+    expect(connectionAdapted.adaptor.toString()).toEqual(code)
     expect(appStore.allSubscriptions.size).toEqual(1)
     expect(appStore.allSubscriptions.has(connectionAdapted)).toBeTruthy()
 
@@ -102,13 +101,12 @@ test('add 2 module + connection + adaptator + update', () => {
         configuration:configuration
     })
     `
-    let confAdaptor = new AdaptorConfiguration( "adaptor title","", { code : code} )
-    let adaptor = new Adaptor( "adaptorId", confAdaptor)
+    let adaptor = new Adaptor( "adaptorId", code)
     appStore.addAdaptor(adaptor,connection)
     let connectionAdapted = appStore.project.workflow.connections[0]
     
-    expect(connectionAdapted.adaptor.configuration.title).toEqual("adaptor title")
-    expect(connectionAdapted.adaptor.configuration.data.code).toEqual(code)
+    //expect(connectionAdapted.adaptor.configuration.title).toEqual("adaptor title")
+    //expect(connectionAdapted.adaptor.configuration.data.code).toEqual(code)
 
     let newCode =`
     return ({configuration,context,data}) => ({ 
@@ -118,10 +116,9 @@ test('add 2 module + connection + adaptator + update', () => {
     })
     `
 
-    let newConf = new AdaptorConfiguration( "adaptor title2","", { code : newCode} )
-    appStore.updateAdaptor(connectionAdapted, newConf)
+    appStore.updateAdaptor(connectionAdapted, newCode)
     let connectionAdaptedNew = appStore.project.workflow.connections[0]
-    expect(connectionAdaptedNew.adaptor.configuration).toEqual(newConf)
+    expect(connectionAdaptedNew.adaptor.toString()).toEqual(newCode)
     expect(appStore.allSubscriptions.size).toEqual(1)
     expect(appStore.allSubscriptions.has(connectionAdaptedNew)).toBeTruthy()
 

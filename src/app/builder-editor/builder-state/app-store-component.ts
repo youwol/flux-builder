@@ -1,6 +1,6 @@
 
 import { ModuleView, Workflow, BuilderRendering, Project, GroupModules,
-    Connection, LayerTree, SlotRef, Adaptor, AdaptorConfiguration } from '@youwol/flux-core'
+    Connection, LayerTree, SlotRef, Adaptor } from '@youwol/flux-core'
 
 import { AppDebugEnvironment } from './app-debug.environment'
 import { uuidv4 } from './utils'
@@ -74,7 +74,9 @@ export function addRemoteComponent( component, modulesFactory, coors, project: P
         return new Connection(
             new SlotRef(c.start.slotId, moduleIdsMap[c.start.moduleId]),
             new SlotRef(c.end.slotId, moduleIdsMap[c.end.moduleId]),
-            c.adaptor ? new Adaptor(uuidv4(),new AdaptorConfiguration(c.adaptor.configuration.title,c.adaptor.configuration.description,c.adaptor.configuration.data) ): undefined)
+            c.adaptor 
+                ? new Adaptor(uuidv4(), c.adaptor.mappingFunction) 
+                : undefined)
     })
 
     let newModulesView = component.builderRendering.modulesView.map(

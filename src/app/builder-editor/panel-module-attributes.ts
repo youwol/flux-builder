@@ -1,7 +1,7 @@
 
 import { BehaviorSubject, merge } from 'rxjs';
 
-import { ModuleFlux, Connection,Schema, Property, AdaptorConfiguration, Adaptor,
+import { ModuleFlux, Connection,Schema, Property, Adaptor,
     flattenSchemaWithValue, uuidv4} from '@youwol/flux-core';
 import { toCssName } from '@youwol/flux-svg-plots';
 import {render, attr$, child$} from '@youwol/flux-view'
@@ -91,7 +91,7 @@ function connectionControls(d : Connection, appStore : AppStore, panelDiv:HTMLDi
     
     let data        = appStore.getConnectionView( d.connectionId) || new ConnectionView()
     if(d.adaptor){
-        data.adaptor = d.adaptor.configuration.data.code
+        data.adaptor = d.adaptor.toString()
     }
     let schema = 
       {
@@ -126,8 +126,7 @@ function connectionControls(d : Connection, appStore : AppStore, panelDiv:HTMLDi
 
     let validationBtt = button( {data:data},( properties : any)=> {
         if(properties.data.adaptor){
-            let adaptorConf = new AdaptorConfiguration("","",{code:properties.data.adaptor})
-            let adaptor = new Adaptor(uuidv4(),adaptorConf)
+            let adaptor = new Adaptor(uuidv4(),properties.data.adaptor)
             appStore.addAdaptor(adaptor, d)  
         }
         appStore.setConnectionView(d, properties.data) },panelDiv  )
@@ -409,8 +408,7 @@ function code(
         ) 
     }
     let onUpdateAdaptor = (content) => {
-        let adaptorConf = new AdaptorConfiguration("","",{code:content})
-        let adaptor = new Adaptor(uuidv4(),adaptorConf)
+        let adaptor = new Adaptor(uuidv4(), content)
         appStore.addAdaptor(adaptor, selection as Connection)  
     }
 

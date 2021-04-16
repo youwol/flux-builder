@@ -88,13 +88,14 @@ export function addAdaptor(connection : Connection,
 
     return projectNew
 }
-export function updateAdaptor(connection : Connection, conf : AdaptorConfiguration, project:Project,
+export function updateAdaptor(connection : Connection, mappingFunction : string, project:Project,
     allSubscriptions: Map<Connection,Subscription>) : Project {
 
     let connections = project.workflow.connections.filter(c => c!==connection)
 
-    let adaptor = connection.adaptor ? new Adaptor(connection.adaptor.adaptorId,conf):
-                  new Adaptor( uuidv4(),conf )
+    let adaptor = connection.adaptor
+        ? new Adaptor(connection.adaptor.adaptorId,mappingFunction)
+        : new Adaptor( uuidv4(), mappingFunction )
     let newConnection = new Connection(connection.start,connection.end, adaptor )
     let workflow = new Workflow(
         project.workflow.modules,

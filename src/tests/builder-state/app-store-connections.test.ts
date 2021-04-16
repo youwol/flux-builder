@@ -133,43 +133,23 @@ test('instantiate connections', () => {
     },
     { start:{ moduleId:mdle0.moduleId, slotId:mdle0.outputSlots[0].slotId},
       end:{ moduleId:mdle1.moduleId, slotId:mdle1.inputSlots[0].slotId},
-      adaptor: {adaptorId:"adaptor0",configuration:{
-        title:"adaptor0-title",
-        description:"",
-        data:{ code : "return (input) => input"}
-      } }
+      adaptor: {adaptorId:"adaptor0",mappingFunction: "return (input) => input"}
     },
     { start:{ moduleId:"wrong", slotId:mdle0.outputSlots[0].slotId},
       end:{ moduleId:mdle1.moduleId, slotId:mdle1.inputSlots[0].slotId},
-      adaptor: {adaptorId:"adaptor0",configuration:{
-        title:"adaptor0-title",
-        description:"",
-        data:{ code : "return (input) => input"}
-      } }
+      adaptor: {adaptorId:"adaptor0",mappingFunction: "return (input) => input"}
     },
     { start:{ moduleId:mdle0.moduleId, slotId:"wrong"},
       end:{ moduleId:mdle1.moduleId, slotId:mdle1.inputSlots[0].slotId},
-      adaptor: {adaptorId:"adaptor0",configuration:{
-        title:"adaptor0-title",
-        description:"",
-        data:{ code : "return (input) => input"}
-      } }
+      adaptor: {adaptorId:"adaptor0",mappingFunction: "return (input) => input"}
     },
     { start:{ moduleId:mdle0.moduleId, slotId:mdle0.outputSlots[0].slotId},
       end:{ moduleId:"wrong", slotId:mdle1.inputSlots[0].slotId},
-      adaptor: {adaptorId:"adaptor0",configuration:{
-        title:"adaptor0-title",
-        description:"",
-        data:{ code : "return (input) => input"}
-      } }
+      adaptor: {adaptorId:"adaptor0",mappingFunction: "return (input) => input"}
     },
     { start:{ moduleId:mdle0.moduleId, slotId:mdle0.outputSlots[0].slotId},
       end:{ moduleId:mdle1.moduleId, slotId:"wrong"},
-      adaptor: {adaptorId:"adaptor0",configuration:{
-        title:"adaptor0-title",
-        description:"",
-        data:{ code : "return (input) => input"}
-      } }
+      adaptor: {adaptorId:"adaptor0",mappingFunction: "return (input) => input"}
     }
   ]
   let connections = instantiateProjectConnections( appStore.allSubscriptions,connectionsData, workflow.modules)
