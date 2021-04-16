@@ -3,7 +3,7 @@ import { combineLatest, merge, ReplaySubject } from 'rxjs';
 import { filter } from 'rxjs/operators';
 import * as grapesjs from 'grapesjs'
 
-import { ModuleFlux, FluxExtensionAPIs, Environment, ModuleError, Journal, JournalWidget, ConfigurationStatus, ExpectationStatus } from '@youwol/flux-core';
+import { ModuleFlux, Environment, Journal, ConfigurationStatus, ExpectationStatus } from '@youwol/flux-core';
 import { createDrawingArea } from '@youwol/flux-svg-plots';
 import { ContextMenu } from '@youwol/fv-context-menu';
 
@@ -33,9 +33,12 @@ new ContextMenu.View({state:contextState, class:"fv-bg-background"} as any)
 connectStreams(appStore, workflowPlotter, layoutEditor, appObservables )
 
 let projectId = new URLSearchParams(window.location.search).get("id")
-
-appStore.loadProject(projectId)
-
+let uri = new URLSearchParams(window.location.search).get("uri")
+if(projectId)
+    appStore.loadProject(projectId)
+else if(uri)
+    appStore.loadProjectURI(encodeURI(uri))
+    
 
 export async function initializeRessources() : 
     Promise<{ appStore: AppStore, appObservables: AppObservables, layoutEditor: grapesjs.Editor }>{
@@ -75,18 +78,20 @@ export async function initializeRessources() :
         appStore
     })
 
-    Journal.widgets.push(
-        new JournalWidget<ConfigurationStatus<unknown>>(
-            (data) => data instanceof ConfigurationStatus,
-            (data: ConfigurationStatus<unknown>) => 
-                render(ConfigurationStatusView.journalWidget(data))
-        ),
-        new JournalWidget<ExpectationStatus<unknown>>(
-            (data) => data instanceof ExpectationStatus,
-            (data: ExpectationStatus<unknown>) => 
-                render(ExpectationView.journalWidget(data))
-        )
-    )
+    Journal.registerView({
+        name: "ConfigurationStatus",
+        isCompatible:  (data) => 
+            data instanceof ConfigurationStatus, 
+        view: (data: ConfigurationStatus<unknown>) => 
+            render(ConfigurationStatusView.journalWidget(data))
+    })
+    Journal.registerView({
+        name: "ExpectationStatus",
+        isCompatible:  (data) => 
+            data instanceof ExpectationStatus, 
+        view: (data: ExpectationStatus<unknown>) => 
+            render(ExpectationView.journalWidget(data))
+    })
     
     return { 
         appStore,

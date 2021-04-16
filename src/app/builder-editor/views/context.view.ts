@@ -266,9 +266,7 @@ export namespace ContextView{
         }
         if (node instanceof DataNodeBase){
 
-            let views = Journal.widgets
-            .filter( widget => widget.isCompatible(node.data) )
-            .map( widget => widget.view(node.data))
+            let views = Journal.getViews(node.data).map( view => view.view)
             
             if(views.length>0)
                 return {
