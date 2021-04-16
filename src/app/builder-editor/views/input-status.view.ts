@@ -1,4 +1,5 @@
-import { ConfigurationStatus, ConsistentConfiguration, ExpectationStatus, IExpectation, mergeConfiguration, ModuleFlux, UnconsistentConfiguration } from "@youwol/flux-core";
+import { ConfigurationStatus, ConsistentConfiguration, ExpectationStatus, IExpectation, mergeConfiguration, ModuleFlux, 
+    InconsistentConfiguration } from "@youwol/flux-core";
 import { VirtualDOM } from "@youwol/flux-view";
 import { Tabs } from "@youwol/fv-tabs";
 import { BehaviorSubject, Observable } from "rxjs";
@@ -145,7 +146,7 @@ export namespace InputStatusView{
     function configurationHeaderView(status: ConfigurationStatus<unknown>){
 
         let icon = {}
-        if (status instanceof UnconsistentConfiguration)
+        if (status instanceof InconsistentConfiguration)
             icon = { class:'fas fa-times fv-text-error px-1'}
         if (status instanceof ConsistentConfiguration &&  status.intrus.length>0)
             icon = { class:'fas fa-exclamation fv-text-danger px-1'}

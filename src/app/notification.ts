@@ -55,11 +55,11 @@ export function plugNotifications(
     ).subscribe(
         (log:ErrorLog<ModuleError>) => Notifier.error({ 
             message: log.error.message, 
-            title:  log.error.mdle.Factory.id, 
+            title:  log.error.module.Factory.id, 
             actions: [
                 {
                     name: 'focus', 
-                    exe: () => focusAction(log.error.mdle, appStore, workflowPlotter, "error") 
+                    exe: () => focusAction(log.error.module, appStore, workflowPlotter, "error") 
                 },
                 {
                     name: 'report',

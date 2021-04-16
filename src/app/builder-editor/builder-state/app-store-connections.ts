@@ -1,4 +1,4 @@
-import { Connection, Workflow, Project, Adaptor, AdaptorConfiguration, 
+import { Connection, Workflow, Project, Adaptor,  
      ModuleFlux, BuilderRendering,} from '@youwol/flux-core';
      
 import { AppDebugEnvironment, LogLevel } from './app-debug.environment';
@@ -19,7 +19,7 @@ export function subscribeConnections(  allSubscriptions : Map<Connection, Subscr
     delta.createdElements.forEach( (c:Connection) => {
         let slotOut      = flatOutputSlots.find(slot => slot.slotId==c.start.slotId && slot.moduleId == c.start.moduleId )
         let slotIn       = flatInputSlots.find(slot => slot.slotId==c.end.slotId && slot.moduleId == c.end.moduleId )
-        let subscription =   slotOut.observable$.subscribe(d => slotIn.subscribeFct({connection:c,data:d}) )
+        let subscription =   slotOut.observable$.subscribe(d => slotIn.subscribeFct({connection:c,message:d}) )
         allSubscriptions.set(c,subscription )
     })
 }

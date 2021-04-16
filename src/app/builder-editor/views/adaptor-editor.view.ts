@@ -96,7 +96,7 @@ export namespace AdaptorEditoView{
                 map( ([content, data]) => { 
                     try{
                         let result = new Function(content)()(data, this.mdleEnd.helpers)
-                        result.configuration = _.merge({}, this.mdleEnd.getConfiguration(), result.configuration)
+                        result.configuration = _.merge({}, this.mdleEnd.getPersistentData(), result.configuration)
                         return result
                     }
                     catch(e){

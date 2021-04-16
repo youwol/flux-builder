@@ -131,7 +131,8 @@ export namespace SimplePlugin {
         icon:           `<path d=""/>`,
         render:         (plugin)=> {
             let input = plugin.inputSlots[0]
-            return `
+            let div = document.createElement('div') as any
+            div.innerHTML = `
             <rect height="40" width="150" class="module plugin content" x=-75 y=0 filter="url(#shadow)" ></rect>
             <line id="input-line_${input.slotId+"_"+ plugin.moduleId}" 
                 class="plug input 2b995ff1-ec89-4597-89a0-c973f1648ee0" 
@@ -143,6 +144,7 @@ export namespace SimplePlugin {
                 cx="90" cy="20"> </circle>
             <text class="module-title" x="0" y="25" > ${plugin.configuration.title}</text>
             `
+            return div
         } 
     })
     @RenderView({
