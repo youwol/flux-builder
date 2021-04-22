@@ -22,11 +22,11 @@ linkBA.id = "bootstrap-css"; linkYW.id = "youwol-css"; linfFA.id = "fontawesome-
 
 window['codemirror'] = {}  // code mirror will be fetched in due time (when opening the editor)
 
-let a = await cdn.fetchBundles(
+await cdn.fetchBundles(
     {
         'lodash': '4.17.15',
         "grapes": '0.16.2',
-        "@youwol/flux-core": '0.0.7',
+        "@youwol/flux-core": '0.0.8',
         "@youwol/flux-svg-plots": '0.0.0',
         '@youwol/flux-view': '0.0.6',
         "@youwol/fv-group": "0.0.3",
