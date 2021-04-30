@@ -1,4 +1,5 @@
 import {ImmutableTree} from '@youwol/fv-tree'
+import { exception } from 'node:console'
 import { BehaviorSubject, Observable, of } from 'rxjs'
 import { map } from 'rxjs/operators'
 
@@ -116,10 +117,18 @@ export namespace DataTreeView{
 
     class ObjectNode extends DataNode{
 
-        getChildrenNodes(object){
-
-            let attributes =  Object.entries(object).map( ([k,v]) => nodeFactory(k,v, this.nestedIndex+1))
-            let functions = Object.entries(object.__proto__).map( ([k,v]) => new FunctionNode({name:k,data:v, nestedIndex: this.nestedIndex+1}))
+        getChildrenNodes(object:Object){
+            
+            let attributes = []
+            for (var key in object) {
+                attributes.push(nodeFactory(key, object[key], this.nestedIndex+1) )
+            }
+            let functions = []
+            try{
+                functions = Object.entries(object['__proto__']).map( ([k,v]) => new FunctionNode({name:k,data:v, nestedIndex: this.nestedIndex+1}))
+            }
+            catch(error){
+            }
             return [...attributes, ...functions]
         }
 
