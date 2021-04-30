@@ -121,13 +121,21 @@ export namespace ExpectationView{
             this.status = status
 
             let treeNode = parseReport(this.status)
-
+            let requiredRootNode = treeNode.children && treeNode.children.length > 0 
+                ? treeNode.children[0] 
+                : new ExpectationNode({name:'No required conditions defined', children:undefined, isRealized:true})
+                
             this.treeStateRequired = new ImmutableTree.State({
-                rootNode: treeNode.children[0],
+                rootNode: requiredRootNode,
                 expandedNodes:expandedNodes$
             })
+
+            let optionalRootNode = treeNode.children && treeNode.children.length > 1 
+                ? treeNode.children[1] 
+                : new ExpectationNode({name:'No optional conditions defined', children:undefined, isRealized:true})
+
             this.treeStateOptionals = new ImmutableTree.State({
-                rootNode: treeNode.children[1],
+                rootNode: optionalRootNode,
                 expandedNodes:expandedNodes$
             })
         }
