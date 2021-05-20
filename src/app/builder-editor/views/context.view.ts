@@ -270,8 +270,8 @@ export namespace ContextView{
             
             if(views.length>0)
                 return {
-                    class: 'd-flex justify-content-around w-100',
-                    style:{'white-space': 'nowrap'},
+                    class: 'd-flex justify-content-around flex-grow-1',
+                    style:{'white-space': 'nowrap', "min-width":'0px'},
                     children: 
                         views
                 }
