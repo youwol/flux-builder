@@ -1,3 +1,4 @@
+import { LoadingGraph } from "@youwol/cdn-client"
 import { Factory, uuidv4 } from "@youwol/flux-core"
 import { attr$, child$ } from "@youwol/flux-view"
 import { ImmutableTree } from "@youwol/fv-tree"
@@ -339,8 +340,8 @@ export namespace AssetsExplorerView{
         
         public readonly factory : any
         public readonly library: {name: string, namespace: string, version: string}
-
-        constructor({ factory, library }) {
+        public readonly fluxPacks: Array<{name}>
+        constructor({ factory, library, fluxPacks}) {
             super({ 
                 id: factory.uid, 
                 name: factory.displayName, 
@@ -349,6 +350,7 @@ export namespace AssetsExplorerView{
             })
             this.factory = factory
             this.library = library
+            this.fluxPacks = fluxPacks
         }
     }
 
@@ -436,12 +438,15 @@ export namespace AssetsExplorerView{
     function getModules$(assetId: string): Observable<Array<any>> {
         
         return AssetsBrowserClient.getModules$(assetId).pipe(
-            map( ( {factories, library, loadingGraph}:{factories: Array<Factory>, library: any, loadingGraph: any})=> {
-                
+            map( ( {factories, library, loadingGraph}:{
+                factories: Array<Factory>, 
+                library: any, 
+                loadingGraph: LoadingGraph})=> {
+                    
                 return factories.map( v => new ModuleItemNode({
                     factory:v, 
-                    library: {name:library.name, version: library.versions[0], namespace:library.namespace}
-                    
+                    library: {name:library.name, version: library.versions[0], namespace:library.namespace},
+                    fluxPacks: loadingGraph.lock.flat().filter( library => library.type == 'flux-pack')
                     })
                 )
             })

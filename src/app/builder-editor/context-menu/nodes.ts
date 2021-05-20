@@ -43,7 +43,8 @@ export class NewModulesNode extends ContextTreeNode{
             state.appState,
             (nodes: Array<AssetsExplorerView.ModuleItemNode>) => {
                 let libraries = nodes.map( node => node.library )
-                state.appState.addLibraries$(libraries).subscribe( () => {
+                let fluxPacks = nodes.flatMap( node => node.fluxPacks.map( fluxPack => fluxPack))
+                state.appState.addLibraries$(libraries, fluxPacks).subscribe( () => {
                     nodes.forEach( node => state.appState.addModule(node.factory, worldCoordinates ) ) 
                 })
             }
@@ -65,7 +66,8 @@ export class AddPluginsNode extends ContextTreeNode{
             (nodes: Array<AssetsExplorerView.ModuleItemNode>) => {
                 let parentModule = state.appState.getModuleSelected()
                 let libraries = nodes.map( node => node.library )
-                state.appState.addLibraries$(libraries).subscribe( () => {
+                let fluxPacks = nodes.flatMap( node => node.fluxPacks.map( fluxPack => fluxPack))
+                state.appState.addLibraries$(libraries, fluxPacks).subscribe( () => {
                     nodes.forEach( node =>  state.appState.addPlugin(node.factory, parentModule ))
                 })
             })

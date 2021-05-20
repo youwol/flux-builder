@@ -178,9 +178,10 @@ export class AppStore {
         FluxExtensionAPIs.registerAPI('BuilderState', BuilderStateAPI)
     }
 
-    addLibraries$( libraries: Array<{name: string, version: string, namespace: string}>){
+    addLibraries$( libraries: Array<{name: string, version: string, namespace: string}>,
+                   fluxPacks: Array<{name:string}>){
 
-        return addLibraries(libraries, this.project, this.environment ).pipe(
+        return addLibraries(libraries, fluxPacks, this.project, this.environment ).pipe(
             tap( (newProject) => {
                 this.updateProject(newProject)
             })

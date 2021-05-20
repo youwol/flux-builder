@@ -22,6 +22,7 @@ function updateRequirements(loadingGraph: LoadingGraphSchema, project: Project):
 
 export function addLibraries(
     libraries: Array<{ name: string, version: string, namespace: string }>,
+    fluxPacks: Array<{name:string}>,
     project: Project,
     environment: IEnvironment
     ): Observable<Project> {
@@ -33,13 +34,19 @@ export function addLibraries(
     if (versionChecks.length > 0)
         console.error("You can not dynamically add libraries that are already used with different version")
 
-    let newLibraries =
-        libraries.filter(lib => actualLibraries[lib.name] == undefined)
-            .reduce((acc, e) => ({ ...acc, ...{ [e.name]: e.version } }), {})
+    let newLibraries = libraries
+    .filter(lib => actualLibraries[lib.name] == undefined)
+    .reduce((acc, e) => ({ ...acc, ...{ [e.name]: e.version } }), {})
 
-    Object
-    .keys(newLibraries)
-    .filter( name =>  window[name] && ( window[name].install || window[name].pack.install) )
+    let actualPacks = project.requirements.fluxPacks
+    
+    let newPacks = Array.from(new Set(fluxPacks.map(p =>p.name)))
+    .filter(pack => !actualPacks.includes(pack))
+
+    newPacks.filter( name =>  {
+        console.log(name, window[name])
+        return window[name] && ( window[name].install || window[name].pack.install) 
+    })
     .forEach((name) => {
         let install = (window[name].install || window[name].pack.install)(environment)
         if(install instanceof Observable)

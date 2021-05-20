@@ -122,7 +122,7 @@ export class AssetsBrowserClient {
             mergeMap( (targetLibrary: any) => {
 
                 if(window[targetLibrary.name])
-                    return of(targetLibrary)
+                    return of({targetLibrary, loadingGraph:{lock:[], fluxPacks:[], libraries:{}}})
 
                 let libraries = {
                     ...AssetsBrowserClient.appStore.project.requirements.libraries,
@@ -131,13 +131,16 @@ export class AssetsBrowserClient {
                 
                 let fetchPromise = fetchBundles(libraries, window)
                 
-                return from(fetchPromise).pipe( map( () => targetLibrary ) )
+                return from(fetchPromise).pipe( map( (loadingGraph) => {
+                    return {targetLibrary, loadingGraph}
+                }) )
             }),
-            map( (targetLibrary: any) =>{
+            map( ({targetLibrary, loadingGraph}) =>{
                 let loaded = window[targetLibrary.name]
                 return {
                     factories: Object.values(loaded).filter( (v:any) => v.Module && v.BuilderView),
-                    library: targetLibrary
+                    library: targetLibrary,
+                    loadingGraph
                 }
             }),
         )
