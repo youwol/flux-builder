@@ -27,7 +27,7 @@ await cdn.fetchBundles(
         'lodash': '4.17.15',
         "grapes": '0.16.2',
         "@youwol/flux-core": 'latest',
-        "@youwol/flux-svg-plots": '0.0.0',
+        "@youwol/flux-svg-plots": 'latest',
         '@youwol/flux-view': 'latest',
         "@youwol/fv-group": "latest",
         "@youwol/fv-button": "latest",
