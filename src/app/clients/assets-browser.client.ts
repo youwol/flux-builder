@@ -138,7 +138,7 @@ export class AssetsBrowserClient {
             map( ({targetLibrary, loadingGraph}) =>{
                 let loaded = window[targetLibrary.name]
                 return {
-                    factories: Object.values(loaded).filter( (v:any) => v.Module && v.BuilderView),
+                    factories: Object.values(loaded).filter( (v:any) => v && v.Module && v.BuilderView),
                     library: targetLibrary,
                     loadingGraph
                 }
