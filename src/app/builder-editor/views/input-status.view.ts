@@ -1,5 +1,6 @@
 import { ConfigurationStatus, ConsistentConfiguration, ExpectationStatus, IExpectation, mergeConfiguration, ModuleFlux, 
-    InconsistentConfiguration } from "@youwol/flux-core";
+    InconsistentConfiguration, 
+    Context} from "@youwol/flux-core";
 import { VirtualDOM } from "@youwol/flux-view";
 import { Tabs } from "@youwol/fv-tabs";
 import { BehaviorSubject, Observable } from "rxjs";
@@ -44,7 +45,8 @@ export namespace InputStatusView{
             this.tabState = new Tabs.State([new DataTab(), new ConfigTab()],selectedTabId$)
 
             this.configStatus = mergeConfiguration( mdle.configuration.data, adaptedInput.configuration)
-            this.dataStatus = contract.resolve(adaptedInput.data)
+            let context = new Context("",{})
+            this.dataStatus = contract.resolve(adaptedInput.data, context)
         }
     }
 
