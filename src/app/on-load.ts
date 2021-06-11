@@ -19,6 +19,7 @@ import { plugNotifications } from './notification';
 import { AssetsBrowserClient } from './clients/assets-browser.client';
 import { AssetsExplorerView } from './builder-editor/views/assets-explorer.view';
 import { render } from '@youwol/flux-view';
+import { loadingLibView, loadingProjectView } from './loading.views';
 
 
 let {appStore, appObservables, layoutEditor} = await initializeRessources()
@@ -34,11 +35,22 @@ connectStreams(appStore, workflowPlotter, layoutEditor, appObservables )
 
 let projectId = new URLSearchParams(window.location.search).get("id")
 let uri = new URLSearchParams(window.location.search).get("uri")
-if(projectId)
-    appStore.loadProject(projectId)
-else if(uri)
+
+if(projectId){
+    let loadingDiv = document.getElementById("content-loading-screen") as HTMLDivElement
+    let divProjectLoading = loadingProjectView(loadingDiv)
+    appStore.environment.getProject(projectId).subscribe( (project) => {
+        divProjectLoading.innerText = `> project loaded` 
+        divProjectLoading.style.setProperty("color", "green") 
+        appStore.loadProject(projectId, project, (event) => {
+            loadingLibView(event, loadingDiv)
+        })
+    })
+}
+else if(uri){
     appStore.loadProjectURI(encodeURI(uri))
-    
+}
+
 
 export async function initializeRessources() : 
     Promise<{ appStore: AppStore, appObservables: AppObservables, layoutEditor: grapesjs.Editor }>{

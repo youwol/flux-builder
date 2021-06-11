@@ -3,7 +3,7 @@ import {Requirements,
     Project,Workflow,BuilderRendering,RunnerRendering,
     Component, Connection, ModuleFlux, PluginFlux,  ModuleConfiguration, 
     DescriptionBox, LayerTree, instanceOfSideEffects, 
-    GroupModules, DescriptionBoxProperties,  FluxExtensionAPIs, loadProjectDatabase$, loadProjectURI$, ProjectSchema, IEnvironment } from '@youwol/flux-core';
+    GroupModules, DescriptionBoxProperties,  FluxExtensionAPIs, loadProjectDatabase$, loadProjectURI$, ProjectSchema, IEnvironment, loadProjectDependencies$, createProject } from '@youwol/flux-core';
 
 import { AppObservables } from './app-observables.service';
 import { AppDebugEnvironment,LogLevel } from './app-debug.environment';
@@ -27,6 +27,7 @@ import { uuidv4, packageAssetComponent, plugBuilderViewsSignals } from './utils'
 import { BuilderStateAPI } from './extension';
 import { addLibraries, cleanUnusedLibraries } from './app-store-dependencies';
 import { Observable } from 'rxjs';
+import { CdnEvent } from '@youwol/cdn-client';
 
 
 export class UiState{
@@ -128,7 +129,19 @@ export class AppStore {
         this.appObservables.uiStateUpdated$.next(this.uiState)
     }
 
-    loadProject(projectId: string){
+    loadProject(projectId: string, project: ProjectSchema, onEvent? : (CdnEvent) => void){
+        
+        this.projectId = projectId
+        let project$ = loadProjectDependencies$(project, this.environment, onEvent).pipe(
+            map( ({ project, packages }) => {
+                return createProject(project, packages,  () =>this.project.workflow,this.allSubscriptions, this.environment)
+            })
+        )
+        
+        this.initializeProject(project$)
+    }
+
+    loadProjectId(projectId: string){
         
         this.projectId = projectId
 

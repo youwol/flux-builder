@@ -1,15 +1,19 @@
 
 // Following import is to include style.css in the dist directory (using MiniCssExtractPlugin)
+require('./style.css');
+
+import { CdnEvent, LoadingGraphError, SourceLoadedEvent, SourceLoadingEvent, StartEvent, UnauthorizedEvent } from "@youwol/cdn-client";
+import { loadingErrorView, loadingLibView } from "./loading.views";
+
 // (index.html is handled by HtmlWebpackPlugin)
-
 export{}
-
-let css = require('./style.css');
-
 
 let cdn = window['@youwol/cdn-client']
 
-let [linkBA, linfFA, linkYW, _] = await cdn.fetchStyleSheets([
+
+let loadingDiv = document.getElementById("content-loading-screen") as HTMLDivElement
+
+let stylesFutures = cdn.fetchStyleSheets([
     "bootstrap#4.4.1~bootstrap.min.css",
     "fontawesome#5.12.1~css/all.min.css",
     "@youwol/fv-widgets#0.0.3~dist/assets/styles/style.youwol.css",
@@ -17,12 +21,8 @@ let [linkBA, linfFA, linkYW, _] = await cdn.fetchStyleSheets([
     "codemirror#5.52.0~codemirror.min.css",
     "codemirror#5.52.0~theme/blackboard.min.css",
 ])
-linkBA.id = "bootstrap-css"; linkYW.id = "youwol-css"; linfFA.id = "fontawesome-css"
 
-
-window['codemirror'] = {}  // code mirror will be fetched in due time (when opening the editor)
-
-await cdn.fetchBundles(
+let bundlesFutures = cdn.fetchBundles(
     {
         'lodash': '4.17.15',
         "grapes": '0.16.2',
@@ -37,8 +37,22 @@ await cdn.fetchBundles(
         "@youwol/fv-context-menu": "latest",
         "rxjs": '6.5.5',
     },
-    window
+    window,
+    (event) => {
+        loadingLibView(event, loadingDiv)
+    }
 )
+.catch( (error) => {
+    loadingErrorView(error, loadingDiv)
+})
+
+let [styles] = await Promise.all([stylesFutures, bundlesFutures])
+
+let [linkBA, linfFA, linkYW, _] = styles
+linkBA.id = "bootstrap-css"; linkYW.id = "youwol-css"; linfFA.id = "fontawesome-css"
+
+window['codemirror'] = {}  // code mirror will be fetched in due time (when opening the editor)
 
 await import('./on-load')
+
 
