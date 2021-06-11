@@ -123,7 +123,7 @@ test('load simple project and test connections plot', (done) => {
       done()
     })
 
-    appStore.loadProject("simpleProjectConnection")
+    appStore.loadProjectId("simpleProjectConnection")
   })
 
 

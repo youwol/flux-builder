@@ -67,5 +67,5 @@ test('group modules module creation', done => {
         done()
     })  
 
-    appStore.loadProject("simpleProjectConnection")
+    appStore.loadProjectId("simpleProjectConnection")
   })

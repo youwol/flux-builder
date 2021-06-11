@@ -78,6 +78,6 @@ test('load simple project + test its unique description box rendering', (done) =
 
     })
 
-    appStore.loadProject("simpleProjectConnection")
+    appStore.loadProjectId("simpleProjectConnection")
 
 })

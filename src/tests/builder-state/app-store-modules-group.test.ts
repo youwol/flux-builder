@@ -28,6 +28,6 @@ test('test from project loading', (done) => {
       done()
     })
 
-  appStore.loadProject("simpleProjectConnection")
+  appStore.loadProjectId("simpleProjectConnection")
 })
 

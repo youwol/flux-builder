@@ -74,5 +74,5 @@ test('load simple project', (done) => {
 
     })
 
-    appStore.loadProject("simpleProject")
+    appStore.loadProjectId("simpleProject")
 })

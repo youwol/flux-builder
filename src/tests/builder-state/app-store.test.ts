@@ -12,7 +12,7 @@ test('load empty project', (done) => {
 
   let appObservables = new AppObservables()
   let appStore : AppStore =new AppStore(environment, appObservables, new AppBuildViewObservables()) 
-  appStore.loadProject("emptyProject")
+  appStore.loadProjectId("emptyProject")
 
   appObservables.ready$.pipe(
     filter( d=> d)
@@ -35,7 +35,7 @@ test('load simple project', done => {
 
   let appObservables = new AppObservables()
   let appStore : AppStore =new AppStore(environment, appObservables, new AppBuildViewObservables()) 
-  appStore.loadProject("simpleProject")
+  appStore.loadProjectId("simpleProject")
   let projectData = projects.simpleProject
 
   appObservables.ready$.pipe(
@@ -105,7 +105,7 @@ test('save project 0', done => {
       done()
     })
 
-    appStore.loadProject("simpleProject")
+    appStore.loadProjectId("simpleProject")
   })
   
   
@@ -126,7 +126,7 @@ test('save project 1', done => {
     done()
   })
 
-  appStore.loadProject("simpleProjectConnection")
+  appStore.loadProjectId("simpleProjectConnection")
 })
 
 test('selection', (done) => {
@@ -193,7 +193,7 @@ test('selection', (done) => {
     done()
   })
 
-  appStore.loadProject("simpleProject")
+  appStore.loadProjectId("simpleProject")
 })
 
 
@@ -202,7 +202,7 @@ test('deletion', (done) => {
   let appObservables = new AppObservables()
   
   let appStore : AppStore =new AppStore(environment, appObservables, AppBuildViewObservables.getInstance()) 
-  appStore.loadProject("simpleProject")
+  appStore.loadProjectId("simpleProject")
   appObservables.ready$.pipe(
     filter( d=> d)
   ).subscribe( (d)=>{

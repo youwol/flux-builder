@@ -133,7 +133,7 @@ test('load simple project', (done) => {
         done()
       })
 
-    appStore.loadProject("simpleProject")
+    appStore.loadProjectId("simpleProject")
   })
 
 
