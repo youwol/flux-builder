@@ -47,75 +47,75 @@ export namespace DataTreeView{
         classes: string
 
         constructor(
-            {name, children, classes, nestedIndex} :
-            {name: string, children?: Observable<Array<ImmutableTree.Node>> , classes:string, nestedIndex:number}){
-            super( {id:`${name}_${nestedIndex}`, children}) // `${Math.floor(Math.random()*1e6)}`
+            {id, name, children, classes, nestedIndex} :
+            {id?: string, name: string, children?: Observable<Array<ImmutableTree.Node>> , classes:string, nestedIndex:number}){
+            super( {id: id ? id : `${name}_${nestedIndex}`, children}) // `${Math.floor(Math.random()*1e6)}`
             this.name = name
             this.classes = classes
             this.nestedIndex = nestedIndex
         }
     }
 
-    class UndefinedNode extends DataNode{
+    export class UndefinedNode extends DataNode{
 
-        constructor({name, nestedIndex} : {name: string, nestedIndex:number}){
-            super( {name, classes:"fv-text-disabled", nestedIndex} )
+        constructor({name, nestedIndex, id} : {name: string, nestedIndex:number, id?: string}){
+            super( {id, name, classes:"fv-text-disabled", nestedIndex} )
         }
     }
 
-    class UnknownNode extends DataNode{
+    export class UnknownNode extends DataNode{
 
-        constructor({name, nestedIndex} : {name: string, nestedIndex:number}){
-            super( {name, classes:"", nestedIndex} )
+        constructor({name, nestedIndex, id} : {name: string, nestedIndex:number, id?: string}){
+            super( {id, name, classes:"", nestedIndex} )
         }
     }
 
-    class ValueNode<T> extends DataNode{ 
+    export class ValueNode<T> extends DataNode{ 
 
         data: T
         classes: string
 
-        constructor({name, data, classes, nestedIndex} : {name: string, data: T, classes:string, nestedIndex:number}){
-            super( {name, classes, nestedIndex} )
+        constructor({name, data, classes, nestedIndex, id} : {name: string, data: T, classes:string, nestedIndex:number, id?: string}){
+            super( {id, name, classes, nestedIndex} )
             this.data = data
         }
     }
 
-    class NumberNode extends ValueNode<number>{
-        constructor({name, data, nestedIndex} : {name: string, data: number, nestedIndex:number}){
-            super( {name, data, classes:"cm-number", nestedIndex} )
+    export class NumberNode extends ValueNode<number>{
+        constructor({name, data, nestedIndex, id} : {name: string, data: number, nestedIndex:number, id?: string}){
+            super( {id, name, data, classes:"cm-number", nestedIndex} )
         }
     }
 
-    class StringNode  extends ValueNode<string>{
-        constructor({name, data, nestedIndex} : {name: string, data: string, nestedIndex:number}){
-            super( {name, data, classes:"cm-string", nestedIndex} )
+    export class StringNode  extends ValueNode<string>{
+        constructor({name, data, nestedIndex, id} : {name: string, data: string, nestedIndex:number, id?: string}){
+            super( {id, name, data, classes:"cm-string", nestedIndex} )
         }
     }
 
-    class BoolNode extends ValueNode<boolean>{
+    export class BoolNode extends ValueNode<boolean>{
 
-        constructor({name, data, nestedIndex} : {name: string, data: boolean, nestedIndex: number}){
-            super( {name, data, classes:"cm-atom", nestedIndex} )
+        constructor({name, data, nestedIndex, id} : {name: string, data: boolean, nestedIndex: number, id?: string}){
+            super( {id, name, data, classes:"cm-atom", nestedIndex} )
         }
     }
 
-    class ArrayBufferNode  extends ValueNode<ArrayBuffer>{
-        constructor({name, data, nestedIndex} : {name: string, data: ArrayBuffer, nestedIndex:number}){
-            super( {name, data, classes:"cm-string", nestedIndex} )
+    export class ArrayBufferNode  extends ValueNode<ArrayBuffer>{
+        constructor({name, data, nestedIndex, id} : {name: string, data: ArrayBuffer, nestedIndex:number, id?: string}){
+            super( {id, name, data, classes:"cm-string", nestedIndex} )
         }
     }
 
-    class FunctionNode extends DataNode{
+    export class FunctionNode extends DataNode{
 
         data: any
-        constructor({name, data, nestedIndex} : {name: string, data: any, nestedIndex}){
-            super( {name, classes:"cm-def", nestedIndex} )
+        constructor({name, data, nestedIndex, id} : {name: string, data: any, nestedIndex, id?: string}){
+            super( {id, name, classes:"cm-def", nestedIndex} )
             this.data = data
         }
     }
 
-    class ObjectNode extends DataNode{
+    export class ObjectNode extends DataNode{
 
         getChildrenNodes(object:Object){
             
@@ -133,8 +133,9 @@ export namespace DataTreeView{
         }
 
         data: Object
-        constructor({name, data, nestedIndex} : {name: string, data: Object, nestedIndex:number}){
+        constructor({name, data, nestedIndex, id} : {name: string, data: Object, nestedIndex:number, id?: string}){
             super( { 
+                id,
                 name, 
                 children: of(data).pipe( map( (data)=> this.getChildrenNodes(data) )),
                 classes: "",
@@ -144,11 +145,12 @@ export namespace DataTreeView{
         }
     }
 
-    class ArrayNode extends DataNode{
+    export class ArrayNode extends DataNode{
 
         data: Array<any>
-        constructor({name, data, nestedIndex} : {name: string, data: Array<any>, nestedIndex:number}){
+        constructor({name, data, nestedIndex, id} : {name: string, data: Array<any>, nestedIndex:number, id?: string}){
             super( {
+                id, 
                 name, 
                 children: of(data).pipe( map( (data)=> Object.entries(data).map( ([k,v]) => nodeFactory(`${k}`,v, nestedIndex+1)))),
                 classes:"",
@@ -216,7 +218,7 @@ export namespace DataTreeView{
     }
 
 
-    function dataNodeHeaderView(state: State, node:DataNode ){
+    export function dataNodeHeaderView(state: State, node:DataNode ){
 
         if(node instanceof UnknownNode)
             return {
@@ -259,7 +261,7 @@ export namespace DataTreeView{
                         "white-space":"nowrap",
                         overflow:"hidden",
                         "text-overflow":"ellipsis",
-                        "max-width": `${state.stringLengthLimit * 10}px`
+                        //"max-width": `${state.stringLengthLimit * 10}px`
                     }
                 }
             ]
