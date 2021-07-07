@@ -3,7 +3,7 @@
 require('./style.css');
 
 import { CdnEvent, LoadingGraphError, SourceLoadedEvent, SourceLoadingEvent, StartEvent, UnauthorizedEvent } from "@youwol/cdn-client";
-import { loadingErrorView, loadingLibView } from "./loading.views";
+import { includeYouWolLogoView, loadingErrorView, loadingLibView } from "./loading.views";
 
 // (index.html is handled by HtmlWebpackPlugin)
 export{}
@@ -12,6 +12,7 @@ let cdn = window['@youwol/cdn-client']
 
 
 let loadingDiv = document.getElementById("content-loading-screen") as HTMLDivElement
+includeYouWolLogoView()
 
 let stylesFutures = cdn.fetchStyleSheets([
     "bootstrap#4.4.1~bootstrap.min.css",
