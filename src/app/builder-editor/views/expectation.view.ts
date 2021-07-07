@@ -1,4 +1,4 @@
-import { AllOf, AnyOf, Contract, ExpectationStatus, Of, OptionalsOf } from "@youwol/flux-core";
+import { AllOf, AnyOf, Contract, ExpectationStatus, Of, OptionalsOf, uuidv4 } from "@youwol/flux-core";
 import { VirtualDOM } from "@youwol/flux-view";
 import { ImmutableTree } from "@youwol/fv-tree";
 import { BehaviorSubject } from "rxjs";
@@ -12,32 +12,34 @@ export namespace ExpectationView{
 
         public readonly name: string
         public readonly isRealized: boolean
+        public readonly evaluatedFrom: unknown
 
-        constructor({name,children, isRealized}){
-            super({id: name,children})
+        constructor({name,children, isRealized, evaluatedFrom}){
+            super({id: uuidv4(),children})
             this.name = name
             this.isRealized = isRealized
+            this.evaluatedFrom = evaluatedFrom
         }
     }
 
 
     export class AnyOfNode extends ExpectationNode{
-        constructor({name,children, isRealized}){
-            super({name, children, isRealized})
+        constructor({name,children, isRealized, evaluatedFrom}){
+            super({name, children, isRealized, evaluatedFrom})
         }
     }
 
 
     export class AllOfNode extends ExpectationNode{
-        constructor({name,children, isRealized}){
-            super({name, children, isRealized})
+        constructor({name,children, isRealized, evaluatedFrom}){
+            super({name, children, isRealized, evaluatedFrom})
         }
     }
 
 
     export class OfNode extends ExpectationNode{
-        constructor({name,children, isRealized}){
-            super({name, children, isRealized})
+        constructor({name,children, isRealized, evaluatedFrom}){
+            super({name, children, isRealized, evaluatedFrom})
         }
     }
 
@@ -49,31 +51,39 @@ export namespace ExpectationView{
             let nodeChildren =  status.children && status.children.length > 0 
                 ? status.children.map( node => parseNode(node))
                 : undefined
-
+            let dataNode = new DataTreeView.ObjectNode({
+                id: uuidv4(),
+                name:'evaluated-with', 
+                data:status.fromValue, 
+                nestedIndex:0
+            })
+            if( nodeChildren && status.succeeded != undefined && !(status.expectation instanceof Contract) )
+                nodeChildren = [dataNode, ...nodeChildren ]
             if(status.expectation instanceof Contract)
                 return new ExpectationNode({name: status.expectation.description, children: nodeChildren, 
-                    isRealized: status.succeeded})
+                    isRealized: status.succeeded, evaluatedFrom: status.fromValue})
 
             if(status.expectation instanceof AnyOf)
                 return new AnyOfNode({name:  status.expectation.description, children: nodeChildren, 
-                    isRealized: status.succeeded})
+                    isRealized: status.succeeded, evaluatedFrom: status.fromValue})
 
             if(status.expectation instanceof AllOf)
                 return new AllOfNode({name: status.expectation.description, children: nodeChildren,
-                    isRealized: status.succeeded})
+                    isRealized: status.succeeded, evaluatedFrom: status.fromValue})
 
             if(status.expectation instanceof Of )
                 return new OfNode({name:  status.expectation.description, children: nodeChildren, 
-                    isRealized: status.succeeded})
+                    isRealized: status.succeeded, evaluatedFrom: status.fromValue})
             
             if(status.expectation instanceof OptionalsOf )
                 return new AnyOfNode({name:  status.expectation.description, children: nodeChildren, 
-                    isRealized: status.succeeded})
-
+                    isRealized: status.succeeded, evaluatedFrom: status.fromValue})
+                    
             return new ExpectationNode({
                 name: status.expectation.description, 
                 children: nodeChildren, 
-                isRealized: status.succeeded ? status.succeeded: undefined})
+                isRealized: status.succeeded != undefined ? status.succeeded: undefined,
+                evaluatedFrom: status.fromValue})
         }
 
         return parseNode(rootStatus)
@@ -123,7 +133,7 @@ export namespace ExpectationView{
             let treeNode = parseReport(this.status)
             let requiredRootNode = treeNode.children && treeNode.children.length > 0 
                 ? treeNode.children[0] 
-                : new ExpectationNode({name:'No required conditions defined', children:undefined, isRealized:true})
+                : new ExpectationNode({name:'No required conditions defined', children:undefined, isRealized:true, evaluatedFrom:undefined})
                 
             this.treeStateRequired = new ImmutableTree.State({
                 rootNode: requiredRootNode,
@@ -132,7 +142,7 @@ export namespace ExpectationView{
 
             let optionalRootNode = treeNode.children && treeNode.children.length > 1 
                 ? treeNode.children[1] 
-                : new ExpectationNode({name:'No optional conditions defined', children:undefined, isRealized:true})
+                : new ExpectationNode({name:'No optional conditions defined', children:undefined, isRealized:true, evaluatedFrom:undefined})
 
             this.treeStateOptionals = new ImmutableTree.State({
                 rootNode: optionalRootNode,
@@ -235,14 +245,18 @@ export namespace ExpectationView{
 
     function headerView(_: ImmutableTree.State<ExpectationNode>, node: ExpectationNode) {
 
+        if( node instanceof DataTreeView.DataNode){
+            return DataTreeView.dataNodeHeaderView( undefined, node)
+        }
+
         let classes = ""
         if(node.isRealized)
             classes = "fv-text-success"
-        if(node.isRealized==false)
-            classes = "fv-text-error"
+        //if(node.isRealized==false)
+        //    classes = "fv-text-error"
         if(node.isRealized==undefined)
             classes = "fv-text-disabled"
-
+            
         let icon = ""
         if(node.isRealized)
             icon = "fas fa-check fv-text-success px-1"
@@ -253,8 +267,8 @@ export namespace ExpectationView{
             return {
                 class: 'd-flex align-items-center',
                 children:[
-                    { innerText: node.name, class:'fv-text-primary'},
                     { class :classes + " "+icon},
+                    { innerText: node.name, class:'fv-text-primary px-2'},
                     { tag:'i', class:'fv-text-primary', innerText: "All of the following:"}]
             }
         }
@@ -263,8 +277,8 @@ export namespace ExpectationView{
             return {
                 class: 'd-flex align-items-center',
                 children:[
-                    { innerText: node.name, class:'fv-text-primary'},
                     { class :classes + " "+icon},
+                    { innerText: node.name, class:'fv-text-primary px-2'},
                     { tag:'i', class:'fv-text-primary', innerText: "Any of the following:"}]
             }
         }
@@ -273,15 +287,18 @@ export namespace ExpectationView{
             return {
                 class:'d-flex flex-align-items-center ',
                 children:[
-                    { innerText: node.name, class:classes },
-                    { class: icon}
+                    { class: icon},
+                    { innerText: node.name, class:classes }
                 ]
             }
         }
 
         return {
-            class :classes,
-            innerText: node.name
+            class:'d-flex flex-align-items-center ',
+            children:[
+                { class: icon},
+                { innerText: node.name, class:classes }
+            ]
         }
     }
 }
