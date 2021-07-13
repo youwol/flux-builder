@@ -395,11 +395,12 @@ function code(
     labelDiv.setAttribute("value",value)
 
     let onUpdateMdle = (content) => {
-        let pathElems = path.split('/')
+        let pathElems = path.split('.')
         let mdle = selection as ModuleFlux
         let lastRed = pathElems
         .slice(0,-1)
         .reduce( (acc:any,elem:any) => acc[elem], mdle.configuration.data)
+
         lastRed[ pathElems.slice(-1)[0] ] = content
         console.log(mdle.configuration)
         appStore.updateModule(
