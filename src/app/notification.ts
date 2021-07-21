@@ -1,6 +1,7 @@
-import { ErrorLog, ModuleError, ModuleFlux } from '@youwol/flux-core';
-import { render } from '@youwol/flux-view';
-import { filter } from 'rxjs/operators';
+import { ErrorLog, ModuleError, ModuleFlux, Process } from '@youwol/flux-core';
+import { attr$, HTMLElement$, render, Stream$, VirtualDOM } from '@youwol/flux-view';
+import { merge, Observable } from 'rxjs';
+import { delay, filter, map, take } from 'rxjs/operators';
 import { WorkflowPlotter } from './builder-editor/builder-plots';
 import { AppStore } from './builder-editor/builder-state';
 import { ContextView } from './builder-editor/views/context.view';
@@ -68,6 +69,33 @@ export function plugNotifications(
             ]
         })
     )
+    appStore.environment.processes$.subscribe( (p: Process)=> {
+        
+        let step$ = merge( 
+            p.scheduled$.pipe(map( () => "Scheduled")),
+            p.started$.pipe(map( () => "Started")),
+            p.failed$.pipe(map( () => "Failed")),
+            p.succeeded$.pipe(map( () => "Succeeded"))
+        )
+        let classesIcon = {
+            "Scheduled": "fas fa-clock px-2",
+            "Started": "fas fa-cog fa-spin px-2",
+            "Succeeded": "fas fa-check fv-text-success px-2",
+            "Failed": "fas fa-times fv-text-error px-2",
+        }
+        Notifier.notify({
+            title: p.title,
+            message: attr$(step$, (step)=> step),
+            classIcon:  attr$(step$, (step)=> classesIcon[step]),
+            actions:[
+                {
+                    name: 'report',
+                    exe: () => ContextView.reportContext(p.context)
+                }
+            ],
+            timeout:merge(p.succeeded$, p.failed$).pipe(take(1),delay(1000))
+        })
+    })
 }
 
 /**
@@ -115,13 +143,15 @@ export class Notifier{
      * @param title title
      * @param actions available actions
      */
-    static notify({message, title, actions}:{
-        message: string,
-        title: string
-        actions: INotifierAction[]
+    static notify({message, title, classIcon, actions, timeout}:{
+        message: string | Stream$<unknown, string>,
+        classIcon: string | Stream$<unknown, string>,
+        title: string,
+        actions: INotifierAction[],
+        timeout?: Observable<any>
     }){
 
-        Notifier.popup( { message, title, actions, classIcon:"", classBorder:"" } )
+        Notifier.popup( { message, title, actions, classIcon, timeout, classBorder:"" } )
     }
     /**
      * Popup a notification with level=='Error'
@@ -154,15 +184,16 @@ export class Notifier{
         Notifier.popup( { message, title, actions, classIcon:Notifier.classesIcon[3], classBorder:Notifier.classesBorder[3] } )
     }
 
-    private static popup( { message, title, actions, classIcon, classBorder } :{
-        message: string,
+    private static popup( { message, title, actions, classIcon, classBorder, timeout } :{
+        message: string | Stream$<unknown, string>,
         title: string
         actions: INotifierAction[],
-        classIcon: string,
-        classBorder: string
+        classIcon: string | Stream$<unknown, string>,
+        classBorder: string,
+        timeout?: Observable<any>
     }){
 
-        let view = {
+        let view : VirtualDOM = {
             class:"m-2 p-2 my-1 bg-white " + classBorder,
             style: {border:'solid'},
             children:[
@@ -174,28 +205,26 @@ export class Notifier{
                     } 
                 },
                 {
-                    class:'d-flex py-2',
+                    class:'d-flex py-2 align-items-center',
                     children:[
                         {tag:'i', class: classIcon },
-                        {
-                            children:[
-                                {tag:'span', class:'d-block',innerText:title},
-                                {tag:'span', class:'d-block', innerText:message}
-                            ]
-                        }
+                        {tag:'span', class:'d-block',innerText:title}
                     ]
                 },
+                {tag:'span', class:'d-block px-2', innerText:message},
                 {
-                    class:'d-flex align-space-around',
+                    class:'d-flex align-space-around mt-2 fv-pointer',
                     children: actions.map( action => ({
                         tag:'span', 
-                        class:"px-1 mx-1 ", 
+                        class:"p-2 fv-bg-background-alt rounded fv-hover-bg-background fv-hover-text-focus fv-text-primary", 
                         innerText: action.name, 
-                        onclick: ()=>action.exe(), 
-                        style: {cursor:'pointer', 'background-color': 'darkslategrey', color:'white'}
+                        onclick: ()=>action.exe()
                     }))
                 }
-            ]
+            ],
+            connectedCallback: (elem: HTMLElement$) => {
+                timeout && timeout.subscribe( () => elem.remove())
+            }
         }
         let div = render(view)
         document.getElementById("notifications-container").appendChild(div)
