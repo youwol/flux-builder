@@ -169,13 +169,12 @@ export namespace ContextView{
         }
     }
 
-    export function displayModuleErrorModal(errorLog: ErrorLog<ModuleError>){
+    export function reportContext(context: Context, nodeId?:string){
 
-        let context = errorLog.context
         let state = new State({
             context,
-            expandedNodes: nodePath(context).concat(errorLog.id),
-            selectedNode:  errorLog.id
+            expandedNodes: nodeId ? nodePath(context).concat(nodeId) : nodePath(context),
+            selectedNode:  nodeId//errorLog.id
         })
         let view = new View({
             state,

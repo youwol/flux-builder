@@ -63,7 +63,7 @@ export function plugNotifications(
                 },
                 {
                     name: 'report',
-                    exe: () => ContextView.displayModuleErrorModal(log)
+                    exe: () => ContextView.reportContext(log.context, log.id)
                 }
             ]
         })
