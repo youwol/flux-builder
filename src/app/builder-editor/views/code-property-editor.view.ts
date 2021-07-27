@@ -49,10 +49,12 @@ export namespace CodePropertyEditorView{
 
         constructor({
             state,
+            editorConfiguration,
             options,
             ...rest
         }: {
             state: State,
+            editorConfiguration: any,
             options?: TOptions
         }){
             Object.assign(this, rest)
@@ -67,7 +69,7 @@ export namespace CodePropertyEditorView{
                 { 
                     class:'d-flex flex-column h-100 w-100 mx-2',
                     children:[
-                        new CodeEditorView.View({state: this.state.codeEditorState})
+                        new CodeEditorView.View({state: this.state.codeEditorState, editorConfiguration})
                     ]
                 }
             ]
@@ -85,16 +87,19 @@ export namespace CodePropertyEditorView{
     export function popupModal({
         mdle, 
         initialCode, 
+        editorConfiguration,
         onUpdate
     }: {
         mdle: ModuleFlux, 
         initialCode: string, 
+        editorConfiguration: any,
         onUpdate: (string) => void
     }){
 
         let state = new State({mdle, initialCode})
         let view = new View({
             state: state, 
+            editorConfiguration,
             options:{
                 containerClass: 'p-2 d-flex flex-grow-1 w-100',
                 containerStyle: {'min-height':'0px'}

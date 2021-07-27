@@ -3,12 +3,11 @@ import { BehaviorSubject, from } from "rxjs";
 import { mergeMap } from "rxjs/operators";
 
 
-
 export namespace CodeEditorView{
 
 
     export class State{
-        public readonly codeMirror$ = fetchCodeMirror$()
+        
         public readonly content$ : BehaviorSubject<string>
 
         constructor({
@@ -41,10 +40,12 @@ export namespace CodeEditorView{
 
         constructor({
             state,
+            editorConfiguration,
             options,
             ...rest
         }: {
             state: State,
+            editorConfiguration: any,
             options?: TOptions
         }){
             Object.assign(this, rest)
@@ -52,21 +53,28 @@ export namespace CodeEditorView{
             this.state = state
             this.class = styling.containerClass
             this.style = styling.containerStyle
+            let configuration = {
+                ...{
+                    value: state.content$.getValue(),
+                    mode: 'javascript',
+                    lineNumbers: true,
+                    theme:'blackboard',
+                    extraKeys: {
+                        "Tab": (cm) => cm.replaceSelection("    " , "end")
+                       }
+                },
+                ...( editorConfiguration || {} )
+            }
 
             this.children = [
                 child$( 
-                    state.codeMirror$,
+                    fetchCodeMirror$(configuration.mode),
                     () => {
                         return {
                             id: 'code-mirror-editor',
                             class: 'w-100 h-100',
                             connectedCallback: (elem) => {
-                                let editor = window['CodeMirror'](elem, {
-                                    value: state.content$.getValue(),
-                                    mode: 'javascript',
-                                    lineNumbers: true,
-                                    theme:'blackboard'
-                                })
+                                let editor = window['CodeMirror'](elem, configuration)
                                 editor.on("changes" , () => {
                                     state.content$.next(editor.getValue())
                                 })
@@ -78,14 +86,18 @@ export namespace CodeEditorView{
         }
     }
 
-    function fetchCodeMirror$(){
+    function fetchCodeMirror$(mode: string){
         let cdn = window['@youwol/cdn-client']
         
+        let urlsMode = {
+            "javascript": "codemirror#5.52.0~mode/javascript.min.js",
+            "python": "codemirror#5.52.0~mode/python.min.js",
+        }
         return from(cdn.fetchBundles( {  codemirror: { version: '5.52.0' } },  window)
         ).pipe(
             mergeMap( () =>{
                 let promise = cdn.fetchJavascriptAddOn(
-                    ["codemirror#5.52.0~mode/javascript.min.js"], 
+                    [urlsMode[mode]], 
                     window
                     )
                 return from(promise)

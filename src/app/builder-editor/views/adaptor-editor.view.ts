@@ -144,10 +144,12 @@ export namespace AdaptorEditoView{
 
         constructor({
             state,
+            editorConfiguration,
             options,
             ...rest
         }: {
             state: State,
+            editorConfiguration?: any,
             options?: TOptions
         }) {
             Object.assign(this, rest)
@@ -165,6 +167,7 @@ export namespace AdaptorEditoView{
                     children:[
                         new CodeEditorView.View({
                             state: state.codeEditorState,
+                            editorConfiguration,
                             options:{
                                 containerClass:'w-100 h-50'
                             }

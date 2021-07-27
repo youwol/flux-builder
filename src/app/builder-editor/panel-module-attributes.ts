@@ -161,7 +161,7 @@ export function createAttributesPanel(appStore: AppStore, appObservables: AppObs
 function widgetsFactory(mdle: any, key: any, value: any, appStore: AppStore) {
     
     if(key==="code" || (value[0] && value[0].metadata &&  value[0].metadata.type &&  value[0].metadata.type.includes("code") ) )
-        return code(mdle, toCssName(key), "",key, key, value[1], value[0].metadata.type , appStore)
+        return code(mdle, toCssName(key), "",key, key, value[1], value[0].metadata , appStore)
 
     if(value && value[0] && value[0].type && value[0].type.toLowerCase() =="boolean")
         return checkbox(mdle, toCssName(key), key,key,  value[1])
@@ -376,8 +376,15 @@ export class ExternalCode extends Code {
 }
 */
 function code(
-    selection: ModuleFlux | Connection, id: string, classe: string, label: string, path: string, value: string, 
-    fullType: string , appStore: AppStore) : HTMLDivElement {
+    selection: ModuleFlux | Connection, 
+    id: string, 
+    classe: string, 
+    label: string, 
+    path: string, 
+    value: string, 
+    metadata: any, 
+    appStore: AppStore
+    ) : HTMLDivElement {
 
     let innerHtml=`
     <div id="${id}" class="gjs-sm-property gjs-sm-select gjs-sm-property__${classe}" style="display: block;">
@@ -402,7 +409,7 @@ function code(
         .reduce( (acc:any,elem:any) => acc[elem], mdle.configuration.data)
 
         lastRed[ pathElems.slice(-1)[0] ] = content
-        console.log(mdle.configuration)
+        
         appStore.updateModule(
             mdle, 
             mdle.configuration
@@ -418,6 +425,7 @@ function code(
             CodePropertyEditorView.popupModal({
                 mdle:selection,
                 initialCode: value,
+                editorConfiguration: metadata.editorConfiguration,
                 onUpdate: onUpdateMdle
             })
         }
