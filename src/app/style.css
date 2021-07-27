@@ -162,6 +162,7 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
 }
 
 #notifications-container{
+    border-radius: 0.25em;
     position: absolute;
     width: 300px;
     top:50px;
