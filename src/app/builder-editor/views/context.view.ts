@@ -64,7 +64,7 @@ export namespace ContextView{
         public readonly log: Log
 
         constructor({log} : {log:Log}){
-            super({ id:log.id, children:[new DataNodeBase({data:log.data})]})
+            super({ id:log.id, children:log.data != undefined ? [new DataNodeBase({data:log.data})] : undefined })
             this.log = log
         }
     }
