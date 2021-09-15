@@ -177,7 +177,7 @@ export function connectStreams(appStore:AppStore, workflowPlotter: WorkflowPlott
     })
 
     appObservables.ready$.subscribe(() => {
-        document.getElementById("attributes-panel").appendChild(createAttributesPanel(appStore, appObservables))
+        createAttributesPanel(appStore, appObservables)
     })
 
     layoutEditor$.subscribe( r => {
