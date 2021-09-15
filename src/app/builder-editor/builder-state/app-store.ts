@@ -260,10 +260,11 @@ export class AppStore {
         return project.workflow.modules.slice(-1)[0]
     }
 
-    updateModule(mdle:ModuleFlux, configuration: ModuleConfiguration) {
+    updateModule(mdle:ModuleFlux, configuration: ModuleConfiguration, unselect = true) {
         
         let project = updateModule(mdle,configuration, this.project,this.allSubscriptions,this.appObservables.ready$)
-        this.unselect()
+        if(unselect)
+            this.unselect()
         this.updateProject(project)
     }
 
@@ -346,10 +347,12 @@ export class AppStore {
         this.appObservables.moduleSelected$.next(this.moduleSelected )
     }
 
-    selectConnection(connection: Connection){
+    selectConnection(connection: Connection | string){
 
         this.unselect()
-        this.connectionSelected = connection
+        this.connectionSelected = connection instanceof Connection
+            ? connection
+            : this.getConnection(connection)
         this.debugSingleton.debugOn && 
         this.debugSingleton.logWorkflowBuilder( {  
             level : LogLevel.Info, 
@@ -520,10 +523,11 @@ export class AppStore {
         this.appObservables.connectionsUpdated$.next(this.project.workflow.connections)
     }
 
-    setConnectionView(connection: Connection, properties ){
+    setConnectionView(connection: Connection, properties, unselect = true ){
         let project = setConnectionView(connection, properties, this.project)
         this.updateProject(project)
-        this.unselect()
+        if(unselect)
+            this.unselect()
         this.appObservables.connectionsUpdated$.next(this.project.workflow.connections)
     }
 
