@@ -1,6 +1,6 @@
 import { flattenSchemaWithValue, ModuleConfiguration, ModuleFlux } from "@youwol/flux-core"
-import { child$, VirtualDOM } from "@youwol/flux-view"
-import { BehaviorSubject } from "rxjs"
+import { child$, HTMLElement$, VirtualDOM } from "@youwol/flux-view"
+import { BehaviorSubject, Subscription } from "rxjs"
 import { filter, withLatestFrom } from "rxjs/operators"
 import { AppStore } from "../builder-state"
 import { AutoForm } from "./auto-form.view"
@@ -36,6 +36,8 @@ export class ModuleSettingsState{
     public readonly autoFormState : AutoForm.State
     public readonly initialSettings$ : BehaviorSubject<any>
 
+    subscriptions : Subscription[]
+    
     constructor(
         public readonly mdle: ModuleFlux, 
         public readonly appStore: AppStore
@@ -52,12 +54,14 @@ export class ModuleSettingsState{
             schemaWithValue as any,
             elementViewsFactory(mdle)
             )
-        this.autoFormState.currentValue$.pipe(
+        let sub = this.autoFormState.currentValue$.pipe(
             withLatestFrom( this.onTheFlyUpdates$),
             filter( ([_, onTheFly]) => onTheFly),
             filter( ([value]) => JSON.stringify(value) != JSON.stringify(this.initialSettings$.getValue()) )
         )
         .subscribe( () => this.applySettings())
+
+        this.subscriptions = [sub]
     }
 
     toggleUpdatePolicy(){
@@ -81,6 +85,9 @@ export class ModuleSettingsView implements VirtualDOM{
     public readonly class = "h-100 d-flex flex-column"
     public readonly children: VirtualDOM[]
     public readonly style = { fontSize:'smaller'}
+
+    connectedCallback?: (d: HTMLElement$) => void
+
     public readonly applyChangesButton = {
         children:[
             {
@@ -96,6 +103,9 @@ export class ModuleSettingsView implements VirtualDOM{
                 this.header(),
                 new AutoForm.View({state: state.autoFormState, class:'flex-grow-1 overflow-auto my-1', style:{'min-height':'0px'}} as any)
             ]
+        this.connectedCallback = (elem: HTMLElement$) => {
+            elem.ownSubscriptions(...state.subscriptions)
+        }
     }
 
     header() : VirtualDOM {

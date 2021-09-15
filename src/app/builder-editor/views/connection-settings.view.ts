@@ -1,6 +1,6 @@
 import { Adaptor, Connection, flattenSchemaWithValue, ModuleConfiguration, ModuleFlux, Property, Schema, uuidv4 } from "@youwol/flux-core"
-import { VirtualDOM } from "@youwol/flux-view"
-import { BehaviorSubject } from "rxjs"
+import { HTMLElement$, VirtualDOM } from "@youwol/flux-view"
+import { BehaviorSubject, Subscription } from "rxjs"
 import { filter } from "rxjs/operators"
 import { AppStore } from "../builder-state"
 import { AdaptorEditoView } from "./adaptor-editor.view"
@@ -61,6 +61,8 @@ export class ConnectionSettingsState{
     public readonly autoFormState : AutoForm.State
     public readonly initialSettings$ : BehaviorSubject<ConnectionView>
 
+    subscriptions : Subscription[]
+
     constructor(
         connection: Connection, 
         public readonly appStore: AppStore
@@ -83,7 +85,7 @@ export class ConnectionSettingsState{
         
         this.initialSettings$ = new BehaviorSubject(data)
 
-        this.autoFormState.currentValue$.pipe(
+        let sub1 = this.autoFormState.currentValue$.pipe(
             filter( (value) => value['wireless'] != this.initialSettings$.getValue()['wireless'] )
         )
         .subscribe( (value: ConnectionView) => {
@@ -91,7 +93,8 @@ export class ConnectionSettingsState{
             this.appStore.setConnectionView(connection, {wireless: value.wireless}, true)
             this.appStore.selectConnection(connection.connectionId)
         })
-        this.autoFormState.currentValue$.pipe(
+
+        let sub2 = this.autoFormState.currentValue$.pipe(
             filter( (value) => value['adaptor'] != this.initialSettings$.getValue()['adaptor'] )
         )
         .subscribe( (value: ConnectionView) => {
@@ -100,6 +103,7 @@ export class ConnectionSettingsState{
             appStore.addAdaptor(adaptor, connection)
             this.appStore.selectConnection(connection.connectionId)
         })
+        this.subscriptions = [sub1, sub2]
     }
 }
 
@@ -109,11 +113,16 @@ export class ConnectionSettingsView implements VirtualDOM{
     public readonly children: VirtualDOM[]
     public readonly style = { fontSize:'smaller'}
     
+    connectedCallback?: (d: HTMLElement$) => void
+
     constructor( public readonly state: ConnectionSettingsState){
 
         this.children = [
             new AutoForm.View({state: state.autoFormState, class:'flex-grow-1 overflow-auto my-1', style:{'min-height':'0px'}} as any)
             ]
+        this.connectedCallback = (elem: HTMLElement$) => {
+            elem.ownSubscriptions(...state.subscriptions)
+        }
     }
 }
 
