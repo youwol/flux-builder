@@ -69,8 +69,14 @@ export async function initializeRessources() :
 
     let layoutEditor : any = await createLayoutEditor()
     let doc = layoutEditor.Canvas.getDocument() as HTMLDocument
+    let noConsole = {
+        log:(message?: any, ...optionalParams: any[])=> {},
+        warn:(message?: any, ...optionalParams: any[])=> {},
+        error:(message?: any, ...optionalParams: any[])=> {},
+    }
+
     let environment = new Environment(
-        {   
+        {   console: noConsole as Console,
             renderingWindow: doc.defaultView,
             executingWindow: window
         }
