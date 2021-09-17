@@ -70,13 +70,15 @@ export class ModuleSettingsState{
 
     applySettings(title: string = undefined){
         let values = this.autoFormState.currentValue$.getValue()
+        
         let persistentData = new this.mdle.Factory.PersistentData(values)
-        let cong = new ModuleConfiguration({
+        let conf = new ModuleConfiguration({
             title: title ? title : this.mdle.configuration.title,
             description: this.mdle.configuration.description,
             data: persistentData})
+
         this.initialSettings$.next(values)
-        this.appStore.updateModule(this.mdle, cong, false)
+        this.appStore.updateModule(this.mdle, conf, false)
     }
 }
 
