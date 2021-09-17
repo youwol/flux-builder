@@ -6,13 +6,13 @@ import { tap } from "rxjs/operators";
 import { AppStore } from '../builder-state/index';
 import { DrawingArea } from "@youwol/flux-svg-plots";
 import { AddPluginsNode, ContextTreeNode, NewModulesNode, 
-    ContextRootNode, JournalsNode } from "./nodes";
+    ContextRootNode, JournalsNode, DocumentationNode } from "./nodes";
 
 
 
 let ALL_ACTIONS = {
     newModules: {
-        createNode: () => new NewModulesNode(),
+        createNode: ( state : AppStore) => new NewModulesNode(),
         applicable: ( state: AppStore) => state.getModulesSelected().length >= 0
     },
     addPlugins: {
@@ -20,12 +20,22 @@ let ALL_ACTIONS = {
         applicable: ( state: AppStore) => state.getModulesSelected().length == 1
     },
     journals: {
-        createNode: () => new JournalsNode(),
+        createNode: (state : AppStore) => new JournalsNode(),
         applicable: ( state: AppStore) => {
             return state.getModulesSelected().length == 1  &&
             state.getModuleSelected().journals.length > 0 
         }
     },
+    documentation: {
+        createNode: (state : AppStore) => new DocumentationNode(state),
+        applicable: ( state: AppStore) => {
+            if(state.getModulesSelected().length !=1 )
+                return false
+            let mdle = state.getModuleSelected()
+            let resources = mdle.Factory.resources 
+            return resources && Object.entries(resources).length > 0
+        }
+    }
 }
 export class ContextMenuState extends ContextMenu.State{
 
@@ -47,7 +57,7 @@ export class ContextMenuState extends ContextMenu.State{
         
         let children = Object.values(ALL_ACTIONS)
         .filter( action => action.applicable(this.appState))
-        .map( action => action.createNode())
+        .map( action => action.createNode(this.appState))
 
         let root = new ContextRootNode({children})
         let state = new ContextTreeState(root)

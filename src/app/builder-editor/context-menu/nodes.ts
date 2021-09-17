@@ -1,4 +1,5 @@
 import { ImmutableTree } from '@youwol/fv-tree'
+import { AppStore } from '../builder-state'
 import { AssetsExplorerView } from '../views/assets-explorer.view'
 import { ImportModulesView } from '../views/import-modules.view'
 import { JournalsView } from '../views/journals.view'
@@ -86,3 +87,29 @@ export class JournalsNode extends ContextTreeNode{
     }
 }
 
+export class DocumentationNode extends ContextTreeNode{
+
+    static createChildren(appStore: AppStore){
+        let resources = appStore.getModuleSelected().Factory.resources
+        return Object.entries(resources).map(([name, url]) => {
+            return new ResourceNode({name, url})
+        })
+    }
+    constructor(appStore: AppStore) {
+        super({id:'documentation',children:DocumentationNode.createChildren(appStore), name:'documentation', faIcon:'fas fa-book'})
+    }
+}
+
+export class ResourceNode extends ContextTreeNode{
+
+    public readonly url: string
+    constructor({name, url}) {
+        super({id:name,children:undefined, name:name, faIcon:'fas fa-book'})
+        this.url = url
+
+    }
+
+    execute(state: ContextMenuState){
+        window.open( this.url,'_blank')
+    }
+}
