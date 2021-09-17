@@ -70,7 +70,7 @@ export class ConnectionSettingsState{
             
         let connectionViewData = appStore.getConnectionView( connection.connectionId)
         let data = new ConnectionView({
-            ...(connectionViewData? {wireless:connectionViewData} : {}),
+            ...(connectionViewData? {wireless:connectionViewData.wireless} : {}),
             ...(connection.adaptor? {adaptor:connection.adaptor.toString()} : {})
         })
         let schemaWithValue = flattenSchemaWithValue(data)
