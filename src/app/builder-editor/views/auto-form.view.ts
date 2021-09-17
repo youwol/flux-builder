@@ -84,16 +84,19 @@ export namespace AutoForm {
                 return value.type == "Number" && value.metadata.min != undefined && value.metadata.max != undefined
             },
             view: (value$: BehaviorSubject<number>, description: ValueDescription) =>{
+                let hovered$ = new BehaviorSubject(false)
                 let state = new Slider.State({min: description.metadata.min, max: description.metadata.max, value:value$, count:1000 })
                 return {
                     class:'d-flex',
                     children:[
                         { 
                             tag:'input',
-                            class:'w-25', 
-                            type:'text', 
+                            class: attr$( hovered$, (isHovered) => isHovered ? 'w-100' : 'w-25'), 
+                            type:'number', 
                             value: attr$( value$, (v) => v ),
-                            onchange:  (event) => value$.next(event.target.value)
+                            onchange:  (event) => value$.next(Number(event.target.value)),
+                            onmouseenter: () => hovered$.next(true),
+                            onmouseleave:  () => hovered$.next(false),
                         },
                         new Slider.View({state, class:"w-75"} as any) 
                     ]
@@ -169,10 +172,10 @@ export namespace AutoForm {
             return {}
 
         return {
-            class:'row', style:{'font-size': 'smaller', padding:'0px', margin:'0px'},
+            class:'row', style:{ padding:'0px', margin:'0px'},
             children: items.map( item => [
                 {
-                    class:'col my-auto',
+                    class:'col my-auto p-0',
                     innerText: item[0]
                 },
                 {
