@@ -9,7 +9,7 @@ import { cloneLayerTree } from './app-store-layer'
 
 
 
-
+/*
 export function addRemoteComponent( component, modulesFactory, coors, project: Project , activeLayerId, 
     workflowGetter, ready$ : any, environment: any) {
     
@@ -116,6 +116,7 @@ export function addRemoteComponent( component, modulesFactory, coors, project: P
     
     let projectNew = new Project( 
         project.name,
+        project.schemaVersion,
         project.description,
         project.requirements,
         workflow,
@@ -125,3 +126,4 @@ export function addRemoteComponent( component, modulesFactory, coors, project: P
 
     return projectNew
 }
+*/

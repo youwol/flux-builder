@@ -33,8 +33,7 @@ export function uuidv4() {
     let plugins = project.workflow.plugins.filter( m=>moduleIds.includes(m.parentModule.moduleId))
 
     let connections = component.getConnections()
-    let layer = component.getLayerTree()
-    let workflow = new Workflow(modules,connections.internals, plugins, layer)
+    let workflow = new Workflow({modules,connections:connections.internals, plugins})
 
     let fluxPacks = new Set(allModules.map(m => m.Factory.packId))
     let builderRendering = {

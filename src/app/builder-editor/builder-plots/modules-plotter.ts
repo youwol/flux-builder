@@ -63,7 +63,7 @@ function drawModules(
     let displayedModulesView = appStore.getDisplayedModulesView()
     let projection = undefined       
 
-    if(appStore.activeLayerId != appStore.project.workflow.rootLayerTree.layerId ){
+    if(appStore.activeLayerId != appStore.rootLayerId ){
 
         let center = getCenter(displayedModulesView.currentLayer)
         let factors = getScaleFactors(displayedModulesView.currentLayer)
@@ -128,14 +128,14 @@ function drawModules(
 
 function drawExpandedGroup( layerId :string, drawingArea : DrawingArea, appStore : AppStore ){
     
-    if(!layerId || layerId === appStore.project.workflow.rootLayerTree.layerId ){
+    if(!layerId || layerId === appStore.rootLayerId ){
         let plotter = new CrossPlot({ plotId:"activeLayerPlotter", plotClasses:[], drawingArea, entities:[]})
         plotter.draw([])
         return {}
     }
     let activateLayer = appStore.getLayer(layerId)
     let groupMdle = appStore.project.workflow.modules
-    .find( m => m instanceof GroupModules.Module && m.layerId == activateLayer.layerId) as GroupModules.Module
+    .find( m => m instanceof GroupModules.Module && m.moduleId == activateLayer.moduleId) as GroupModules.Module
 
     const displayedElements = appStore.getDisplayedModulesView()
     const includedEntities  = displayedElements.currentLayer.modulesView.map(g => g.moduleId)
@@ -290,7 +290,7 @@ export class ModulesPlotter{
         this.dragging = true
         let modules = this.appStore
         .getModulesSelected()
-        .filter( m =>this.appStore.getActiveLayer().moduleIds.includes(m.moduleId) || m["layerId"] )
+        .filter( m =>this.appStore.getActiveLayer().getModuleIds().includes(m.moduleId) || m["layerId"] )
 
         let newPos = []
         modules.forEach( m => {

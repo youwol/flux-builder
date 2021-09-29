@@ -14,8 +14,10 @@ function updateRequirements(loadingGraph: LoadingGraphSchema, project: Project):
         .map(library => library.name )
     let requirements = new Requirements(actualReqs.fluxComponents, Array.from(packs),
         libraries, loadingGraph)
-    let newProject = new Project(project.name, project.description, requirements,
-        project.workflow, project.builderRendering, project.runnerRendering)
+    let newProject = new Project({
+        ...project,
+        ...{requirements}
+    })
     return newProject
 }
 

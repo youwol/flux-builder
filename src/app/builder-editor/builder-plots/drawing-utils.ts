@@ -3,6 +3,7 @@ import { DrawingArea } from '@youwol/flux-svg-plots';
 import { filter, map } from 'rxjs/operators';
 import { AppStore } from '../builder-state/index';
 import { Observable } from 'rxjs';
+import { GroupModules } from '@youwol/flux-core';
 
 
 export function uuidv4() {
@@ -71,16 +72,17 @@ function mapToFocusCoordinate(activeLayerUpdated$ : Observable<{fromLayerId:stri
     map( ({fromLayerId, toLayerId}) => ({fromLayer: appStore.getLayer(fromLayerId),toLayer: appStore.getLayer(toLayerId)})),
     map( ({fromLayer, toLayer}) =>{ 
         // if zoom-in
-        if( fromLayer.getChildrenLayers().includes(toLayer))
-            return document.getElementById("expanded_"+appStore.getGroupModule(toLayer.layerId).moduleId)    
+        if( fromLayer.getAllChildren().includes(toLayer))
+            return document.getElementById("expanded_"+toLayer.moduleId)    
         
         // if zoom-out
-        if( toLayer.getChildrenLayers().includes(fromLayer)){
-            let targetLayer = toLayer.children.find( layer => layer==fromLayer || layer.getChildrenLayers().includes(fromLayer) )
-            return document.getElementById(appStore.getGroupModule(targetLayer.layerId).moduleId)  
+        if( toLayer.getAllChildren().includes(fromLayer)){
+            let targetLayer = toLayer.getDirectChildren()
+            .find( layer => layer instanceof GroupModules.Module && (layer==fromLayer || layer.getModuleIds().includes(fromLayer.moduleId)) )
+            return document.getElementById(targetLayer.moduleId)  
         }
         // if zoom from/to different branches of layer tree
-        return document.getElementById("expanded_"+appStore.getGroupModule(toLayer.layerId).moduleId)
+        return document.getElementById("expanded_"+toLayer.moduleId)
     }),
     map( svgElement => {
       let boudingBox = svgElement.getBoundingClientRect()

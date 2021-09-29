@@ -54,7 +54,11 @@ export class WorkflowPlotter{
                 connectionsPlotters: this.connectionsPlotters
             }
         })
-
+        this.appObservables.activeLayerUpdated$.subscribe((activeLayer) => {
+            (activeLayer.toLayerId != appStore.rootLayerId)
+                ? drawingArea.svgCanvas.select(".workspace-background").attr("class", "workspace-background child-layer")
+                : drawingArea.svgCanvas.select(".workspace-background").attr("class", "workspace-background")
+        })
         let plotObservable = this.plottersObservables
         let boxSelectorPlotter = this.boxSelectorPlotter
         let background = document.querySelector("svg") as SVGElement

@@ -11,8 +11,7 @@ test('should return an empty workflow', () => {
   expect(appStore.project.workflow.modules).toEqual([])
   expect(appStore.project.workflow.connections).toEqual([])
   expect(appStore.project.workflow.plugins).toEqual([])
-  expect(appStore.project.workflow.rootLayerTree.moduleIds).toEqual([])
-  expect(appStore.project.workflow.rootLayerTree.children).toEqual([])
+  expect(appStore.getRootLayer().getModuleIds()).toEqual([])
   expect(appStore.project.builderRendering.modulesView).toEqual([])
   })
 
@@ -32,6 +31,15 @@ test('set rendering layout', () => {
 
     appStore.updateProjectToIndexHistory(0, appStore.indexHistory)
 })
+
+class MockCSSStyleSheet{
+  rules: Array<any> = []
+  insertRule(rule){
+    this.rules.push(rule)
+  }
+}
+(window as any)['CSSStyleSheet'] = MockCSSStyleSheet
+
 test('set rendering style', () => {
 
     AppDebugEnvironment.getInstance().debugOn = false
@@ -47,4 +55,3 @@ test('set rendering style', () => {
 
     appStore.updateProjectToIndexHistory(0, appStore.indexHistory)
 })
-  

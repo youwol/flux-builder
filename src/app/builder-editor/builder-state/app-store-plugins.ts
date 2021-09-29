@@ -38,19 +38,19 @@ export function addPlugin( Factory, parentModule , project, ready$, environment:
             pluginFactory: Factory }
     })
 
-    let workflow   = new Workflow(  
-        project.workflow.modules,
-        project.workflow.connections,
-        project.workflow.plugins.concat([plugin]),
-        project.workflow.rootLayerTree)
-
-    let projectNew = new Project( 
-        project.name,
-        project.description,
-        project.requirements,
-        workflow,
-        project.builderRendering,
-        project.runnerRendering
-    )
+    let workflow   = new Workflow({
+        ...project.workflow,
+        ...{
+            plugins: project.workflow.plugins.concat([plugin])
+        }
+    })
+    
+    let projectNew = new Project({
+        ...project,
+        ...{
+            workflow
+        }
+    }) 
+    
     return projectNew
 }

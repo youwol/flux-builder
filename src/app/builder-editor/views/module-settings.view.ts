@@ -7,24 +7,55 @@ import { AutoForm } from "./auto-form.view"
 import { CodePropertyEditorView } from "./code-property-editor.view"
 
 
+
+function codeEditorView(
+    faClass: string,
+    mdle: ModuleFlux, 
+    value$: BehaviorSubject<string>, 
+    description:AutoForm.ValueDescription
+    ){
+        let editorConfiguration = description.metadata.editorConfiguration || {}
+        return {
+            class: `${faClass} fv-pointer fa-2x fv-hover-bg-background`,
+            onclick: () => CodePropertyEditorView.popupModal({
+                mdle: mdle,
+                initialCode: value$.getValue(),
+                editorConfiguration,
+                onUpdate : (content) => value$.next(content)
+            })
+        }
+}
+
 let elementViewsFactory = (mdle: ModuleFlux) => [
     {
         test: (value: AutoForm.ValueDescription) => {
             return value.metadata && value.metadata.type == "code" &&
-                (!value.metadata.language || value.metadata.language == 'javascript')
+                (!value.metadata.editorConfiguration || value.metadata.editorConfiguration.mode == 'javascript')
         },
-        view: (value$: BehaviorSubject<string>) => {
-            return {
-                class: "fab fa-js-square fv-pointer fa-2x fv-hover-bg-background",
-                onclick: () => {
-                    CodePropertyEditorView.popupModal({
-                        mdle: mdle,
-                        initialCode: value$.getValue(),
-                        editorConfiguration: {},
-                        onUpdate : (content) => value$.next(content)
-                    })
-                }
-            }
+        view: (value$: BehaviorSubject<string>, description:AutoForm.ValueDescription ) => {
+            return codeEditorView("fab fa-js-square", mdle, value$, description)
+        }
+    },
+    {
+        test: (value: AutoForm.ValueDescription) => {
+            return value.metadata && value.metadata.type == "code" &&
+            value.metadata.editorConfiguration.mode == 'css'
+        },
+        view: (value$: BehaviorSubject<string>, description:AutoForm.ValueDescription) => {
+            return codeEditorView("fab fa-css3-alt", mdle, value$, description)
+        }
+    },
+    {
+        test: (value: AutoForm.ValueDescription) => {
+            return value.metadata && value.metadata.type == "code" &&
+            (   value.metadata.editorConfiguration.mode == 'html' ||
+                value.metadata.editorConfiguration.mode == 'htmlmixed' ||
+                value.metadata.editorConfiguration.mode == 'xml'
+            )
+
+        },
+        view: (value$: BehaviorSubject<string>, description:AutoForm.ValueDescription) => {
+            return codeEditorView("fab fa-html5", mdle, value$, description)
         }
     },
     ...AutoForm.viewFactory

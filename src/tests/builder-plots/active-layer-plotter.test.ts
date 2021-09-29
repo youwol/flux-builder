@@ -60,7 +60,7 @@ test('load simple project', (done) => {
 
         let layerSvg =  document.querySelector(".active-layer-box")
         expect(layerSvg).toBeDefined()
-        appStore.selectActiveLayer(appStore.project.workflow.rootLayerTree.layerId)
+        appStore.selectActiveLayer(appStore.getRootLayer().moduleId)
     })
 
     plottersObservables.modulesDrawn$.pipe(

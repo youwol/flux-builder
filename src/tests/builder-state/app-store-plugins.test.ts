@@ -15,8 +15,6 @@ test('should return an empty workflow', () => {
   expect(appStore.project.workflow.modules).toEqual([])
   expect(appStore.project.workflow.connections).toEqual([])
   expect(appStore.project.workflow.plugins).toEqual([])
-  expect(appStore.project.workflow.rootLayerTree.moduleIds).toEqual([])
-  expect(appStore.project.workflow.rootLayerTree.children).toEqual([])
   expect(appStore.project.builderRendering.modulesView).toEqual([])
   })
 

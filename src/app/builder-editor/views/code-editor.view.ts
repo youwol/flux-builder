@@ -92,12 +92,17 @@ export namespace CodeEditorView{
         let urlsMode = {
             "javascript": "codemirror#5.52.0~mode/javascript.min.js",
             "python": "codemirror#5.52.0~mode/python.min.js",
+            "css":  "codemirror#5.52.0~mode/css.min.js",
+            "xml":  "codemirror#5.52.0~mode/xml.min.js",
+            "html":  "codemirror#5.52.0~mode/htmlmixed.min.js"                
         }
         return from(cdn.fetchBundles( {  codemirror: { version: '5.52.0' } },  window)
         ).pipe(
             mergeMap( () =>{
+                let urls = Array.isArray(urlsMode[mode]) ? urlsMode[mode] : [urlsMode[mode]]
+
                 let promise = cdn.fetchJavascriptAddOn(
-                    [urlsMode[mode]], 
+                    urls, 
                     window
                     )
                 return from(promise)

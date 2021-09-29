@@ -41,26 +41,22 @@ export function addConnection( connection: Connection,
     
     let modules = project.workflow.modules
     let connections = project.workflow.connections.concat(connection)
-    let workflow   = new Workflow(  
+    let workflow   = new Workflow({  
         modules,
         connections,
-        project.workflow.plugins,
-        project.workflow.rootLayerTree )
+        plugins: project.workflow.plugins
+    })
         
-    workflow   = new Workflow(  
+    workflow   = new Workflow({
         modules,
         connections,
-        project.workflow.plugins,
-        project.workflow.rootLayerTree )
+        plugins: project.workflow.plugins
+    })
 
-    let projectNew = new Project( 
-        project.name,
-        project.description,
-        project.requirements,
-        workflow,
-        project.builderRendering,
-        project.runnerRendering
-    )
+    let projectNew = new Project({
+        ...project,
+        ...{workflow:workflow}
+    })
     return projectNew
 }
 
@@ -71,20 +67,17 @@ export function addAdaptor(connection : Connection,
 
     let connections = project.workflow.connections.filter(c => c!=connection)
     let newConnection = new Connection(connection.start,connection.end, adaptor )
-    let workflow = new Workflow(
-        project.workflow.modules,
-        connections.concat(newConnection),
-        project.workflow.plugins,        
-        project.workflow.rootLayerTree )
+    let workflow = new Workflow({
+        ...project.workflow,
+        ...{
+            connections: connections.concat(newConnection)
+        }
+    })
 
-    let projectNew = new Project( 
-        project.name,
-        project.description,
-        project.requirements,
-        workflow,
-        project.builderRendering,
-        project.runnerRendering
-    )
+    let projectNew = new Project({
+        ...project,
+        ...{workflow}
+    })
 
     return projectNew
 }
@@ -97,20 +90,17 @@ export function updateAdaptor(connection : Connection, mappingFunction : string,
         ? new Adaptor(connection.adaptor.adaptorId,mappingFunction)
         : new Adaptor( uuidv4(), mappingFunction )
     let newConnection = new Connection(connection.start,connection.end, adaptor )
-    let workflow = new Workflow(
-        project.workflow.modules,
-        connections.concat(newConnection),
-        project.workflow.plugins,        
-        project.workflow.rootLayerTree )
+    let workflow = new Workflow({
+        ...project.workflow,
+        ...{
+            connections: connections.concat(newConnection)
+        }
+    })
 
-    let projectNew = new Project(
-        project.name, 
-        project.description,
-        project.requirements,
-        workflow,
-        project.builderRendering,
-        project.runnerRendering
-    )
+    let projectNew = new Project({
+        ...project,
+        ...{workflow}
+    })
     return projectNew
 }
 
@@ -119,20 +109,17 @@ export function deleteAdaptor(connection : Connection, project:Project,
 
     let connections = project.workflow.connections.filter(c => c!=connection)
     let newConnection = new Connection(connection.start,connection.end, undefined )
-    let workflow = new Workflow(
-        project.workflow.modules,
-        connections.concat(newConnection),
-        project.workflow.plugins,        
-        project.workflow.rootLayerTree )
+    let workflow = new Workflow({
+        ...project.workflow,
+        ...{
+            connections: connections.concat(newConnection)
+        }
+    })
 
-    let projectNew = new Project( 
-        project.name,
-        project.description,
-        project.requirements,
-        workflow,
-        project.builderRendering,
-        project.runnerRendering
-    )
+    let projectNew = new Project({
+        ...project,
+        ...{workflow}
+    })
 
     return projectNew
 }
@@ -142,19 +129,17 @@ export function deleteConnection(connection : Connection,
     allSubscriptions: Map<Connection,Subscription> ) : Project{
         
     let connections = project.workflow.connections.filter(c => c!=connection)
-    let workflow = new Workflow(
-        project.workflow.modules,connections,
-        project.workflow.plugins,        
-        project.workflow.rootLayerTree )
+    let workflow = new Workflow({
+        ...project.workflow,
+        ...{
+            connections
+        }
+    })
 
-    let projectNew = new Project( 
-        project.name,
-        project.description,
-        project.requirements,
-        workflow,
-        project.builderRendering,
-        project.runnerRendering
-    )
+    let projectNew = new Project({
+        ...project,
+        ...{workflow}
+    })
     return projectNew
 }
 
@@ -165,13 +150,10 @@ export function setConnectionView(connection: Connection, config: any, project:P
     .concat( [{connectionId:connection.connectionId, wireless:config.wireless}])
 
     let builderRendering = new BuilderRendering(project.builderRendering.modulesView, connectViews, project.builderRendering.descriptionsBoxes)
-    let projectNew = new Project( 
-        project.name,
-        project.description,
-        project.requirements,
-        project.workflow,
-        builderRendering,
-        project.runnerRendering
-    )
+    let projectNew = new Project({
+        ...project,
+        ...{builderRendering}
+    })
+    
     return projectNew
 }

@@ -1,8 +1,9 @@
 
-import { Project, RunnerRendering } from '@youwol/flux-core'
+import { Component, Project, RunnerRendering, Workflow } from '@youwol/flux-core'
 import { LogLevel, AppDebugEnvironment } from './app-debug.environment'
+import { applyHtmlCss, applyHtmlLayout } from './app-store-layer'
 
-export function setRenderingLayout( layout, project:Project ) : Project {
+export function setRenderingLayout( layout: string, project:Project ) : Project {
 
     let debugSingleton = AppDebugEnvironment.getInstance()
 
@@ -13,19 +14,19 @@ export function setRenderingLayout( layout, project:Project ) : Project {
         object:{    layout: layout
         }
     })
-
-    let projectNew = new Project( 
-        project.name,
-        project.description,
-        project.requirements,
-        project.workflow,
-        project.builderRendering,
-        new RunnerRendering(layout,project.runnerRendering.style )
-    )
+    let workflow = applyHtmlLayout(project.workflow, layout)
+    let projectNew = new Project({
+        ...project,
+        ...{
+            workflow: workflow,
+            runnerRendering: new RunnerRendering(layout,project.runnerRendering.style )
+        }
+    }) 
+    
     return projectNew
 }
 
-export function setRenderingStyle(style, project: Project):Project{
+export function setRenderingStyle(rootComponent: Component.Module, style, project: Project):Project{
 
     let debugSingleton = AppDebugEnvironment.getInstance()
 
@@ -36,14 +37,14 @@ export function setRenderingStyle(style, project: Project):Project{
         object:{    style: style
         }
     })
-
-    let projectNew = new Project( 
-        project.name,
-        project.description,
-        project.requirements,
-        project.workflow,
-        project.builderRendering,
-        new RunnerRendering(project.runnerRendering.layout,style )
-    )
+    let workflow = applyHtmlCss(rootComponent, project.workflow, style)
+    let projectNew = new Project({
+        ...project,
+        ...{
+            workflow,
+            runnerRendering: new RunnerRendering(project.runnerRendering.layout,style )
+        }
+    })
+    
     return projectNew
 }

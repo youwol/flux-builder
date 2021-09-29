@@ -1,15 +1,6 @@
 import { Project, LayerTree, Workflow, WorkflowSchema, ProjectSchema, RequirementsSchema } from '@youwol/flux-core';
 
 
-export function toLayerTreeData(layer:LayerTree){
-
-    return {
-        layerId: layer.layerId,
-        moduleIds:layer.moduleIds,
-        title: layer.title,
-        children: layer.children.map( d=> toLayerTreeData(d) )
-    }
-}
 
 export function serializeWorkflow(workflow: Workflow) : WorkflowSchema {
 
@@ -45,13 +36,14 @@ export function serializeWorkflow(workflow: Workflow) : WorkflowSchema {
                              description:plugin.configuration.description,
                              data:Object.assign({},plugin.configuration.data) }
         })),
-        rootLayerTree :toLayerTreeData(workflow.rootLayerTree)
+        rootLayerTree : undefined
     }
 }
 export function toProjectData(project:Project): ProjectSchema{
 
     return {
         name: project.name,
+        schemaVersion:"1.0",
         description:project.description,
         runnerRendering: project.runnerRendering,
         builderRendering: {

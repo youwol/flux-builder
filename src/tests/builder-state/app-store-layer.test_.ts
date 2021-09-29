@@ -1,6 +1,6 @@
-import  './dependencies'
+/*import  './dependencies'
 import { AppDebugEnvironment, AppStore } from '../../app/builder-editor/builder-state'
-import { LayerTree, Connection, instantiateProjectLayerTree } from '@youwol/flux-core'
+import { LayerTree, Connection, LayerTreeSchema } from '@youwol/flux-core'
 import { SimpleModule } from '../common/simple-module'
 import { environment } from '../common/dependencies'
 
@@ -13,8 +13,7 @@ test('should return an empty workflow', () => {
   expect(appStore.project.workflow.modules).toEqual([])
   expect(appStore.project.workflow.connections).toEqual([])
   expect(appStore.project.workflow.plugins).toEqual([])
-  expect(appStore.project.workflow.rootLayerTree.moduleIds).toEqual([])
-  expect(appStore.project.workflow.rootLayerTree.children).toEqual([])
+  expect(appStore.getRootLayer().getModuleIds()).toEqual([])
   expect(appStore.project.builderRendering.modulesView).toEqual([])
   })
 
@@ -31,9 +30,11 @@ test('instantiate layer', () => {
                 moduleIds:[]
             }
         ],
-        moduleIds: ["a","b","c"]
-    }
-    let layer : LayerTree = instantiateProjectLayerTree(layerData)
+        moduleIds: ["a","b","c"],
+        html:"",
+        css:""
+    } as LayerTreeSchema
+    
     expect( layer.layerId).toEqual(layerData.layerId)
     expect( layer.title).toEqual(layerData.title)
     expect( layer.children[0].layerId).toEqual(layerData.children[0].layerId)
@@ -105,3 +106,4 @@ test('layer 2 modules no slots', () => {
     appStore.updateProjectToIndexHistory(0, appStore.indexHistory)
   })
 
+*/

@@ -1,4 +1,4 @@
-import { createHTMLElement, LayerTree } from '@youwol/flux-core'
+import { createHTMLElement, GroupModules, LayerTree } from '@youwol/flux-core'
 import { AppStore } from '../builder-editor/builder-state/index'
 
 
@@ -6,17 +6,19 @@ export function createLayerPickerView(appStore: AppStore, editor): HTMLDivElemen
 
   let subscriptions = []
 
-  function createContentRecursive(layer: LayerTree) {
+  function createContentRecursive(grpMdle: GroupModules.Module) {
 
    // const childrenModules = layer.moduleIds.map(moduleId => ({ tag: 'div', class: "text-muted  px-1", innerText: appStore.getModule(moduleId).configuration.title }))
-    const childrenLayers = layer.children.map(child => createContentRecursive(child))
-    const selectedClass = layer.layerId == appStore.getActiveLayer().layerId ? "font-weight-bold" : ""
+    const childrenLayers = grpMdle.getDirectChildren()
+    .filter( mdle => mdle instanceof GroupModules.Module)
+    .map( (child:GroupModules.Module) => createContentRecursive(child))
+    const selectedClass = grpMdle.moduleId == appStore.getActiveLayer().moduleId ? "font-weight-bold" : ""
     return {
         class: "w-100",
         __label: { 
-          innerText: layer.title, 
+          innerText: grpMdle.configuration.title, 
           class: "flux-hoverable w-100 px-1 "+selectedClass,
-          onclick: () => appStore.selectActiveLayer(layer.layerId) 
+          onclick: () => appStore.selectActiveLayer(grpMdle.moduleId) 
         },
         __div: {
           class: "children pl-2 w-100",
@@ -45,7 +47,7 @@ export function createLayerPickerView(appStore: AppStore, editor): HTMLDivElemen
         children: [{
           tag: 'div',
           class: 'flux-bg-primary text-black  children small py-2',
-          __div: createContentRecursive(appStore.project.workflow.rootLayerTree)
+          __div: createContentRecursive(appStore.getRootLayer())
         }]
       },
     },

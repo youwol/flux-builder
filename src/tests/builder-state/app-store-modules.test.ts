@@ -16,8 +16,7 @@ test('should return an empty workflow', () => {
   expect(appStore.project.workflow.modules).toEqual([])
   expect(appStore.project.workflow.connections).toEqual([])
   expect(appStore.project.workflow.plugins).toEqual([])
-  expect(appStore.project.workflow.rootLayerTree.moduleIds).toEqual([])
-  expect(appStore.project.workflow.rootLayerTree.children).toEqual([])
+  expect(appStore.getRootLayer().getModuleIds()).toEqual([])
   expect(appStore.project.builderRendering.modulesView).toEqual([])
   })
 
@@ -42,13 +41,13 @@ test('add module', () => {
   let mdleView = appStore.project.builderRendering.modulesView[0]
   expect(mdleView.moduleId).toEqual(mdle.moduleId)
 
-  expect(appStore.project.workflow.rootLayerTree.moduleIds.length).toEqual(1)
-  expect(appStore.project.workflow.rootLayerTree.moduleIds[0]).toEqual(mdle.moduleId)
+  expect(appStore.getRootLayer().getModuleIds().length).toEqual(1)
+  expect(appStore.getRootLayer().getModuleIds()[0]).toEqual(mdle.moduleId)
 
   appStore.undo()
   workflow = appStore.project.workflow
   expect(appStore.project.workflow.modules.length).toEqual(0)
-  expect(appStore.project.workflow.rootLayerTree.moduleIds.length).toEqual(0)
+  expect(appStore.getRootLayer().getModuleIds().length).toEqual(0)
   expect(appStore.project.builderRendering.modulesView.length).toEqual(0)
 
   appStore.redo()
@@ -103,7 +102,7 @@ test('update module', () => {
 
   appStore.updateModule(mdle, new SimpleModule['Configuration']({title:"new title",description:"",data:{property0:1} }))
 
-  expect(appStore.project.workflow.rootLayerTree.moduleIds.length).toEqual(1)
+  expect(appStore.getRootLayer().getModuleIds().length).toEqual(1)
   let newMdle =  appStore.project.workflow.modules[0]
   expect(newMdle.configuration.title).toEqual("new title")
   expect(newMdle.configuration.data.property0).toEqual(1)
@@ -126,14 +125,14 @@ test('delete module', () => {
   let mdle = appStore.project.workflow.modules[0]
   appStore.deleteModule(mdle)
   expect(appStore.project.workflow.modules.length).toEqual(0)
-  expect(appStore.project.workflow.rootLayerTree.moduleIds.length).toEqual(0)
+  expect(appStore.getRootLayer().getModuleIds().length).toEqual(0)
   
   appStore.undo()
   expect(appStore.project.workflow.modules[0]).toEqual(mdle)
-  expect(appStore.project.workflow.rootLayerTree.moduleIds[0]).toEqual(mdle.moduleId)
+  expect(appStore.getRootLayer().getModuleIds()[0]).toEqual(mdle.moduleId)
   appStore.redo()
   expect(appStore.project.workflow.modules.length).toEqual(0)
-  expect(appStore.project.workflow.rootLayerTree.moduleIds.length).toEqual(0)
+  expect(appStore.getRootLayer().getModuleIds().length).toEqual(0)
 
   appStore.updateProjectToIndexHistory(0, appStore.indexHistory)
 })
@@ -150,14 +149,14 @@ test('delete modules', () => {
   appStore.deleteModules([])
   appStore.deleteModules([mdle])
   expect(appStore.project.workflow.modules.length).toEqual(0)
-  expect(appStore.project.workflow.rootLayerTree.moduleIds.length).toEqual(0)
+  expect(appStore.getRootLayer().getModuleIds().length).toEqual(0)
   
   appStore.undo()
   expect(appStore.project.workflow.modules[0]).toEqual(mdle)
-  expect(appStore.project.workflow.rootLayerTree.moduleIds[0]).toEqual(mdle.moduleId)
+  expect(appStore.getRootLayer().getModuleIds()[0]).toEqual(mdle.moduleId)
   appStore.redo()
   expect(appStore.project.workflow.modules.length).toEqual(0)
-  expect(appStore.project.workflow.rootLayerTree.moduleIds.length).toEqual(0)
+  expect(appStore.getRootLayer().getModuleIds().length).toEqual(0)
 
   appStore.updateProjectToIndexHistory(0, appStore.indexHistory)
 })

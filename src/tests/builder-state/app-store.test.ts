@@ -180,7 +180,7 @@ test('selection', (done) => {
     
     appStore.selectActiveLayer("child-layer")
     let activeLayer = appStore.getActiveLayer()
-    expect( activeLayer.layerId ).toEqual("child-layer")
+    expect( activeLayer.moduleId ).toEqual("child-layer")
     let activeModules = appStore.getActiveModulesId()
     expect( activeModules ).toEqual(["module1"/*,"plugin0"*/])
 

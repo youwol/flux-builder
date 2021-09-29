@@ -19,6 +19,7 @@ export let projects : {[key:string]:ProjectSchema}={
 
     emptyProject :{
         name:'emptyProject',
+        schemaVersion:"1.0", 
         description:'',
         requirements,
         workflow: {
@@ -29,7 +30,9 @@ export let projects : {[key:string]:ProjectSchema}={
                 layerId:"",
                 title:"",
                 children:[],
-                moduleIds:[]
+                moduleIds:[],
+                html:"",
+                css:""
             }
         },
         builderRendering:{
@@ -45,6 +48,7 @@ export let projects : {[key:string]:ProjectSchema}={
     simpleProject :{
         requirements,
         name:'simpleProjects',
+        schemaVersion:"1.0",
         description:"",
         workflow: {
             modules:[
@@ -122,9 +126,13 @@ export let projects : {[key:string]:ProjectSchema}={
                     layerId:"child-layer",
                     title:"child-layer_title",
                     children:[],
-                    moduleIds:["module1"]             
+                    moduleIds:["module1"],
+                    html:"",
+                    css:""          
                 }],
-                moduleIds:["module0","GroupModules_child-layer"]
+                moduleIds:["module0","GroupModules_child-layer"],
+                html:"",
+                css:""
             }
         },
         builderRendering:{
@@ -160,6 +168,7 @@ export let projects : {[key:string]:ProjectSchema}={
     simpleProjectConnection :{
         requirements,
         name:"simpleProjectConnection",
+        schemaVersion:"1.0",
         description:"",
         workflow: {
             modules:[
@@ -282,9 +291,13 @@ export let projects : {[key:string]:ProjectSchema}={
                     layerId:"child-layer",
                     title:"",
                     children:[],
-                    moduleIds:["module1"]
+                    moduleIds:["module1"],
+                    html:"",
+                    css:""
                 }],
-                moduleIds:["module0","module2","module3","GroupModules_child-layer"]
+                moduleIds:["module0","module2","module3","GroupModules_child-layer"],
+                html:"",
+                css:""
             }
         },
         builderRendering:{
