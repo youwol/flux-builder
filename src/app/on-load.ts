@@ -12,14 +12,15 @@ import { AppStore, AppObservables, UiState, AppDebugEnvironment,
 import { WorkflowPlotter } from './builder-editor/builder-plots/index';
 import { createAttributesPanel, ContextMenuState, ConfigurationStatusView, ExpectationView } from './builder-editor/index'
 
-import { createLayoutEditor, initLayoutEditor, setDynamicComponentsBlocks,
-    replaceTemplateElements, removeTemplateElements, autoAddElementInLayout  } from './layout-editor/index';
+import { createLayoutEditor, initLayoutEditor } from './layout-editor/index';
 
 import { plugNotifications } from './notification';
 import { AssetsBrowserClient } from './clients/assets-browser.client';
 import { AssetsExplorerView } from './builder-editor/views/assets-explorer.view';
 import { render } from '@youwol/flux-view';
 import { loadingLibView, loadingProjectView } from './loading.views';
+import { autoAddElementInLayout, autoRemoveElementInLayout, removeTemplateElements, replaceTemplateElements, updateElementsInLayout } from './layout-editor/flux-rendering-components';
+import { setDynamicComponentsBlocks } from './layout-editor/flux-blocks';
 
 
 let {appStore, appObservables, layoutEditor} = await initializeRessources()
@@ -55,7 +56,7 @@ else if(uri){
 export async function initializeRessources() : 
     Promise<{ appStore: AppStore, appObservables: AppObservables, layoutEditor: grapesjs.Editor }>{
 
-    let defaultLog      = false
+    let defaultLog      = true
     let appObservables  = AppObservables.getInstance()
     let debugSingleton  = AppDebugEnvironment.getInstance()
 
@@ -139,8 +140,8 @@ export function connectStreams(appStore:AppStore, workflowPlotter: WorkflowPlott
     
     let layoutEditor$ = new ReplaySubject(1)
     
-    appObservables.renderingLoaded$.subscribe( (d) => {
-        initLayoutEditor(layoutEditor, d, appStore)
+    appObservables.renderingLoaded$.subscribe( ({layout, style}: {layout:HTMLDivElement, style: string}) => {
+        initLayoutEditor(layoutEditor, {layout, style}, appStore)
         layoutEditor$.next(layoutEditor)
     })
         
@@ -151,9 +152,12 @@ export function connectStreams(appStore:AppStore, workflowPlotter: WorkflowPlott
         removeTemplateElements(notReplaced, editor)
         if(loading)
             replaceTemplateElements(diff.createdElements.map( (m:ModuleFlux)=> m.moduleId), editor,appStore)
-        if(!loading)
-            autoAddElementInLayout(diff, editor,appStore )
-        
+        if(!loading){
+            autoAddElementInLayout(diff, editor,appStore ) 
+            updateElementsInLayout(diff, editor,appStore ) 
+            autoRemoveElementInLayout(diff, editor,appStore ) 
+        }
+            
         setDynamicComponentsBlocks(appStore, editor)    
     })
     

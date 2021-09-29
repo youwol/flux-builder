@@ -2,23 +2,42 @@
 import { Component } from '@youwol/flux-core';
 
 import { LogLevel, AppDebugEnvironment, AppStore } from '../builder-editor/builder-state/index';
-import { cleanCss, replaceTemplateElements, updateFluxCache, getAllComponentsRec,
-     addComponentPlaceholder, privateClasses } from './utils';
-import { setDynamicComponentsBlocks } from './editor';
+import { cleanCss, privateClasses } from './utils';
 import { buildCodePanel } from './code-editors';
+import { setDynamicComponentsBlocks } from './flux-blocks';
+import { replaceTemplateElements } from './flux-rendering-components';
 
 export function plugCommands(editor: any, appStore: AppStore) {
 
     let debugSingleton = AppDebugEnvironment.getInstance()
 
-    editor.on('change:changesCount', (e: any) => {
+    editor.on('change', (element: any) => {
 
-        if (appStore.project.runnerRendering.layout !== localStorage.getItem("gjs-html"))
+        if (appStore.project.runnerRendering.layout !== localStorage.getItem("gjs-html")) {
+            debugSingleton.debugOn &&
+                debugSingleton.logRenderTopic({
+                    level: LogLevel.Info, message: "change => layout",
+                    object: {
+                        element,
+                        oldLayout: appStore.project.runnerRendering.layout,
+                        newLayout: localStorage.getItem("gjs-html")
+                    }
+                })
             appStore.setRenderingLayout(localStorage.getItem("gjs-html"), false)
-
+        }
         let css = cleanCss(localStorage.getItem("gjs-css"))
-        if (appStore.project.runnerRendering.style !== css)
+        if (appStore.project.runnerRendering.style !== css) {
+            debugSingleton.debugOn &&
+                debugSingleton.logRenderTopic({
+                    level: LogLevel.Info, message: "change => style",
+                    object: {
+                        element,
+                        oldCss: appStore.project.runnerRendering.style,
+                        newCss: css
+                    }
+                })
             appStore.setRenderingStyle(css, false)
+        }
     });
 
     editor.on('canvas:drop', (dataTransfer: any, component: any) => {
@@ -27,9 +46,7 @@ export function plugCommands(editor: any, appStore: AppStore) {
             debugSingleton.logRenderTopic({ level: LogLevel.Info, message: "canvas:drop", object: { dataTransfer, component: component.toJSON() } })
 
         let child = component.view.el as HTMLDivElement
-        // it happens that grapes add suffix e.g. ('-1', '-2', etc) on id...this is a patch to recover the module
-        // it is happenning when multiple rendering div of the same module in the page
-        let mdle = appStore.getModule(child.id) // || appStore.getModule( child.id.split("-").slice(0,-1).join('-') )
+        let mdle = appStore.getModule(child.id)
 
         if (mdle) {
 
@@ -37,35 +54,26 @@ export function plugCommands(editor: any, appStore: AppStore) {
                 debugSingleton.logRenderTopic({ level: LogLevel.Info, message: "canvas:drop => flux-module", object: { module: mdle } })
 
             let childrenModulesId = []
-            if (mdle instanceof Component.Module && !editor.fluxCache[mdle.moduleId]) {
-                updateFluxCache(appStore, editor)
-            }
-            if (mdle instanceof Component.Module /*&& ! editor.fluxCache[mdle.moduleId] !=component*/) {
-                // in a case of Component.Module we want to recover the last created gjs-component corresponding to the flux-component
-                let parent = component.parent()
-                let index = parent.components().indexOf(component)
-                let cached = editor.fluxCache[mdle.moduleId]//.toHTML()
-                debugSingleton.debugOn &&
-                    debugSingleton.logRenderTopic({
-                        level: LogLevel.Info, message: "canvas:drop => restore cached component",
-                        object: { module: mdle, cachedComponent: cached, parent: parent.getEl() }
-                    })
-
-                component.remove()
-                parent.append(cached.layout, { at: index })
-                editor.getStyle().add(cached.styles)
+            if (mdle instanceof Component.Module) {
                 childrenModulesId = (mdle as Component.Module).getAllChildren().map(m => m.moduleId)
+                editor.getStyle().add(mdle.getCSS({ recursive: true, asString:true }))
             }
             child.id = mdle.moduleId
             replaceTemplateElements([child.id, ...childrenModulesId], editor, appStore)
             setDynamicComponentsBlocks(appStore, editor)
         }
-        updateFluxCache(appStore, editor)
     });
 
-    editor.on('component:update:content', (a) => {
+    editor.on('component:update:content', (data) => {
         //when inner html has changed, e.g. after text changed
-        setTimeout(() => updateFluxCache(appStore, editor), 200)
+        debugSingleton.debugOn &&
+            debugSingleton.logRenderTopic({ level: LogLevel.Info, message: "component:update:content", object: { module: data } })
+    })
+
+    editor.on('component:update:style', (data) => {
+        console.log("AAAAAAAAAAAAAAAAAAAAAA")
+        debugSingleton.debugOn &&
+            debugSingleton.logRenderTopic({ level: LogLevel.Info, message: "component:update:style", object: { module: data } })
     })
 
     editor.on('sorter:drag:end', ({ modelToDrop, srcEl }: { modelToDrop: any, srcEl: any }) => {
@@ -78,28 +86,25 @@ export function plugCommands(editor: any, appStore: AppStore) {
 
         // from here: the drag end is a move => in case of flux-component the cache has the appropriate content 
         let mdle = appStore.getModule(modelToDrop.ccid)
-        if (mdle && !(mdle instanceof Component.Module))
-            replaceTemplateElements([mdle.moduleId], editor, appStore)
+        if(!mdle)
+            return
+            
 
-        if (mdle && mdle instanceof Component.Module) {
+        let moduleIds = (mdle instanceof Component.Module)
+            ? mdle.getAllChildren().map(m => m.moduleId)
+            : [mdle.moduleId]
 
-            let allGjsComponents = getAllComponentsRec(editor)
-
-            if (mdle instanceof Component.Module)
-                addComponentPlaceholder(appStore, editor, allGjsComponents, mdle)
-
-            let allChildrenModulesId = mdle.getAllChildren().map(m => m.moduleId)
-            replaceTemplateElements([mdle.moduleId].concat(allChildrenModulesId), editor, appStore)
-        }
-        updateFluxCache(appStore, editor)// if it happens that the div.id that is going to be created is a component => do not update the cache with it (at this stage it is empty)
+        replaceTemplateElements(moduleIds, editor, appStore)
     });
 
     editor.on('component:remove', (component) => {
-        setDynamicComponentsBlocks(appStore, editor)
+        if (appStore.getActiveLayer().getModuleIds().includes(component.ccid))
+            setDynamicComponentsBlocks(appStore, editor)
     });
 
     editor.on('selector:add', selector => {
-        selector.set('private', privateClasses.includes(selector.id))
+        selector.set('active', false )
+        selector.set('private', privateClasses.includes(selector.id)) 
     });
 
     editor.Commands.add('show-blocks', {
@@ -185,7 +190,8 @@ export function plugCommands(editor: any, appStore: AppStore) {
         run(editor: any, sender: any) {
 
             document.querySelector("#gjs-cv-tools").classList.add("preview")
-            editor.Canvas.getDocument().getElementById("wrapper").classList.add("preview")
+            let body = editor.Canvas.getDocument().body.querySelector('div')
+            body.classList.add("preview")
             // we hide template elements
             Array.from(editor.Canvas.getDocument().querySelectorAll(".flux-builder-only"))
                 .forEach((element: any) => element.classList.add('preview')
@@ -207,7 +213,8 @@ export function plugCommands(editor: any, appStore: AppStore) {
         stop(editor: any, sender: any) {
 
             document.querySelector("#gjs-cv-tools").classList.remove("preview")
-            editor.Canvas.getDocument().getElementById("wrapper").classList.remove("preview")
+            let body = editor.Canvas.getDocument().body.querySelector('div')
+            body.classList.remove("preview")
 
             Array.from(editor.Canvas.getDocument().querySelectorAll(".flux-builder-only"))
                 .forEach((element: any) => element.classList.remove('preview')

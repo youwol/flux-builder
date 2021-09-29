@@ -1,4 +1,4 @@
-import { replaceTemplateElements } from './utils';
+import { replaceTemplateElements } from "./flux-rendering-components";
 
 
 export function buildCodeEditor(editor, type) {

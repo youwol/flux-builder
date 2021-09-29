@@ -18,7 +18,7 @@ let stylesFutures = cdn.fetchStyleSheets([
     "bootstrap#4.4.1~bootstrap.min.css",
     "fontawesome#5.12.1~css/all.min.css",
     "@youwol/fv-widgets#0.0.3~dist/assets/styles/style.youwol.css",
-    "grapes#0.16.2~css/grapes.min.css",
+    "grapes#0.17.26~css/grapes.min.css",
     "codemirror#5.52.0~codemirror.min.css",
     "codemirror#5.52.0~theme/blackboard.min.css",
 ])
@@ -26,7 +26,7 @@ let stylesFutures = cdn.fetchStyleSheets([
 let bundlesFutures = cdn.fetchBundles(
     {
         'lodash': '4.17.15',
-        "grapes": '0.16.2',
+        "grapes": '0.17.26',
         "@youwol/flux-core": 'latest',
         "@youwol/flux-svg-plots": 'latest',
         '@youwol/flux-view': 'latest',

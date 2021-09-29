@@ -1,4 +1,4 @@
-import { ErrorLog, ModuleError, ModuleFlux, Process, ProcessMessage, ProcessMessageKind } from '@youwol/flux-core';
+import { ErrorLog, GroupModules, ModuleError, ModuleFlux, Process, ProcessMessage, ProcessMessageKind } from '@youwol/flux-core';
 import { attr$, HTMLElement$, render, Stream$, VirtualDOM } from '@youwol/flux-view';
 import { cpuUsage } from 'node:process';
 import { merge, Observable } from 'rxjs';
@@ -28,9 +28,10 @@ function focusAction(
     toggledClass: string,
     duration: number = 5000 ) {
      
-    let root = appStore.project.workflow.rootLayerTree
-    let layer = root.getLayerRecursive((layer) => layer.moduleIds.includes(mdle.moduleId) )
-    appStore.selectActiveLayer(layer.layerId)
+    let root = appStore.getRootLayer()
+    let layer = appStore.project.workflow.modules
+    .find((mdle) => mdle instanceof GroupModules.Module && mdle.getModuleIds().includes(mdle.moduleId) )
+    appStore.selectActiveLayer(layer.moduleId)
     
     setTimeout( () => {
         let g = document.getElementById(mdle.moduleId)
