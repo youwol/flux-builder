@@ -732,6 +732,8 @@ export class AppStore {
         let oldProject      = this.history[oldIndex]
         
         let delta           = workflowDelta(oldProject.workflow,this.project.workflow )
+        this.project.workflow.setup()
+
         if( delta.modules.removedElements ){
             delta.modules.removedElements.filter( m=> instanceOfSideEffects(m)).forEach( m => m.dispose() )
         }
