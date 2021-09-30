@@ -23,7 +23,7 @@ export function plugCommands(editor: any, appStore: AppStore) {
                         newLayout: localStorage.getItem("gjs-html")
                     }
                 })
-            appStore.setRenderingLayout(localStorage.getItem("gjs-html"), false)
+            appStore.setRenderingLayout(localStorage.getItem("gjs-html"))
         }
         let css = cleanCss(localStorage.getItem("gjs-css"))
         if (appStore.project.runnerRendering.style !== css) {
@@ -36,7 +36,7 @@ export function plugCommands(editor: any, appStore: AppStore) {
                         newCss: css
                     }
                 })
-            appStore.setRenderingStyle(css, false)
+            appStore.setRenderingStyle(css)
         }
     });
 
