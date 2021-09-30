@@ -25,9 +25,17 @@ export function removeTemplateElements(modules: Array<ModuleFlux>, editor) {
 
 export function replaceTemplateElements(moduleIds: Array<string>, editor: any, appStore: AppStore): Array<ModuleFlux> {
 
+    let debugSingleton = AppDebugEnvironment.getInstance()
     if(moduleIds.length==0)
         return
 
+    debugSingleton.debugOn &&
+    debugSingleton.logRenderTopic({
+        level: LogLevel.Info,
+        message: "replaceTemplateElements",
+        object: { moduleIds, appStore }
+    })
+    
     let body = editor.Canvas.getDocument().body.querySelector('div')
     
     let mdles = moduleIds
