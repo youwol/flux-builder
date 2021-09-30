@@ -13,20 +13,21 @@ export function plugCommands(editor: any, appStore: AppStore) {
 
     editor.on('change', (element: any) => {
 
-        if (appStore.project.runnerRendering.layout !== localStorage.getItem("gjs-html")) {
+        let html = localStorage.getItem("gjs-html")
+        if (appStore.project.runnerRendering.layout !== html && html!="") {
             debugSingleton.debugOn &&
                 debugSingleton.logRenderTopic({
                     level: LogLevel.Info, message: "change => layout",
                     object: {
                         element,
                         oldLayout: appStore.project.runnerRendering.layout,
-                        newLayout: localStorage.getItem("gjs-html")
+                        newLayout: html
                     }
                 })
             appStore.setRenderingLayout(localStorage.getItem("gjs-html"))
         }
         let css = cleanCss(localStorage.getItem("gjs-css"))
-        if (appStore.project.runnerRendering.style !== css) {
+        if (appStore.project.runnerRendering.style !== css && css !="") {
             debugSingleton.debugOn &&
                 debugSingleton.logRenderTopic({
                     level: LogLevel.Info, message: "change => style",
