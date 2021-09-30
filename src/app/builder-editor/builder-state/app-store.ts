@@ -708,7 +708,8 @@ export class AppStore {
         let rootComponent = this.getLayer(this.rootLayerId) as Component.Module
 
         let project = setRenderingStyle(rootComponent, style, this.project)
-        this.updateProject(project, asNewState)
+        if(project != this.project)
+            this.updateProject(project, asNewState)
     }
     
     addModuleRenderDiv(outerHtml){

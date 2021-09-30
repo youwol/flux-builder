@@ -115,6 +115,13 @@ export function applyHtmlCss(
         })
         return styleSheet; 
     }
+    let isEquivalent = (oldRules: string[], newRules:string[]) => {
+        oldRules = oldRules.filter( d => d!= "")
+        newRules = newRules.filter( d => d!= "")
+        if(oldRules.length!=newRules.length)
+            return false
+        return oldRules.find( oldRule => newRules.includes(oldRule) == undefined) == undefined
+    }
     let styleSheet = toCss(css)
     let htmlRoot = wrapDiv(rootComponent.getHTML({recursive: true}))
 
@@ -124,7 +131,8 @@ export function applyHtmlCss(
     
     let newComponents = workflow.modules
     .filter( mdle => mdle instanceof Component.Module)
-    // do not update the style if the element is not actually in the view
+    // do not update the style if the element is not actually in the view 
+    // (required by grapes: if a component is removed all its styles too - we style want to keep them if it is re-inserted)
     .filter( mdle => htmlRoot.querySelector(`#${mdle.moduleId}`) != undefined)
     // fetch all the rules that applies for the component
     .map( (component: Component.Module) => {
@@ -148,23 +156,26 @@ export function applyHtmlCss(
             if(elements.length>0 )
                 cssRules.add(cssRule.cssText)
         }
-        let css : string = [...cssRules].reduce((acc: string,e: string) => acc+"\n"+e, ""); 
-        if(css == component.getPersistentData<Component.PersistentData>().css)
+        let oldCssRules = component.getPersistentData<Component.PersistentData>().css.split("\n")
+
+        if(isEquivalent(oldCssRules, [...cssRules] ))
             return undefined
 
+        let css : string = [...cssRules].reduce((acc: string,e: string) => acc+"\n"+e, ""); 
+       
         let newComponent = updateComponent(component, {css})
         return newComponent
     })
     .filter( d => d)
-    debugSingleton.debugOn && 
-    debugSingleton.logWorkflowBuilder( {  
-        level : LogLevel.Info, 
-        message: "apply css style", 
-        object:{    
-            newComponents
-        }
-    })
-
+    if(newComponents.length==0){
+        debugSingleton.debugOn && 
+        debugSingleton.logWorkflowBuilder( {  
+            level : LogLevel.Info, 
+            message: "no changes in css", 
+            object:{}
+        })
+        return workflow
+    }
     let newWorkflow = new Workflow({
         ...workflow,
         modules: workflow.modules
