@@ -118,7 +118,8 @@ export function applyHtmlCss(
         newRules = newRules.filter( d => d!= "")
         if(oldRules.length!=newRules.length)
             return false
-        return oldRules.find( oldRule => newRules.includes(oldRule) == undefined) == undefined
+        let founds = oldRules.map( oldRule => newRules.includes(oldRule))
+        return founds.reduce( (acc,e)=> acc && e, true)
     }
     let styleSheet = toCss(css)
     let htmlRoot = wrapDiv(rootComponent.getHTML({recursive: true}))
