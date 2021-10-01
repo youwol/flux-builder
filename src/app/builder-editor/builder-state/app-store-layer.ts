@@ -53,20 +53,18 @@ export function applyHtmlLayout(
         if(!deepHtml)
             return undefined
 
-        let encapsulatedHtml = component.getDirectChildren()
+        component.getDirectChildren()
         .filter( child => child instanceof Component.Module)
-        .reduce( (htmlFinal, childComponent: Component.Module) => {
-            let childComponentDiv = htmlFinal.querySelector(`#${childComponent.moduleId}`)
+        .forEach( (childComponent: Component.Module) => {
+            let childComponentDiv = deepHtml.querySelector(`#${childComponent.moduleId}`)
             if(childComponentDiv)
                 childComponentDiv.innerHTML = '' 
-            return htmlFinal.outerHTML
-        }, deepHtml)
-        .outerHTML
-
-        if(encapsulatedHtml == component.getPersistentData<Component.PersistentData>().html)
+        })
+        let html = deepHtml.outerHTML
+        if(html == component.getPersistentData<Component.PersistentData>().html)
             return undefined
 
-        let newComponent = updateComponent(component, {html: deepHtml.outerHTML})
+        let newComponent = updateComponent(component, {html})
         return newComponent
     })
     .filter( d => d)
