@@ -26,7 +26,7 @@ export function uuidv4() {
 }
 
   export function packageAssetComponent(component: Component.Module | GroupModules.Module, project: Project) {
-
+    /*
     let allModules = [component, ...component.getAllChildren()]
     let modules = allModules.filter( m=>!(m instanceof PluginFlux))
     let moduleIds = modules.map( m=>m.moduleId)
@@ -45,7 +45,7 @@ export function uuidv4() {
     let contentHtml = document.createElement('div')
     contentHtml.innerHTML = project.runnerRendering.layout
     let componentHtml = contentHtml.querySelector("#"+component.moduleId)
-    if (!componentHtml /*component instanceof GroupModules.Module*/)
+    if (!componentHtml )
       return {
         componentId: component.moduleId,
         workflow:serializeWorkflow(workflow),
@@ -75,6 +75,8 @@ export function uuidv4() {
         fluxPacks: new Array(...fluxPacks), 
         runnerRendering:{layout:innerHtml,style:[...cssItems].reduce( (acc,e)=>acc+" "+e,"")}
         }
+        */
+       return undefined
   }
   
 

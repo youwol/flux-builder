@@ -32,7 +32,6 @@ export namespace AutoForm {
             this.inputValues$ = (inputValues$ instanceof BehaviorSubject)
             ? inputValues$ 
             : new BehaviorSubject<Object>(inputValues$ as Object)
-            console.log("Scemas",schema )
             this.currentValue$ = new BehaviorSubject(this.inputValues$.getValue())
 
         }
