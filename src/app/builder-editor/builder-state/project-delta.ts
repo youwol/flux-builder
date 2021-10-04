@@ -53,5 +53,12 @@ export function workflowDelta(oldWf:Workflow,newWf:Workflow){
 
     diffModules.createdElements = Array.from(new Set(diffModules.createdElements))
     diffModules.removedElements = Array.from(new Set(diffModules.removedElements))
-    return { connections: diffsConnection, modules: diffModules }  
+
+    let count = diffsConnection.createdElements.length + diffsConnection.removedElements.length +
+    diffModules.createdElements.length + diffModules.removedElements.length
+    return { 
+        connections: diffsConnection, 
+        modules: diffModules, 
+        hasDiff: count >0
+    }  
   }
