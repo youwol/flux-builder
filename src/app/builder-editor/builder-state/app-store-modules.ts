@@ -6,10 +6,6 @@ import {
 }
     from '@youwol/flux-core'
 import { Subscription } from 'rxjs'
-import { cloneLayerTree, getLayer, cleanChildrenLayers } from './app-store-layer'
-
-import { AppObservables } from './app-observables.service'
-import { AppStore } from './app-store'
 import { updateGroup } from './app-store-modules-group'
 
 declare var _: any
@@ -138,6 +134,7 @@ export function addModule(Factory, coors, project: Project, activeLayerId: strin
 
 function duplicate({ mdle, ready$, configuration, parent, workflow }: { mdle, ready$, configuration?, parent?, workflow?}) {
 
+    // should new mdle.Factory.Module(mdle) not be sufficient or almost (should we allow config to change) ??
     let Factory = mdle.Factory
     if (configuration == undefined) {
         let persistentData = new Factory.PersistentData(mdle.configuration.data)
@@ -397,9 +394,19 @@ export function moveModules(modulesPosition, moduleViews, project: Project, impl
     return projectNew
 }
 
-function getIncludedModule(grpMdle: GroupModules.Module, workflow: Workflow) {
-    return grpMdle.getAllChildren()
+
+export function clonePluginsForNewParents(parentModules: ModuleFlux[], workflow: Workflow){
+
+    return parentModules
+    .map( (mdle: ModuleFlux) => {
+        return [mdle, workflow.plugins.find( p => p.parentModule.moduleId == mdle.moduleId)] 
+    })
+    .filter( ([mdle, plugin]) => plugin != undefined)
+    .map( ([mdle, plugin]) => {
+        return new plugin.Factory.Module({...plugin, parentModule:mdle})
+    })
 }
+
 
 export function deleteModules(modulesDeleted: Array<ModuleFlux>, project: Project): Project {
 
@@ -407,6 +414,7 @@ export function deleteModules(modulesDeleted: Array<ModuleFlux>, project: Projec
 
     if (modulesDeleted.length === 0)
         return undefined
+    let modulesDeletedId = modulesDeleted.map(m => m.moduleId)
     debugSingleton.debugOn &&
         debugSingleton.logWorkflowBuilder({
             level: LogLevel.Info,
@@ -416,49 +424,64 @@ export function deleteModules(modulesDeleted: Array<ModuleFlux>, project: Projec
             }
         })
     let grpMdlesDeleted = modulesDeleted.filter(mdle => mdle instanceof GroupModules.Module)
-    let inGroupModulesDeleted = grpMdlesDeleted.map((grpMdle: GroupModules.Module) => grpMdle.getAllChildren()).flat()
-    let modulesToDeleteId = [
-        ...modulesDeleted.map(m => m.moduleId), 
-        ...inGroupModulesDeleted.reduce((acc, e) => acc.concat(e.moduleId), [])
-    ]
+    let inGroupModulesDeleted = grpMdlesDeleted
+        .map((grpMdle: GroupModules.Module) => grpMdle.getAllChildren(project.workflow))
+        .flat()
 
-    let indirectDeletedId = project.workflow.plugins
-        .filter(plugin => modulesToDeleteId.includes(plugin.parentModule.moduleId))
-        .map(p => p.moduleId)
-
-    modulesToDeleteId = modulesToDeleteId.concat(indirectDeletedId)
-
-    let newGroups = project.workflow.modules
+    // get parent groups that contains at least one of the deleted modules
+    let parentGroups = project.workflow.modules
         .filter(mdle => mdle instanceof GroupModules.Module)
         .filter((mdle: GroupModules.Module) => !grpMdlesDeleted.includes(mdle))
-        .map((mdle: GroupModules.Module) => {
+        .filter((mdle: GroupModules.Module) => {
             let childIds = mdle.getModuleIds()
-            let filtered = childIds.filter(mId => !modulesToDeleteId.includes(mId))
-            if (childIds.length == filtered.length)
-                return undefined
-            return updateGroup(mdle, {moduleIds: filtered})
+            let filtered = childIds.filter(mId => !modulesDeletedId.includes(mId))
+            return childIds.length != filtered.length
         })
-        .filter( d => d)
-    
+
+    let modulesNotReplacedId = [
+        ...modulesDeleted.map(m => m.moduleId),
+        ...inGroupModulesDeleted.reduce((acc, e) => acc.concat(e.moduleId), [])
+    ]
+    let pluginsNotReplacedId = project.workflow.plugins
+        .filter(plugin => modulesNotReplacedId.includes(plugin.parentModule.moduleId))
+        .map(p => p.moduleId)
+
+    let idsRemoved = [...modulesNotReplacedId, ...pluginsNotReplacedId]
+
+    let newModulesReplaced =  parentGroups.map((mdle: GroupModules.Module) => {
+        let childIds = mdle.getModuleIds()
+        let filtered = childIds.filter(mId => !idsRemoved.includes(mId))
+        return updateGroup(mdle, { moduleIds: filtered })
+    })
+
+    let newPluginsReplaced = clonePluginsForNewParents(newModulesReplaced, project.workflow)
+
+    let modulesToDeleteId = [
+        ...modulesNotReplacedId,
+        ...pluginsNotReplacedId,
+        ...newModulesReplaced.map( mdle => mdle.moduleId),
+        ...newPluginsReplaced.map( mdle => mdle.moduleId)
+    ]
+
     let modules = project.workflow.modules
         .filter(m => !modulesToDeleteId.includes(m.moduleId))
-        .filter(m => !newGroups.map(m => m.moduleId).includes(m.moduleId))
-        .concat(...newGroups)
+        .concat(...newModulesReplaced)
 
-    let pluginsToKeep = project.workflow.plugins
+    let plugins = project.workflow.plugins
         .filter(m => !modulesToDeleteId.includes(m.moduleId))
+        .concat(newPluginsReplaced)
 
     let modulesView = project.builderRendering.modulesView
-        .filter(m => !modulesToDeleteId.includes(m.moduleId))
+        .filter(m => !idsRemoved.includes(m.moduleId))
 
     let connectionsToKeep = project.workflow.connections
-        .filter(c => !modulesToDeleteId.includes(c.end.moduleId) &&
-            !modulesToDeleteId.includes(c.start.moduleId))
+        .filter(c => !idsRemoved.includes(c.end.moduleId) &&
+            !idsRemoved.includes(c.start.moduleId))
 
     let workflow = new Workflow({
         modules,
         connections: connectionsToKeep,
-        plugins: pluginsToKeep
+        plugins
     })
 
     let boxNeedUpdate = project.builderRendering.descriptionsBoxes.find(box =>
