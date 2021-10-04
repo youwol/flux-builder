@@ -3,8 +3,9 @@ import * as _operators from 'rxjs/operators'
 import  './dependencies'
 import { AppDebugEnvironment, AppStore, AppObservables,getPlugins } from '../../app/builder-editor/builder-state'
 import { SimpleModule2, SimplePlugin, testPack } from '../common/simple-module'
-import { ModuleConfiguration, instantiateProjectModules,instantiateProjectPlugins} from '@youwol/flux-core'
+import { ModuleConfiguration, instantiateProjectModules,instantiateProjectPlugins, Workflow} from '@youwol/flux-core'
 import { environment } from '../common/dependencies'
+import { Subject } from 'rxjs'
 
 
 test('should return an empty workflow', () => {
@@ -20,7 +21,7 @@ test('should return an empty workflow', () => {
 
 
 test('instantiate plugins', () => {
-  let obs$ = AppObservables.getInstance()
+  let workflow$ = new Subject<Workflow>()
   let modulesData = [{
     moduleId : "unique-id-0",
     factoryId:{module:"SimpleModule", pack:"flux-test"},
@@ -36,7 +37,7 @@ test('instantiate plugins', () => {
     Object.values(testPack.modules)
     .map( (mdleFact) => [( JSON.stringify({module:mdleFact['id'], pack:testPack.name})), mdleFact ])
   )
-  let modules =  instantiateProjectModules(modulesData,factory, environment, ()=>undefined)
+  let modules =  instantiateProjectModules(modulesData,factory, environment, workflow$)
 
   let pluginsData = [{
     moduleId : "unique-id-1",

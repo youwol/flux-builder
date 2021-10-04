@@ -87,7 +87,7 @@ test('load simple project', (done) => {
         expect(module0).toBeDefined()
         expect(module0.getAttribute("transform")).toEqual("translate(53,51)")
 
-        appStore.selectActiveLayer("child-layer")
+        appStore.selectActiveGroup("child-layer")
         let modulesView = appStore.getActiveModulesView()
         expect(modulesView.length).toEqual(2) // plugin not here, should it be?
         let mdleView1 =  modulesView.find( m=>m.moduleId==="module1")  

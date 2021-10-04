@@ -1,11 +1,12 @@
 
 import * as _operators from 'rxjs/operators'
-import {instantiateProjectModules } from '@youwol/flux-core'
+import {instantiateProjectModules, Workflow } from '@youwol/flux-core'
 import  './dependencies'
 
 import { AppDebugEnvironment, AppStore } from '../../app/builder-editor/builder-state'
 import {SimpleModule, testPack} from '../common/simple-module'
 import { environment } from '../common/dependencies'
+import { Subject } from 'rxjs'
 
 
 test('should return an empty workflow', () => {
@@ -16,7 +17,7 @@ test('should return an empty workflow', () => {
   expect(appStore.project.workflow.modules).toEqual([])
   expect(appStore.project.workflow.connections).toEqual([])
   expect(appStore.project.workflow.plugins).toEqual([])
-  expect(appStore.getRootLayer().getModuleIds()).toEqual([])
+  expect(appStore.getRootComponent().getModuleIds()).toEqual([])
   expect(appStore.project.builderRendering.modulesView).toEqual([])
   })
 
@@ -41,13 +42,13 @@ test('add module', () => {
   let mdleView = appStore.project.builderRendering.modulesView[0]
   expect(mdleView.moduleId).toEqual(mdle.moduleId)
 
-  expect(appStore.getRootLayer().getModuleIds().length).toEqual(1)
-  expect(appStore.getRootLayer().getModuleIds()[0]).toEqual(mdle.moduleId)
+  expect(appStore.getRootComponent().getModuleIds().length).toEqual(1)
+  expect(appStore.getRootComponent().getModuleIds()[0]).toEqual(mdle.moduleId)
 
   appStore.undo()
   workflow = appStore.project.workflow
   expect(appStore.project.workflow.modules.length).toEqual(0)
-  expect(appStore.getRootLayer().getModuleIds().length).toEqual(0)
+  expect(appStore.getRootComponent().getModuleIds().length).toEqual(0)
   expect(appStore.project.builderRendering.modulesView.length).toEqual(0)
 
   appStore.redo()
@@ -72,11 +73,12 @@ test('instantiate modules', () => {
       }
     }
   }]
+  let workflow$ = new Subject<Workflow>()
   let factory = new Map( 
     Object.values(testPack['modules'])
     .map( (mdleFact) => [( JSON.stringify({module:mdleFact['id'], pack:testPack.name})), mdleFact ])
   )
-  let modules =  instantiateProjectModules(modulesData,factory, environment, ()=>undefined)
+  let modules =  instantiateProjectModules(modulesData,factory, environment, workflow$)
 
   expect(modules.length).toEqual(1)
   let mdle = modules[0]
@@ -102,7 +104,7 @@ test('update module', () => {
 
   appStore.updateModule(mdle, new SimpleModule['Configuration']({title:"new title",description:"",data:{property0:1} }))
 
-  expect(appStore.getRootLayer().getModuleIds().length).toEqual(1)
+  expect(appStore.getRootComponent().getModuleIds().length).toEqual(1)
   let newMdle =  appStore.project.workflow.modules[0]
   expect(newMdle.configuration.title).toEqual("new title")
   expect(newMdle.configuration.data.property0).toEqual(1)
@@ -125,14 +127,14 @@ test('delete module', () => {
   let mdle = appStore.project.workflow.modules[0]
   appStore.deleteModule(mdle)
   expect(appStore.project.workflow.modules.length).toEqual(0)
-  expect(appStore.getRootLayer().getModuleIds().length).toEqual(0)
+  expect(appStore.getRootComponent().getModuleIds().length).toEqual(0)
   
   appStore.undo()
   expect(appStore.project.workflow.modules[0]).toEqual(mdle)
-  expect(appStore.getRootLayer().getModuleIds()[0]).toEqual(mdle.moduleId)
+  expect(appStore.getRootComponent().getModuleIds()[0]).toEqual(mdle.moduleId)
   appStore.redo()
   expect(appStore.project.workflow.modules.length).toEqual(0)
-  expect(appStore.getRootLayer().getModuleIds().length).toEqual(0)
+  expect(appStore.getRootComponent().getModuleIds().length).toEqual(0)
 
   appStore.updateProjectToIndexHistory(0, appStore.indexHistory)
 })
@@ -149,14 +151,14 @@ test('delete modules', () => {
   appStore.deleteModules([])
   appStore.deleteModules([mdle])
   expect(appStore.project.workflow.modules.length).toEqual(0)
-  expect(appStore.getRootLayer().getModuleIds().length).toEqual(0)
+  expect(appStore.getRootComponent().getModuleIds().length).toEqual(0)
   
   appStore.undo()
   expect(appStore.project.workflow.modules[0]).toEqual(mdle)
-  expect(appStore.getRootLayer().getModuleIds()[0]).toEqual(mdle.moduleId)
+  expect(appStore.getRootComponent().getModuleIds()[0]).toEqual(mdle.moduleId)
   appStore.redo()
   expect(appStore.project.workflow.modules.length).toEqual(0)
-  expect(appStore.getRootLayer().getModuleIds().length).toEqual(0)
+  expect(appStore.getRootComponent().getModuleIds().length).toEqual(0)
 
   appStore.updateProjectToIndexHistory(0, appStore.indexHistory)
 })

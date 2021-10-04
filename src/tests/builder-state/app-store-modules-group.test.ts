@@ -18,12 +18,12 @@ test('test from project loading', (done) => {
   appObservables.ready$.pipe(
       filter(d=>d)
   ).subscribe((_)=>{
-      expect(appStore.getActiveLayer().moduleId).toEqual("root layer")
+      expect(appStore.getActiveGroup().moduleId).toEqual("root layer")
       let mdleGroup = appStore.getModule("GroupModules_child-layer") as GroupModules.Module
       mdleGroup.Factory.BuilderView.notifier$.next({type:'layerFocused', data: mdleGroup.moduleId}) 
   })
   appObservables.activeLayerUpdated$.pipe(skip(1)).subscribe( d =>{
-      let layerId = appStore.getActiveLayer().moduleId
+      let layerId = appStore.getActiveGroup().moduleId
       expect(layerId).toEqual("child-layer") 
       done()
     })

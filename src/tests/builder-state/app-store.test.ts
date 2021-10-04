@@ -178,8 +178,8 @@ test('selection', (done) => {
 
     expect( groupModule["layerId"] ).toEqual("child-layer")
     
-    appStore.selectActiveLayer("child-layer")
-    let activeLayer = appStore.getActiveLayer()
+    appStore.selectActiveGroup("child-layer")
+    let activeLayer = appStore.getActiveGroup()
     expect( activeLayer.moduleId ).toEqual("child-layer")
     let activeModules = appStore.getActiveModulesId()
     expect( activeModules ).toEqual(["module1"/*,"plugin0"*/])
@@ -187,9 +187,6 @@ test('selection', (done) => {
     appStore.selectDescriptionBox("descriptionBoxId")
     expect( appStore.descriptionBoxSelected.descriptionBoxId).toEqual("descriptionBoxId")
     
-    //appStore.applyLayout()
-    appStore.applyStyle()
-    appStore.addModuleRenderDiv("")
     done()
   })
 

@@ -38,7 +38,7 @@ test('load simple project', (done) => {
     appObservables.ready$.pipe(
         filter(d => d)
     ).subscribe( (_)=> {
-        appStore.selectActiveLayer("child-layer")
+        appStore.selectActiveGroup("child-layer")
     })
     
     plottersObservables.modulesDrawn$.pipe(
@@ -60,7 +60,7 @@ test('load simple project', (done) => {
 
         let layerSvg =  document.querySelector(".active-layer-box")
         expect(layerSvg).toBeDefined()
-        appStore.selectActiveLayer(appStore.getRootLayer().moduleId)
+        appStore.selectActiveGroup(appStore.getRootComponent().moduleId)
     })
 
     plottersObservables.modulesDrawn$.pipe(
@@ -69,7 +69,7 @@ test('load simple project', (done) => {
     ).subscribe( (_) =>{
         let layerSvg =  document.querySelector(".active-layer-box")
         expect(layerSvg).toBeFalsy()
-        appStore.selectActiveLayer("child-layer")
+        appStore.selectActiveGroup("child-layer")
     })
     plottersObservables.modulesDrawn$.pipe(
         skip(2),
