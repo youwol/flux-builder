@@ -31,13 +31,13 @@ export function getGeneralPanels(appStore: AppStore) {
         className: 'btn-redo',
         label: '<i class="fas fa-redo panel-action" data-toggle="tooltip" title="Redo" ></i>',
         command(editor: any) { appStore.redo() }
-      },
+      }/*,
       {
         id: 'settings',
         className: 'btn-settings',
         label: '<i class="fas fa-cog panel-action" data-toggle="tooltip" title="open settings panel" ></i>',
         command(editor: any) { appStore.projectSettings() }
-      }
+      }*/
     ],
   },
   {
