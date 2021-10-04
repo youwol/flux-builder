@@ -13,11 +13,12 @@ function notificationsView(appStore: AppStore) : VirtualDOM {
     }
 }
 
+
 export function mainView(appStore: AppStore): VirtualDOM {
 
     let view = {
         id: 'main-container',
-        class: "vh-100 vw-100 d-flex flex-column",
+        class: "h-100 w-100 d-flex flex-column",
         children: [
             topBanner(appStore),
             {   

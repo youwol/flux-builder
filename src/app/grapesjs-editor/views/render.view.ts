@@ -5,7 +5,7 @@ export function renderView(appStore: AppStore) : VirtualDOM {
     
     let sizes = {
         'combined': 'h-50',
-        'builder': 'h-0',
+        'builder': 'd-none',
         'render': 'h-100'
     }
 
@@ -26,9 +26,6 @@ export function renderView(appStore: AppStore) : VirtualDOM {
                     {
                         id:"panel__right_render",
                         class:"grapes-bg-color fv-color-primary border-top fv-color-primary controls-panel",
-                        style:{
-                            maxWidth:'300px'
-                        },
                         children:[
                             {
                                 class:"d-flex justify-content-between  flex-align-switch",
@@ -37,9 +34,9 @@ export function renderView(appStore: AppStore) : VirtualDOM {
                                         id:"panel__layout-basic-actions",
                                         class:"d-block position-relative flex-align-switch buttons-toolbox"
                                     },
-                                    {   id: "panel__layout-devices-actions",
+                                    {   
+                                        id: "panel__layout-devices-actions",
                                         class:"d-block position-relative flex-align-switch buttons-toolbox"
-
                                     }
                                 ]
                             },
@@ -59,7 +56,7 @@ export function renderView(appStore: AppStore) : VirtualDOM {
                             }, 
                             {
                                 id:"panels-container-render",
-                                class:"overflow-auto w-15  p-1 border border-dark panels-container",
+                                class:"overflow-auto  p-1 border border-dark panels-container",
                                 style:{
                                     height:"calc(100% - 80px)",
                                     width: '300px'

@@ -9,16 +9,15 @@ import { ModuleSettingsState, ModuleSettingsView } from "./module-settings.view"
 export function builderView(appStore: AppStore) : VirtualDOM {
 
     let sizes = {
-        'combined': 'h-50',
-        'builder': 'h-100',
-        'render': 'h-0'
+        'combined': 'h-50 d-flex',
+        'builder': 'h-100 d-flex',
+        'render': 'd-none'
     }
     return {
         id:'builder-component',
         class: attr$(
             appStore.appObservables.uiStateUpdated$,
-            (uiState:UiState) => sizes[uiState.mode],
-            { wrapper: (d) => d+" d-flex"}
+            (uiState:UiState) => sizes[uiState.mode]
         ),
 
         children:[
