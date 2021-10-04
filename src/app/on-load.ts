@@ -1,98 +1,108 @@
 
 import { combineLatest, merge, ReplaySubject } from 'rxjs';
-import { filter } from 'rxjs/operators';
+import { filter, take } from 'rxjs/operators';
 import * as grapesjs from 'grapesjs'
 
 import { ModuleFlux, Environment, Journal, ConfigurationStatus, ExpectationStatus } from '@youwol/flux-core';
-import { createDrawingArea } from '@youwol/flux-svg-plots';
+import { createDrawingArea as createDrawingAreaSvg} from '@youwol/flux-svg-plots';
 import { ContextMenu } from '@youwol/fv-context-menu';
 
 import { AppStore, AppObservables, UiState, AppDebugEnvironment, 
     LogLevel, AppBuildViewObservables } from './builder-editor/builder-state/index';
 import { WorkflowPlotter } from './builder-editor/builder-plots/index';
-import { createAttributesPanel, ContextMenuState, ConfigurationStatusView, ExpectationView } from './builder-editor/index'
+import { ContextMenuState, ConfigurationStatusView, ExpectationView } from './builder-editor/index'
 
 import { createLayoutEditor, initLayoutEditor } from './grapesjs-editor/index';
 
 import { plugNotifications } from './notification';
 import { AssetsBrowserClient } from './clients/assets-browser.client';
 import { AssetsExplorerView } from './builder-editor/views/assets-explorer.view';
-import { render } from '@youwol/flux-view';
+import { render, VirtualDOM } from '@youwol/flux-view';
 import { loadingLibView, loadingProjectView } from './loading.views';
-import { autoAddElementInLayout, autoRemoveElementInLayout, removeTemplateElements, replaceTemplateElements, updateElementsInLayout } from './grapesjs-editor/flux-rendering-components';
+import { autoAddElementInLayout, autoRemoveElementInLayout, removeTemplateElements, 
+    replaceTemplateElements, updateElementsInLayout } from './grapesjs-editor/flux-rendering-components';
 import { setDynamicComponentsBlocks } from './grapesjs-editor/flux-blocks';
+import { mainView } from './views/app.view';
 
+let defaultLog      = false
+let debugSingleton  = AppDebugEnvironment.getInstance()
 
-let {appStore, appObservables, layoutEditor} = await initializeRessources()
+debugSingleton.workflowUIEnabled       = defaultLog
+debugSingleton.observableEnabled       = defaultLog
+debugSingleton.workflowUIEnabled       = defaultLog
+debugSingleton.workflowViewEnabled     = defaultLog
+debugSingleton.WorkflowBuilderEnabled  = defaultLog
+debugSingleton.renderTopicEnabled      = defaultLog
+debugSingleton.workflowView$Enabled    = defaultLog
+let noConsole = {
+    log:(message?: any, ...optionalParams: any[])=> {},
+    warn:(message?: any, ...optionalParams: any[])=> {},
+    error:(message?: any, ...optionalParams: any[])=> {},
+}
 
-let workflowPlotter = initDrawingArea(appStore,appObservables)
+let environment = new Environment(
+    {   console/*: noConsole as Console*/,
+        renderingWindow: undefined, // doc.defaultView,
+        executingWindow: window
+    }
+)
 
+debugSingleton.logWorkflowBuilder( {  
+  level : LogLevel.Info, 
+  message: "Environment instantiated", 
+  object:{ environment }
+})
+
+let appStore = AppStore.getInstance( environment )
+
+initializeAppStoreAssets(appStore)
+
+createMainView(appStore)
+
+let layoutEditor = await createLayoutEditor() as any;
+initializeGrapesAssets(layoutEditor);
+
+let workflowPlotter = createDrawingArea(appStore, appStore.appObservables)
 plugNotifications(appStore, workflowPlotter)
 
 let contextState = new ContextMenuState( appStore, workflowPlotter.drawingArea )
 new ContextMenu.View({state:contextState, class:"fv-bg-background"} as any)
 
-connectStreams(appStore, workflowPlotter, layoutEditor, appObservables )
+connectStreams(appStore, workflowPlotter, layoutEditor, appStore.appObservables )
 
-let projectId = new URLSearchParams(window.location.search).get("id")
-let uri = new URLSearchParams(window.location.search).get("uri")
+loadProject(appStore)
 
-if(projectId){
-    let loadingDiv = document.getElementById("content-loading-screen") as HTMLDivElement
-    let divProjectLoading = loadingProjectView(loadingDiv)
-    appStore.environment.getProject(projectId).subscribe( (project) => {
-        divProjectLoading.innerText = `> project loaded` 
-        divProjectLoading.style.setProperty("color", "green") 
-        appStore.loadProject(projectId, project, (event) => {
-            loadingLibView(event, loadingDiv)
+
+function loadProject(appStore: AppStore){
+
+    let projectId = new URLSearchParams(window.location.search).get("id")
+    let uri = new URLSearchParams(window.location.search).get("uri")
+    
+    if(projectId){
+        let loadingDiv = document.getElementById("content-loading-screen") as HTMLDivElement
+        let divProjectLoading = loadingProjectView(loadingDiv)
+        appStore.environment.getProject(projectId).subscribe( (project) => {
+            divProjectLoading.innerText = `> project loaded` 
+            divProjectLoading.style.setProperty("color", "green") 
+            appStore.loadProject(projectId, project, (event) => {
+                loadingLibView(event, loadingDiv)
+            })
         })
-    })
-}
-else if(uri){
-    appStore.loadProjectURI(encodeURI(uri))
-}
-
-
-export async function initializeRessources() : 
-    Promise<{ appStore: AppStore, appObservables: AppObservables, layoutEditor: grapesjs.Editor }>{
-
-    let defaultLog      = true
-    let appObservables  = AppObservables.getInstance()
-    let debugSingleton  = AppDebugEnvironment.getInstance()
-
-    debugSingleton.workflowUIEnabled       = defaultLog
-    debugSingleton.observableEnabled       = defaultLog
-    debugSingleton.workflowUIEnabled       = defaultLog
-    debugSingleton.workflowViewEnabled     = defaultLog
-    debugSingleton.WorkflowBuilderEnabled  = defaultLog
-    debugSingleton.renderTopicEnabled      = defaultLog
-    debugSingleton.workflowView$Enabled    = defaultLog
-
-    let layoutEditor : any = await createLayoutEditor()
-    let doc = layoutEditor.Canvas.getDocument() as HTMLDocument
-    let noConsole = {
-        log:(message?: any, ...optionalParams: any[])=> {},
-        warn:(message?: any, ...optionalParams: any[])=> {},
-        error:(message?: any, ...optionalParams: any[])=> {},
     }
+    else if(uri){
+        appStore.loadProjectURI(encodeURI(uri))
+    }
+}
 
-    let environment = new Environment(
-        {   console: noConsole as Console,
-            renderingWindow: doc.defaultView,
-            executingWindow: window
-        }
-    )
-    
-    debugSingleton.logWorkflowBuilder( {  
-      level : LogLevel.Info, 
-      message: "Environment", 
-      object:{ environment }
-    })
-    
-    let appStore = AppStore.getInstance( environment )
+function createMainView(appStore: AppStore){
+    let mainLayout : VirtualDOM = mainView(appStore)
+    document.body.appendChild(render(mainLayout))    
+}
+
+function initializeAppStoreAssets(appStore: AppStore){
 
     AssetsBrowserClient.appStore = appStore
-    // A single instance of assets browser to keep in memory expandeds nodes etc
+    // A single instance of assets browser to keep in memory expanded nodes etc
     AssetsExplorerView.singletonState = new AssetsExplorerView.State({
         appStore
     })
@@ -111,12 +121,11 @@ export async function initializeRessources() :
         view: (data: ExpectationStatus<unknown>) => 
             render(ExpectationView.journalWidget(data))
     })
-    
-    return { 
-        appStore,
-        appObservables,
-        layoutEditor
-    }
+}
+
+function initializeGrapesAssets(layoutEditor: any){
+
+    (environment as any).renderingWindow = layoutEditor.Canvas.getDocument().defaultView
 }
 
 function setUiState(state: UiState){   
@@ -130,7 +139,7 @@ function setUiState(state: UiState){
     renderNode.classList.add(state.mode)
 }
 
-export function connectStreams(appStore:AppStore, workflowPlotter: WorkflowPlotter, layoutEditor: grapesjs.Editor, appObservables:AppObservables ){
+export async function connectStreams(appStore:AppStore, workflowPlotter: WorkflowPlotter, layoutEditor: grapesjs.Editor, appObservables:AppObservables ){
 
     let loading = true
 
@@ -138,70 +147,65 @@ export function connectStreams(appStore:AppStore, workflowPlotter: WorkflowPlott
     appObservables.uiStateUpdated$.subscribe( (state:UiState)=> setUiState(state) )
     appObservables.adaptorEdited$.subscribe( ({adaptor,connection} : {adaptor:any,connection:any}) => {/*this.editAdaptor(adaptor,connection)*/})
     
-    let layoutEditor$ = new ReplaySubject(1)
-    
-    appObservables.renderingLoaded$.subscribe( ({layout, style}: {layout:HTMLDivElement, style: string}) => {
-        initLayoutEditor(layoutEditor, {layout, style}, appStore)
-        layoutEditor$.next(layoutEditor)
-    })
+    await appObservables.renderingLoaded$
+    .pipe(take(1))
+    .toPromise()
+    .then(({layout, style})=>  initLayoutEditor(layoutEditor, {layout, style}, appStore) )
+         
+    appObservables.modulesUpdated$
+    .subscribe((diff: any) => { 
         
-    combineLatest([layoutEditor$,appObservables.modulesUpdated$])
-    .subscribe(([editor,diff] :[any,any]) => { 
-        
-        let notReplaced = diff.removedElements.filter( mdle => !diff.createdElements.map(m =>m.moduleId).includes(mdle.moduleId) )
-        removeTemplateElements(notReplaced, editor)
+        let createdIds = diff.createdElements.map( (m:ModuleFlux)=> m.moduleId)
+
+        let notReplaced = diff.removedElements
+        .filter( mdle => !createdIds.includes(mdle.moduleId) )
+
+        removeTemplateElements(notReplaced, layoutEditor)
         if(loading)
-            replaceTemplateElements(diff.createdElements.map( (m:ModuleFlux)=> m.moduleId), editor,appStore)
+            replaceTemplateElements(createdIds, layoutEditor,appStore)
         if(!loading){
-            autoAddElementInLayout(diff, editor,appStore ) 
-            updateElementsInLayout(diff, editor,appStore ) 
-            autoRemoveElementInLayout(diff, editor,appStore ) 
+            autoAddElementInLayout(diff, layoutEditor,appStore ) 
+            updateElementsInLayout(diff, layoutEditor,appStore ) 
+            autoRemoveElementInLayout(diff, layoutEditor,appStore ) 
         }
             
-        setDynamicComponentsBlocks(appStore, editor)    
+        setDynamicComponentsBlocks(appStore, layoutEditor)    
     })
     
-    combineLatest([layoutEditor$,appObservables.activeLayerUpdated$])
-    .subscribe(([editor,diff] :[any,any]) => { 
-        setDynamicComponentsBlocks(appStore, editor)
+    appObservables.activeLayerUpdated$
+    .subscribe(() => { 
+        setDynamicComponentsBlocks(appStore, layoutEditor)
     })
 
-    combineLatest([layoutEditor$, appObservables.uiStateUpdated$]).pipe(
-        filter( ( [editor, state]:[any,UiState])=> state.mode ==="combined" || state.mode ==="render"  )
-    ).subscribe( ( [editor, state]:[any,UiState])=> replaceTemplateElements(appStore.project.workflow.modules.map( m => m.moduleId), editor, appStore)
+    appObservables.uiStateUpdated$.pipe(
+        filter( (state: UiState)=> state.mode ==="combined" || state.mode ==="render"  )
+    ).subscribe( (state: UiState)=> 
+        replaceTemplateElements(appStore.project.workflow.modules.map( m => m.moduleId), layoutEditor, appStore)
     )
     
-    combineLatest([layoutEditor$,appObservables.unselect$])
-    .subscribe(([editor,_] :[any,any]) => {
-        editor.Commands.stop("show-attributes")
+    appObservables.unselect$.subscribe(() => {
+        layoutEditor.Commands.stop("show-attributes")
     })
     
-    let selection$ = merge(appObservables.moduleSelected$,appObservables.connectionSelected$)
-    combineLatest([layoutEditor$,selection$]).subscribe(([editor,_] : [any,any]) => {
-        editor.Commands.run("show-attributes")
+    merge(appObservables.moduleSelected$,appObservables.connectionSelected$)
+    .subscribe(() => {
+        layoutEditor.Commands.run("show-attributes")
     })
     
-    combineLatest([layoutEditor$,appObservables.uiStateUpdated$])
-    .subscribe(([editor,_] : [any,any]) => {
-        editor.refresh()
+    appObservables.uiStateUpdated$
+    .subscribe(() => {
+        layoutEditor.refresh()
     })
-
-    appObservables.ready$.subscribe(() => {
-        createAttributesPanel(appStore, appObservables)
-    })
-
-    layoutEditor$.subscribe( r => {
-        loading = false 
-    })
+    loading = false 
 }
 
-export function initDrawingArea(appStore: AppStore, appObservables: AppObservables ){
+export function createDrawingArea(appStore: AppStore, appObservables: AppObservables ){
 
     let plottersObservables = AppBuildViewObservables.getInstance()
     
     let width = 1000
     let height = 1000
-    let drawingArea = createDrawingArea(
+    let drawingArea = createDrawingAreaSvg(
       {
         containerDivId: "wf-builder-view",
         width: width,

@@ -194,6 +194,7 @@ export class AppStore {
                 layout,
                 cssLinks: [] 
             })
+            this.unselect()
         })
     }
 
@@ -770,8 +771,10 @@ export class AppStore {
             updatesDone.descriptionBox = true
         } 
         subscribeConnections(this.allSubscriptions, delta.connections, this.project.workflow.modules, this.project.workflow.plugins )  
+        
+        this.appObservables.projectUpdated$.next(this)
         this.appExtensionsObservables.projectUpdated$.next(delta)
-
+        
         this.debugSingleton.debugOn &&
         this.debugSingleton.logWorkflowBuilder( {  
             level : LogLevel.Info, 

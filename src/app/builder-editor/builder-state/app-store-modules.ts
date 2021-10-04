@@ -295,14 +295,14 @@ export function duplicateModules(
         let newView = new ModuleView(newModules[i].moduleId, maxXWorld + (i + 1) * 50, maxYWorld + (i + 1) * 50, m.Factory)
         return newView
     })
-    let parentGroups = newModules
-        .map((moduleDuplicated) => {
+    let parentGroups = modules
+        .map((mdle, index) => {
             let parent = project.workflow.modules
-                .find(mdle =>
-                    mdle instanceof GroupModules.Module &&
-                    mdle.getPersistentData<GroupModules.PersistentData>().getModuleIds().includes(moduleDuplicated.moduleId)
+                .find(grp =>
+                    grp instanceof GroupModules.Module &&
+                    grp.getModuleIds().includes(mdle.moduleId)
                 )
-            return [parent.moduleId, moduleDuplicated.moduleId]
+            return [parent.moduleId, newModules[index].moduleId]
         })
         .reduce((acc, [parentId, mdleId]) => {
             acc[parentId] = acc[parentId]

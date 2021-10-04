@@ -40,20 +40,12 @@ export function applyPatches(editor:any){
     editor.Commands.stop("show-traits")
     editor.Commands.run( "show-layers")
     editor.Commands.stop( "show-layers")
-    /*editor.Commands.run("show-suggestions")
-    editor.Commands.stop("show-suggestions")
-    editor.Commands.run("show-extensions")
-    editor.Commands.stop("show-extensions")*/
 
     /* ---
     ---*/
-    let buttons_container = document.getElementById("panel__builder-managers-actions").children[0]
-    buttons_container.classList.add("d-flex","flex-wrap")
     let buttons_container2 = document.getElementById("panel__layout-devices-actions").children[0]
     buttons_container2.classList.add("d-flex","flex-wrap")
     let buttons_container3 = document.getElementById("panel__render-panels-actions").children[0]
     buttons_container3.classList.add("d-flex","flex-wrap")
-    let buttons_container4 = document.getElementById("panel__builder-actions-items").children[0]
-    buttons_container4.classList.add("d-flex","flex-wrap")
 
 }

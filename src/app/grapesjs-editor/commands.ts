@@ -72,7 +72,6 @@ export function plugCommands(editor: any, appStore: AppStore) {
     })
 
     editor.on('component:update:style', (data) => {
-        console.log("AAAAAAAAAAAAAAAAAAAAAA")
         debugSingleton.debugOn &&
             debugSingleton.logRenderTopic({ level: LogLevel.Info, message: "component:update:style", object: { module: data } })
     })
@@ -204,7 +203,6 @@ export function plugCommands(editor: any, appStore: AppStore) {
             panel.classList.add("collapsed")
             panel.querySelectorAll(".flex-align-switch").forEach((e: HTMLElement) => e.style.flexDirection = "column")
 
-            editor.$('#panel__right_render').get(0).style.width = '50px';
             panel.querySelectorAll(".buttons-toolbox").forEach((e: HTMLDivElement) => {
                 let div = e.firstChild as HTMLElement
                 if (div && div.style)
@@ -220,7 +218,7 @@ export function plugCommands(editor: any, appStore: AppStore) {
             Array.from(editor.Canvas.getDocument().querySelectorAll(".flux-builder-only"))
                 .forEach((element: any) => element.classList.remove('preview')
                 );
-
+            
             let panelsContainer = document.getElementById("panels-container-render")
             panelsContainer.classList.remove("collapsed")
             let panel = document.getElementById("panel__right_render")

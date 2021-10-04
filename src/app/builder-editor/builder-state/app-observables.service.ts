@@ -1,8 +1,8 @@
 import { Subject, ReplaySubject } from "rxjs";
-import { Package, Connection, ModuleFlux, DescriptionBox  }from '@youwol/flux-core';
+import { Package, Connection, ModuleFlux, DescriptionBox, Project  }from '@youwol/flux-core';
 
 import { AppDebugEnvironment, LogLevel } from "./app-debug.environment";
-import { UiState } from './app-store';
+import { AppStore, UiState } from './app-store';
 
 
 export class AppObservables{
@@ -17,6 +17,7 @@ export class AppObservables{
 
     debugSingleton = AppDebugEnvironment.getInstance()
 
+    projectUpdated$             = new ReplaySubject<AppStore>(1)
     packagesObserver$           = new ReplaySubject<any>(1)
     packagesLoaded$             = new ReplaySubject<any>(1)
     uiStateUpdated$             = new ReplaySubject<UiState>(1)
@@ -44,7 +45,7 @@ export class AppObservables{
     constructor(){
 
         if(this.debugSingleton.debugOn){
-            ["packagesObserver$","packagesLoaded$","packagesUpdated$","connectionsUpdated$",
+            ["projectUpdated$", "packagesObserver$","packagesLoaded$","packagesUpdated$","connectionsUpdated$",
             "unselect$","moduleSelected$","modulesUnselected$","moduleSettingsEdited$","connectionSelected$",
             "renderingLoaded$","moduleAdded$","cssUpdated$","uiStateUpdated$","descriptionsBoxesUpdated$",
             "activeLayerUpdated$","ready$","flowReady$","suggestions$","modulesUpdated$","notifications$"]

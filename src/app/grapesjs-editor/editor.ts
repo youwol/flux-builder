@@ -1,20 +1,13 @@
-
-import { ModuleFlux } from '@youwol/flux-core'
-
 import { AppDebugEnvironment, LogLevel, AppStore } from '../builder-editor/builder-state/index'
 
 import { getRenderPanels } from './panels'
 import { getGeneralPanels } from '../top-banner/panels'
-import { commandsGeneral } from '../top-banner/commands'
 
 import { getBlocks } from './blocks'
 import { getStylesSectors } from './style-manager'
 import { plugCommands } from './commands'
-import { commandsBuilder } from '../builder-editor/commands'
-import { getBuilderPanels } from '../builder-editor/panels'
 import { applyPatches } from './patches'
 import { Subject } from 'rxjs'
-import { privateClasses } from './utils'
 import { take } from 'rxjs/operators'
 
 import * as grapesjs from 'grapesjs'
@@ -126,11 +119,9 @@ export function initLayoutEditor(
         })
 
     plugCommands(editor, appStore)
-    let builderCommands = commandsBuilder().concat(commandsGeneral(appStore, editor))
-    builderCommands.forEach(c => editor.Commands.add(c[0], c[1]))
     editor.BlockManager.getCategories().each((ctg: any) => ctg.set('open', false))
 
-    let panels = [...getGeneralPanels(appStore), ...getRenderPanels(), ...getBuilderPanels()]
+    let panels = [...getGeneralPanels(appStore), ...getRenderPanels()]
     panels.forEach(p => editor.Panels.addPanel(p))
 
     applyPatches(editor)
