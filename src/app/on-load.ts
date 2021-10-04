@@ -12,15 +12,15 @@ import { AppStore, AppObservables, UiState, AppDebugEnvironment,
 import { WorkflowPlotter } from './builder-editor/builder-plots/index';
 import { createAttributesPanel, ContextMenuState, ConfigurationStatusView, ExpectationView } from './builder-editor/index'
 
-import { createLayoutEditor, initLayoutEditor } from './layout-editor/index';
+import { createLayoutEditor, initLayoutEditor } from './grapesjs-editor/index';
 
 import { plugNotifications } from './notification';
 import { AssetsBrowserClient } from './clients/assets-browser.client';
 import { AssetsExplorerView } from './builder-editor/views/assets-explorer.view';
 import { render } from '@youwol/flux-view';
 import { loadingLibView, loadingProjectView } from './loading.views';
-import { autoAddElementInLayout, autoRemoveElementInLayout, removeTemplateElements, replaceTemplateElements, updateElementsInLayout } from './layout-editor/flux-rendering-components';
-import { setDynamicComponentsBlocks } from './layout-editor/flux-blocks';
+import { autoAddElementInLayout, autoRemoveElementInLayout, removeTemplateElements, replaceTemplateElements, updateElementsInLayout } from './grapesjs-editor/flux-rendering-components';
+import { setDynamicComponentsBlocks } from './grapesjs-editor/flux-blocks';
 
 
 let {appStore, appObservables, layoutEditor} = await initializeRessources()

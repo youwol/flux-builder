@@ -28,10 +28,10 @@ function focusAction(
     toggledClass: string,
     duration: number = 5000 ) {
      
-    let root = appStore.getRootLayer()
+    let root = appStore.getRootComponent()
     let layer = appStore.project.workflow.modules
     .find((mdle) => mdle instanceof GroupModules.Module && mdle.getModuleIds().includes(mdle.moduleId) )
-    appStore.selectActiveLayer(layer.moduleId)
+    appStore.selectActiveGroup(layer.moduleId)
     
     setTimeout( () => {
         let g = document.getElementById(mdle.moduleId)

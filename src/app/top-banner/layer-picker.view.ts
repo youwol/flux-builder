@@ -9,16 +9,16 @@ export function createLayerPickerView(appStore: AppStore, editor): HTMLDivElemen
   function createContentRecursive(grpMdle: GroupModules.Module) {
 
    // const childrenModules = layer.moduleIds.map(moduleId => ({ tag: 'div', class: "text-muted  px-1", innerText: appStore.getModule(moduleId).configuration.title }))
-    const childrenLayers = grpMdle.getDirectChildren()
+    const childrenLayers = grpMdle.getDirectChildren(appStore.project.workflow)
     .filter( mdle => mdle instanceof GroupModules.Module)
     .map( (child:GroupModules.Module) => createContentRecursive(child))
-    const selectedClass = grpMdle.moduleId == appStore.getActiveLayer().moduleId ? "font-weight-bold" : ""
+    const selectedClass = grpMdle.moduleId == appStore.getActiveGroup().moduleId ? "font-weight-bold" : ""
     return {
         class: "w-100",
         __label: { 
           innerText: grpMdle.configuration.title, 
           class: "flux-hoverable w-100 px-1 "+selectedClass,
-          onclick: () => appStore.selectActiveLayer(grpMdle.moduleId) 
+          onclick: () => appStore.selectActiveGroup(grpMdle.moduleId) 
         },
         __div: {
           class: "children pl-2 w-100",
@@ -47,7 +47,7 @@ export function createLayerPickerView(appStore: AppStore, editor): HTMLDivElemen
         children: [{
           tag: 'div',
           class: 'flux-bg-primary text-black  children small py-2',
-          __div: createContentRecursive(appStore.getRootLayer())
+          __div: createContentRecursive(appStore.getRootComponent())
         }]
       },
     },
