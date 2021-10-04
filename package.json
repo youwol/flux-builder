@@ -81,8 +81,7 @@
             "grapesjs": "0.x",
             "lodash": "4.x",
             "reflect-metadata": "0.x",
-            "rxjs": "6.x",
-            "terser": "5.9.0"
+            "rxjs": "6.x"
         }
     }
 }
