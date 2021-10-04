@@ -68,7 +68,7 @@ plugNotifications(appStore, workflowPlotter)
 let contextState = new ContextMenuState( appStore, workflowPlotter.drawingArea )
 new ContextMenu.View({state:contextState, class:"fv-bg-background"} as any)
 
-connectStreams(appStore, workflowPlotter, layoutEditor, appStore.appObservables )
+connectStreams(appStore, layoutEditor )
 
 loadProject(appStore)
 
@@ -139,18 +139,20 @@ function setUiState(state: UiState){
     renderNode.classList.add(state.mode)
 }
 
-export async function connectStreams(appStore:AppStore, workflowPlotter: WorkflowPlotter, layoutEditor: grapesjs.Editor, appObservables:AppObservables ){
+export async function connectStreams(appStore:AppStore, layoutEditor: grapesjs.Editor ){
 
     let loading = true
-
+    let appObservables = appStore.appObservables
     appObservables.packagesLoaded$.subscribe( ()=> document.getElementById("loading-screen").remove() )
     appObservables.uiStateUpdated$.subscribe( (state:UiState)=> setUiState(state) )
-    appObservables.adaptorEdited$.subscribe( ({adaptor,connection} : {adaptor:any,connection:any}) => {/*this.editAdaptor(adaptor,connection)*/})
-    
+
     await appObservables.renderingLoaded$
     .pipe(take(1))
     .toPromise()
-    .then(({layout, style})=>  initLayoutEditor(layoutEditor, {layout, style}, appStore) )
+    .then(({layout, style})=>  {
+        initLayoutEditor(layoutEditor, {layout, style}, appStore) 
+        replaceTemplateElements(appStore.getModulesAndPlugins().map( m => m.moduleId), layoutEditor, appStore)
+    })
          
     appObservables.modulesUpdated$
     .subscribe((diff: any) => { 
@@ -177,12 +179,6 @@ export async function connectStreams(appStore:AppStore, workflowPlotter: Workflo
         setDynamicComponentsBlocks(appStore, layoutEditor)
     })
 
-    appObservables.uiStateUpdated$.pipe(
-        filter( (state: UiState)=> state.mode ==="combined" || state.mode ==="render"  )
-    ).subscribe( (state: UiState)=> 
-        replaceTemplateElements(appStore.project.workflow.modules.map( m => m.moduleId), layoutEditor, appStore)
-    )
-    
     appObservables.unselect$.subscribe(() => {
         layoutEditor.Commands.stop("show-attributes")
     })
