@@ -1,7 +1,7 @@
 
 import { Subject, combineLatest } from "rxjs";
 import * as operators from "rxjs/operators";
-import { ModuleFlux, Connection, GroupModules, createHTMLElement} from '@youwol/flux-core';
+import { ModuleFlux, Connection, GroupModules, createHTMLElement, Workflow} from '@youwol/flux-core';
 import { DrawingArea,LinkPlot,toCssName } from '@youwol/flux-svg-plots';
 
 import { PlotterConnectionEntity } from "./models-view";
@@ -132,6 +132,7 @@ function drawConnections(connections , modulesGroup, drawingArea : DrawingArea, 
 
 function getSlot(
     mdle: ModuleFlux, 
+    workflow: Workflow,
     domPlugElement, 
     plugType){
 
@@ -142,7 +143,7 @@ function getSlot(
     if( mdle instanceof GroupModules.Module && slotId){
         // we end up here in case of slot corresponding to an implicit input of a group
         let moduleId = domPlugElement.getAttribute("moduleId") || domPlugElement.getAttribute("moduleid")
-        return mdle.getAllChildren() .find( mdle => mdle.moduleId == moduleId).getSlot(slotId)
+        return mdle.getAllChildren(workflow) .find( mdle => mdle.moduleId == moduleId).getSlot(slotId)
     }
     console.warn("The builder plot should define the attribute 'slotId' of the slots elements",domPlugElement)
     // This section is for backward compatibility 06/15/2020
@@ -167,16 +168,24 @@ function getMdlWithGroup(plugSvgElement:SVGElement, appStore: AppStore) : [Modul
 }
 
 class DrawingConnection{
+
     xOrigin = undefined
     yOrigin = undefined
     slot = undefined
-    constructor(public mdle, public domModuleElement,
-        public domPlugElement, public plugType, public isDrawing, public isStarted ){
+
+    constructor(
+        public readonly mdle: ModuleFlux, 
+        public readonly workflow: Workflow,
+        public readonly domModuleElement,
+        public readonly domPlugElement, 
+        public readonly plugType, 
+        public readonly isDrawing, 
+        public readonly isStarted ){ 
         
         this.xOrigin=Number(domModuleElement.getAttribute("x")) + Number(domPlugElement.getAttribute("cx")),
         this.yOrigin=Number(domModuleElement.getAttribute("y")) + Number(domPlugElement.getAttribute("cy"))
         
-        this.slot = getSlot(mdle,domPlugElement ,plugType )
+        this.slot = getSlot(mdle, workflow, domPlugElement ,plugType )
     }
 }
 
@@ -229,7 +238,7 @@ export class ConnectionsPlotter{
                 operators.filter( _ => this.drawingConnection == undefined && this.connectionCreationEnabled )
             ).subscribe((d: any) =>{
                     let [mdl, mdlGroup] = getMdlWithGroup(d.event.target, appStore)
-                    this.drawingConnection = new DrawingConnection(mdl,mdlGroup,d.event.target, type, true,false)
+                    this.drawingConnection = new DrawingConnection(mdl, appStore.project.workflow, mdlGroup,d.event.target, type, true,false)
                 }
             )
         }
@@ -240,9 +249,15 @@ export class ConnectionsPlotter{
             ).subscribe(
                 (d: any) =>{ 
                     let [mdl, _] = getMdlWithGroup(d.event.target, appStore)
-                    let connection = type=="input" ? 
-                        new Connection( this.drawingConnection.slot, getSlot(mdl,d.event.target , "input" ) ) :
-                        new Connection( getSlot(mdl,d.event.target , "output" ), this.drawingConnection.slot ) 
+                    let connection = type=="input" 
+                        ? new Connection( 
+                            this.drawingConnection.slot, 
+                            getSlot(mdl, appStore.project.workflow, d.event.target , "input" ) 
+                            ) 
+                        : new Connection(
+                            getSlot(mdl, appStore.project.workflow, d.event.target , "output" ), 
+                            this.drawingConnection.slot 
+                            ) 
                     this.appStore.addConnection(connection) 
                     this.connectionCreationEnabled=false
                     setTimeout( () => this.connectionCreationEnabled=true, 500)

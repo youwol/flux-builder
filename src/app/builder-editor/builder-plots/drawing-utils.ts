@@ -75,12 +75,12 @@ function mapToFocusCoordinate(activeLayerUpdated$ : Observable<{fromLayerId:stri
     })),
     map( ({fromLayer, toLayer}) =>{ 
         // if zoom-in
-        if( fromLayer.getAllChildren().includes(toLayer))
+        if( fromLayer.getAllChildren(appStore.project.workflow).includes(toLayer))
             return document.getElementById("expanded_"+toLayer.moduleId)    
         
         // if zoom-out
-        if( toLayer.getAllChildren().includes(fromLayer)){
-            let targetLayer = toLayer.getDirectChildren()
+        if( toLayer.getAllChildren(appStore.project.workflow).includes(fromLayer)){
+            let targetLayer = toLayer.getDirectChildren(appStore.project.workflow)
             .find( layer => layer instanceof GroupModules.Module && (layer==fromLayer || layer.getModuleIds().includes(fromLayer.moduleId)) )
             return document.getElementById(targetLayer.moduleId)  
         }
