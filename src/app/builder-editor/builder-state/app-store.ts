@@ -18,8 +18,8 @@ import { addConnection , deleteConnection, addAdaptor,
     
 import { addDescriptionBox, updateDescriptionBox, deleteDescriptionBox } from './app-store-description-box';
 import { setRenderingStyle, setRenderingLayout } from './app-store-runner-rendering';
-import { applyHtmlLayout, createLayer, getLayer } from './app-store-layer';
-import { getDisplayedModulesView } from './app-store-modules-group';
+
+import { createGroup, getDisplayedModulesView, getGroup} from './app-store-modules-group';
 import { filter, mergeMap,map, tap } from 'rxjs/operators';
 import {  getDelta, workflowDelta } from './project-delta';
 import * as _ from 'lodash'

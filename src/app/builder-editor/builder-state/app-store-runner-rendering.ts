@@ -1,7 +1,7 @@
 
 import { Component, Project, RunnerRendering, Workflow } from '@youwol/flux-core'
 import { LogLevel, AppDebugEnvironment } from './app-debug.environment'
-import { applyHtmlCss, applyHtmlLayout } from './app-store-layer'
+import { applyHtmlCss, applyHtmlLayout } from './app-store-component'
 
 export function setRenderingLayout( layout: string, project:Project ) : Project {
 
