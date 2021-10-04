@@ -63,7 +63,7 @@ function drawModules(
     let displayedModulesView = appStore.getDisplayedModulesView()
     let projection = undefined       
 
-    if(appStore.activeLayerId != appStore.rootLayerId ){
+    if(appStore.activeGroupId != appStore.rootComponentId ){
 
         let center = getCenter(displayedModulesView.currentLayer)
         let factors = getScaleFactors(displayedModulesView.currentLayer)
@@ -128,12 +128,12 @@ function drawModules(
 
 function drawExpandedGroup( layerId :string, drawingArea : DrawingArea, appStore : AppStore ){
     
-    if(!layerId || layerId === appStore.rootLayerId ){
+    if(!layerId || layerId === appStore.rootComponentId ){
         let plotter = new CrossPlot({ plotId:"activeLayerPlotter", plotClasses:[], drawingArea, entities:[]})
         plotter.draw([])
         return {}
     }
-    let activateLayer = appStore.getLayer(layerId)
+    let activateLayer = appStore.getGroup(layerId)
     let groupMdle = appStore.project.workflow.modules
     .find( m => m instanceof GroupModules.Module && m.moduleId == activateLayer.moduleId) as GroupModules.Module
 
@@ -197,7 +197,7 @@ export class ModulesPlotter{
             () => {
                 let { modulesDrawn, activeSeries } = drawModules(this.drawingArea, this.appStore, plotObservables$)
                 let pluginsDrawn = this.pluginsPlotter.draw(modulesDrawn)
-                let expandedGroup = drawExpandedGroup( this.appStore.activeLayerId, this.drawingArea, this.appStore )
+                let expandedGroup = drawExpandedGroup( this.appStore.activeGroupId, this.drawingArea, this.appStore )
                 this.connectUserInteractions(Object.assign({},modulesDrawn,expandedGroup))
                 this.emptyRemovedSeries(this.previousActiveSeriesId, activeSeries)   
                 this.previousActiveSeriesId =  activeSeries
@@ -290,7 +290,7 @@ export class ModulesPlotter{
         this.dragging = true
         let modules = this.appStore
         .getModulesSelected()
-        .filter( m =>this.appStore.getActiveLayer().getModuleIds().includes(m.moduleId) || m["layerId"] )
+        .filter( m =>this.appStore.getActiveGroup().getModuleIds().includes(m.moduleId) || m["layerId"] )
 
         let newPos = []
         modules.forEach( m => {

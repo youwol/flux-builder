@@ -53,17 +53,24 @@ function connectionDisplay(d) {
 function getConnectionId(c : Connection) : string {
     return c.connectionId
 }
-function retrieveSvgContainerGroup(moduleId, modulesGroup, appStore){
+function retrieveSvgContainerGroup(
+    moduleId: string, 
+    modulesGroup: GroupModules.Module, 
+    appStore: AppStore){
     // when connection is between 2 different layers, the slot to connect with is included in the 'groupModule' 
     // that contains 'moduleId'
     let svgGroup = modulesGroup[moduleId] 
     if(svgGroup)
         return svgGroup
-    let container = appStore.getParentGroupModule(moduleId)
+    let container = appStore.getParentGroup(moduleId)
     return container ? modulesGroup[container.moduleId] : undefined
 }
 
-function toPlotterConnectionEntity(c : Connection, modulesGroup : Object, appStore :AppStore) : PlotterConnectionEntity {
+function toPlotterConnectionEntity(
+    c : Connection, 
+    modulesGroup : GroupModules.Module, 
+    appStore :AppStore) : PlotterConnectionEntity {
+
     let props = appStore.project.builderRendering.connectionsView.find(cView => cView.connectionId == c.connectionId)
     return new PlotterConnectionEntity(
         getConnectionId(c) ,
@@ -122,7 +129,11 @@ function drawConnections(connections , modulesGroup, drawingArea : DrawingArea, 
     return undefined
 }
 
-function getSlot(mdle: ModuleFlux, domPlugElement, plugType){
+
+function getSlot(
+    mdle: ModuleFlux, 
+    domPlugElement, 
+    plugType){
 
     let slotId = domPlugElement.getAttribute("slotId") || domPlugElement.getAttribute("slotid")
     let slot = mdle.getSlot( slotId )

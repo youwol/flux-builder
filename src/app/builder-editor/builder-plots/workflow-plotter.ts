@@ -55,7 +55,7 @@ export class WorkflowPlotter{
             }
         })
         this.appObservables.activeLayerUpdated$.subscribe((activeLayer) => {
-            (activeLayer.toLayerId != appStore.rootLayerId)
+            (activeLayer.toLayerId != appStore.rootComponentId)
                 ? drawingArea.svgCanvas.select(".workspace-background").attr("class", "workspace-background child-layer")
                 : drawingArea.svgCanvas.select(".workspace-background").attr("class", "workspace-background")
         })

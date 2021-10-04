@@ -69,7 +69,10 @@ function mapToFocusCoordinate(activeLayerUpdated$ : Observable<{fromLayerId:stri
   return activeLayerUpdated$.pipe(
     //tap( ({fromLayerId, toLayerId}) => console.log({fromLayerId, toLayerId}) ),
     filter( ({fromLayerId, toLayerId}) => fromLayerId!=undefined &&  toLayerId!=undefined ),
-    map( ({fromLayerId, toLayerId}) => ({fromLayer: appStore.getLayer(fromLayerId),toLayer: appStore.getLayer(toLayerId)})),
+    map( ({fromLayerId, toLayerId}) => ({
+      fromLayer: appStore.getGroup(fromLayerId),
+      toLayer: appStore.getGroup(toLayerId)
+    })),
     map( ({fromLayer, toLayer}) =>{ 
         // if zoom-in
         if( fromLayer.getAllChildren().includes(toLayer))
