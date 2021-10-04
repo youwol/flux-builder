@@ -135,6 +135,7 @@ export function initLayoutEditor(
 
     applyPatches(editor)
 
+    console.log("INIT!!", {layout:layout.outerHTML, style})
     editor.setComponents(layout.outerHTML)
 
     editor.setStyle(style);

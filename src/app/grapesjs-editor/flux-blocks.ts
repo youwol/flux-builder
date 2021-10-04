@@ -1,4 +1,4 @@
-import { Component, ModuleFlux } from "@youwol/flux-core"
+import { Component, LoadingGraphSchema, ModuleFlux, Workflow } from "@youwol/flux-core"
 import { AppDebugEnvironment, AppStore, LogLevel } from "../builder-editor/builder-state"
 import { getAllComponentsRec } from "./utils"
 import * as grapesjs from 'grapesjs'
@@ -15,12 +15,13 @@ function scaleSvgIcons(g: any) {
     g.style.transform = `translate(${parentBRect.width / 4}px,${parentBRect.height / 4}px) scale(${0.5 * scale}) translate(${tx}px,${ty}px)`;
 }
 
+
 export function setDynamicComponentsBlocks(appStore: AppStore, editor: grapesjs.Editor) {
 
     let debugSingleton = AppDebugEnvironment.getInstance()
     let all = getAllComponentsRec(editor)
 
-    let layerModuleIds = appStore.getActiveLayer().getModuleIds()
+    let layerModuleIds = appStore.getActiveGroup().getModuleIds()
     let pluginIds = appStore.project.workflow.plugins
         .filter(plugin => layerModuleIds.includes(plugin.parentModule.moduleId))
         .map(plugin => plugin.moduleId)
@@ -37,16 +38,17 @@ export function setDynamicComponentsBlocks(appStore: AppStore, editor: grapesjs.
             object: { modulesToRender, componentBlocks }
         })
     componentBlocks.forEach(block => editor.BlockManager.remove(block.id))
-    modulesToRender.forEach(m => editor.BlockManager.add(m.moduleId, toDynamicBlock(m, editor)))
+    modulesToRender.forEach(m => editor.BlockManager.add(m.moduleId, toDynamicBlock(m, editor, appStore.project.workflow)))
 }
 
-function toDynamicBlock(mdle: ModuleFlux, editor) {
+
+function toDynamicBlock(mdle: ModuleFlux, editor: grapesjs.Editor, workflow: Workflow) {
 
     return {
         id: mdle.moduleId,
         label: mdle.configuration.title,
         name: mdle.configuration.title,
-        content: getFluxBlockContent(mdle, editor),
+        content: getFluxBlockContent(mdle, editor, workflow),
         activate: true,
         category: "Components",
         render: ({ el }: { el: any }) => {
@@ -72,7 +74,8 @@ function toDynamicBlock(mdle: ModuleFlux, editor) {
     }
 }
 
-export function getFluxBlockContent(mdle: ModuleFlux, editor) {
+
+export function getFluxBlockContent(mdle: ModuleFlux, editor: grapesjs.Editor, workflow: Workflow ) {
 
     let debugSingleton = AppDebugEnvironment.getInstance()
     debugSingleton.debugOn &&
@@ -83,7 +86,7 @@ export function getFluxBlockContent(mdle: ModuleFlux, editor) {
         })
 
     if (mdle instanceof Component.Module) {
-        let html = mdle.getHTML({ recursive: true })
+        let html = mdle.getFullHTML(workflow)
         return html 
             ? html.outerHTML 
             : `<div id="${mdle.moduleId}" class="flux-element flux-component"  data-gjs-name="${mdle.configuration.title}"></div>`

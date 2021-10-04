@@ -1,7 +1,9 @@
-import { Component, ModuleFlux, renderTemplate } from "@youwol/flux-core"
+import { Component, ModuleFlux, renderTemplate, Workflow } from "@youwol/flux-core"
 import { AppDebugEnvironment, AppStore, LogLevel } from "../builder-editor/builder-state"
 import { getFluxBlockContent } from "./flux-blocks"
 import { getAllComponentsRec } from "./utils"
+import * as grapesjs from 'grapesjs'
+
 
 export function removeTemplateElements(modules: Array<ModuleFlux>, editor) {
 
@@ -23,7 +25,10 @@ export function removeTemplateElements(modules: Array<ModuleFlux>, editor) {
 }
 
 
-export function replaceTemplateElements(moduleIds: Array<string>, editor: any, appStore: AppStore): Array<ModuleFlux> {
+export function replaceTemplateElements(
+    moduleIds: Array<string>, 
+    editor: grapesjs.Editor, 
+    appStore: AppStore): Array<ModuleFlux> {
 
     let debugSingleton = AppDebugEnvironment.getInstance()
     if(moduleIds.length==0)
@@ -35,7 +40,6 @@ export function replaceTemplateElements(moduleIds: Array<string>, editor: any, a
         message: "replaceTemplateElements",
         object: { moduleIds, appStore }
     })
-    
     let body = editor.Canvas.getDocument().body.querySelector('div')
     
     let mdles = moduleIds
@@ -68,7 +72,10 @@ export function replaceTemplateElements(moduleIds: Array<string>, editor: any, a
 }
 
 
-export function updateElementsInLayout(diff: { removedElements: Array<ModuleFlux>, createdElements: Array<ModuleFlux> }, editor: any, appStore: AppStore) {
+export function updateElementsInLayout(
+    diff: { removedElements: Array<ModuleFlux>, createdElements: Array<ModuleFlux> }, 
+    editor: grapesjs.Editor, 
+    appStore: AppStore) {
 
     let removedIds = diff.removedElements.map(m => m.moduleId)
 
@@ -80,11 +87,15 @@ export function updateElementsInLayout(diff: { removedElements: Array<ModuleFlux
     replaceTemplateElements(toReplaceIds, editor, appStore) 
 }
 
+
 /**
  * When a new module with rendering is dropped => it is inserted in the layout editor
  * if it belongs to the root component
  */
-export function autoAddElementInLayout(diff: { removedElements: Array<ModuleFlux>, createdElements: Array<ModuleFlux> }, editor: any, appStore: AppStore) {
+export function autoAddElementInLayout( 
+    diff: { removedElements: Array<ModuleFlux>, createdElements: Array<ModuleFlux> },
+    editor: grapesjs.Editor, 
+    appStore: AppStore) {
     
     let allGjsComponents = getAllComponentsRec(editor)
 
@@ -93,29 +104,33 @@ export function autoAddElementInLayout(diff: { removedElements: Array<ModuleFlux
     let newIds = diff.createdElements
         .filter((mdle: ModuleFlux) => mdle.Factory.RenderView)
         .filter((mdle: ModuleFlux) => !removedIds.includes(mdle.moduleId))
-        .filter((mdle: ModuleFlux) => appStore.getRootLayer().getModuleIds().includes(mdle.moduleId))
+        .filter((mdle: ModuleFlux) => appStore.getRootComponent().getModuleIds().includes(mdle.moduleId))
         .filter((mdle: ModuleFlux) => !(mdle instanceof Component.Module))
         .map((mdle: ModuleFlux) => {
-            let htmlContent = getFluxBlockContent(mdle, editor)
-            console.log(allGjsComponents[appStore.rootLayerId])
-            allGjsComponents[appStore.rootLayerId].append(htmlContent, { at: 0 })
+            let htmlContent = getFluxBlockContent(mdle, editor, appStore.project.workflow)
+            console.log(allGjsComponents[appStore.rootComponentId])
+            allGjsComponents[appStore.rootComponentId].append(htmlContent, { at: 0 })
             return mdle.moduleId
         })
     replaceTemplateElements(newIds, editor, appStore)
 }
 
+
 /**
  * It can happen for instance when we group modules with view in a component => all included
  * modules will be removed from the view
  */
-export function autoRemoveElementInLayout(diff: { removedElements: Array<ModuleFlux>, createdElements: Array<ModuleFlux> }, editor: any, appStore: AppStore) {
+export function autoRemoveElementInLayout( 
+    diff: { removedElements: Array<ModuleFlux>, createdElements: Array<ModuleFlux> }, 
+    editor: any, 
+    appStore: AppStore) {
     
     let removedIds = diff.removedElements.map(m => m.moduleId)
 
     let toRemove = diff.createdElements
         .filter((mdle: ModuleFlux) => mdle instanceof Component.Module)
         .filter((mdle: ModuleFlux) => !removedIds.includes(mdle.moduleId))
-        .map( (mdle:Component.Module) => mdle.getDirectChildren())
+        .map( (mdle:Component.Module) => mdle.getDirectChildren(appStore.project.workflow))
         .flat()
     removeTemplateElements(toRemove, editor)
 }

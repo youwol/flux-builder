@@ -56,8 +56,8 @@ export function plugCommands(editor: any, appStore: AppStore) {
 
             let childrenModulesId = []
             if (mdle instanceof Component.Module) {
-                childrenModulesId = (mdle as Component.Module).getAllChildren().map(m => m.moduleId)
-                editor.getStyle().add(mdle.getCSS({ recursive: true, asString:true }))
+                childrenModulesId = (mdle as Component.Module).getAllChildren(appStore.project.workflow).map(m => m.moduleId)
+                editor.getStyle().add(mdle.getFullCSS(appStore.project.workflow, { asString:true }))
             }
             child.id = mdle.moduleId
             replaceTemplateElements([child.id, ...childrenModulesId], editor, appStore)
@@ -92,14 +92,14 @@ export function plugCommands(editor: any, appStore: AppStore) {
             
 
         let moduleIds = (mdle instanceof Component.Module)
-            ? mdle.getAllChildren().map(m => m.moduleId)
+            ? mdle.getAllChildren(appStore.project.workflow).map(m => m.moduleId)
             : [mdle.moduleId]
 
         replaceTemplateElements(moduleIds, editor, appStore)
     });
 
     editor.on('component:remove', (component) => {
-        if (appStore.getActiveLayer().getModuleIds().includes(component.ccid))
+        if (appStore.getActiveGroup().getModuleIds().includes(component.ccid))
             setDynamicComponentsBlocks(appStore, editor)
     });
 
