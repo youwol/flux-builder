@@ -43,7 +43,7 @@ export function toProjectData(project:Project): ProjectSchema{
 
     return {
         name: project.name,
-        schemaVersion:"1.0",
+        schemaVersion:project.schemaVersion,
         description:project.description,
         runnerRendering: project.runnerRendering,
         builderRendering: {
