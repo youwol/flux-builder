@@ -35,17 +35,15 @@ export function serializeWorkflow(workflow: Workflow) : WorkflowSchema {
             configuration: { title: plugin.configuration.title,
                              description:plugin.configuration.description,
                              data:Object.assign({},plugin.configuration.data) }
-        })),
-        rootLayerTree : undefined
+        }))
     }
 }
-export function toProjectData(project:Project): ProjectSchema{
+export function toProjectData(project:Project)/*ProjectSchema*/{
 
     return {
         name: project.name,
         schemaVersion:project.schemaVersion,
         description:project.description,
-        runnerRendering: project.runnerRendering,
         builderRendering: {
             descriptionsBoxes: project.builderRendering.descriptionsBoxes.map(d =>
                 ({ descriptionBoxId:d.descriptionBoxId,
@@ -68,7 +66,8 @@ export function toProjectData(project:Project): ProjectSchema{
             }) )
         },
         requirements: project.requirements as RequirementsSchema,
-        workflow: serializeWorkflow(project.workflow)
+        workflow: serializeWorkflow(project.workflow),
+        runnerRendering: {layout:"", style:""}
     }
 }
 

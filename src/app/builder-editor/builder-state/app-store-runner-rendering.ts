@@ -18,8 +18,7 @@ export function setRenderingLayout( layout: string, project:Project ) : Project 
     let projectNew = new Project({
         ...project,
         ...{
-            workflow: workflow,
-            runnerRendering: new RunnerRendering(layout,project.runnerRendering.style )
+            workflow: workflow
         }
     }) 
     
@@ -44,8 +43,7 @@ export function setRenderingStyle(rootComponent: Component.Module, style, projec
     let projectNew = new Project({
         ...project,
         ...{
-            workflow,
-            runnerRendering: new RunnerRendering(project.runnerRendering.layout,style )
+            workflow
         }
     })
     

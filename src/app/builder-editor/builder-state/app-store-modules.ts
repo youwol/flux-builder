@@ -106,14 +106,11 @@ export function addModule(Factory, coors, project: Project, activeLayerId: strin
         project.builderRendering.connectionsView,
         project.builderRendering.descriptionsBoxes
     )
-    let layout = project.runnerRendering.layout
-
     let projectNew = new Project({
         ...project,
         ...{
             workflow,
-            builderRendering,
-            runnerRendering: new RunnerRendering(layout, project.runnerRendering.style)
+            builderRendering
         }
     })
 
