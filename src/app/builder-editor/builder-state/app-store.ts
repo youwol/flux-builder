@@ -290,11 +290,10 @@ export class AppStore {
         return  project.workflow.plugins.slice(-1)[0]
     }
 
-    addModule( moduleFactory, coors = [0,0] ) : ModuleFlux{
+    addModule( moduleFactory, coors = [0,0] ) {
 
         let project = addModule( moduleFactory, coors, this.project , this.activeGroupId,this.appObservables.ready$, this.environment)
         this.updateProject(project)
-        return project.workflow.modules.slice(-1)[0]
     }
 
     updateModule(mdle:ModuleFlux, configuration: ModuleConfiguration, unselect = true) {
