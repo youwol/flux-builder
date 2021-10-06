@@ -102,6 +102,7 @@ export function applyHtmlCss(
         let styleSheet = new CSSStyleSheet()
         content.split('}')
         .filter( rule => rule!="")
+        .map( rule => (rule+"}").trim())
         .forEach( rule => {
             styleSheet.insertRule(rule) 
         })
