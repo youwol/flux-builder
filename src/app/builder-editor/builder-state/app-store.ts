@@ -735,7 +735,9 @@ export class AppStore {
         let delta           = workflowDelta(oldProject.workflow,this.project.workflow )
 
         if( delta.modules.removedElements ){
-            delta.modules.removedElements.filter( m=> instanceOfSideEffects(m)).forEach( m => m.dispose() )
+            delta.modules.removedElements
+            .filter( m=> instanceOfSideEffects(m))
+            .forEach( m => (m as any).dispose() )
         }
         if( delta.modules.createdElements ){
             plugBuilderViewsSignals( delta.modules.createdElements, this.builderViewsActions, 
