@@ -67,25 +67,13 @@ export class AppStore {
     allSubscriptions = new Map<Connection,any>()
 
     projectId = undefined
-    project   = new Project({
-        name:"new project", 
-        schemaVersion:"1.0",
-        description: "",
-        requirements: new Requirements([],[],{},{}),
-        workflow: new Workflow({
-            modules:[],
-            connections:[],
-            plugins:[]
-        }),
-        builderRendering: new BuilderRendering([],[],[]), 
-        runnerRendering: new RunnerRendering("","") 
-    })
+    project : Project  
     workflow$ = new ReplaySubject<Workflow>(1)
     
     rootComponentId = 'Component_root-component'
     activeGroupId   : string = this.rootComponentId
     adaptors        = [] 
-    history         = new Array<Project>(this.project)
+    history         : Array<Project> 
     indexHistory    = 0
     uiState         = new UiState( "combined", false,false)
 
@@ -107,7 +95,35 @@ export class AppStore {
         public appBuildViewObservables: AppBuildViewObservables,
         ){  
             this.environment = environment
-
+            let html = `<div id='${this.rootComponentId}' class='flux-element flux-component'></div>`
+            this.project = new Project({
+                name:"new project", 
+                schemaVersion:"1.0",
+                description: "",
+                requirements: new Requirements([],[],{},{}),
+                workflow: new Workflow({
+                    modules:[ 
+                        new Component.Module({
+                            workflow$: this.workflow$, 
+                            staticStorage:{}, 
+                            moduleId: this.rootComponentId,
+                            configuration: new ModuleConfiguration({
+                                title:'root-component', 
+                                description:'', 
+                                data:new Component.PersistentData({
+                                    html
+                                })
+                            }), 
+                            Factory: Component, 
+                            environment: environment
+                        })
+                    ],
+                    connections:[],
+                    plugins:[]
+                }),
+                builderRendering: new BuilderRendering([],[],[])
+            })
+            this.history = new Array<Project>(this.project)
             this.debugSingleton.logWorkflowBuilder( {  
                     level : LogLevel.Info, 
                     message: "AppStore constructed", 
