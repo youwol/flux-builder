@@ -8,7 +8,6 @@ import { environment } from '../common/dependencies'
 
 test('test from project loading', (done) => {
 
-    
   AppDebugEnvironment.getInstance().debugOn = false
 
   let appStore : AppStore = AppStore.getInstance(environment)
@@ -18,13 +17,13 @@ test('test from project loading', (done) => {
   appObservables.ready$.pipe(
       filter(d=>d)
   ).subscribe((_)=>{
-      expect(appStore.getActiveGroup().moduleId).toEqual("root layer")
+      expect(appStore.getActiveGroup().moduleId).toEqual("Component_root-component")
       let mdleGroup = appStore.getModule("GroupModules_child-layer") as GroupModules.Module
-      mdleGroup.Factory.BuilderView.notifier$.next({type:'layerFocused', data: mdleGroup.moduleId}) 
+      mdleGroup.Factory.BuilderView.notifier$.next({type:'groupFocused', data: mdleGroup.moduleId}) 
   })
   appObservables.activeLayerUpdated$.pipe(skip(1)).subscribe( d =>{
       let layerId = appStore.getActiveGroup().moduleId
-      expect(layerId).toEqual("child-layer") 
+      expect(layerId).toEqual("GroupModules_child-layer") 
       done()
     })
 

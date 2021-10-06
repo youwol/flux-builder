@@ -38,7 +38,7 @@ test('load simple project', (done) => {
     appObservables.ready$.pipe(
         filter(d => d)
     ).subscribe( (_)=> {
-        appStore.selectActiveGroup("child-layer")
+        appStore.selectActiveGroup("GroupModules_child-layer")
     })
     
     plottersObservables.modulesDrawn$.pipe(
@@ -69,7 +69,7 @@ test('load simple project', (done) => {
     ).subscribe( (_) =>{
         let layerSvg =  document.querySelector(".active-layer-box")
         expect(layerSvg).toBeFalsy()
-        appStore.selectActiveGroup("child-layer")
+        appStore.selectActiveGroup("GroupModules_child-layer")
     })
     plottersObservables.modulesDrawn$.pipe(
         skip(2),

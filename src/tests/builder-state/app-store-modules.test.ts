@@ -3,32 +3,33 @@ import * as _operators from 'rxjs/operators'
 import {instantiateProjectModules, Workflow } from '@youwol/flux-core'
 import  './dependencies'
 
-import { AppDebugEnvironment, AppStore } from '../../app/builder-editor/builder-state'
+import { AppBuildViewObservables, AppDebugEnvironment, AppObservables, AppStore } from '../../app/builder-editor/builder-state'
 import {SimpleModule, testPack} from '../common/simple-module'
 import { environment } from '../common/dependencies'
 import { Subject } from 'rxjs'
 
 
-test('should return an empty workflow', () => {
+function setupProject({modulesCount}:{modulesCount:number}): any {
 
-  AppDebugEnvironment.getInstance().debugOn = false
+  let appStore: AppStore = new AppStore(
+      environment,
+      AppObservables.getInstance(),
+      AppBuildViewObservables.getInstance()
+  )
+  new Array(modulesCount).fill(0).map( () => appStore.addModule(SimpleModule) )
+  let workflow = appStore.project.workflow
+  expect(appStore.project.workflow.modules.length).toEqual(modulesCount+1)
+  let mdles = workflow.modules.filter(mdle => mdle instanceof SimpleModule.Module) as SimpleModule.Module[]
 
-  let appStore : AppStore = AppStore.getInstance(environment)
-  expect(appStore.project.workflow.modules).toEqual([])
-  expect(appStore.project.workflow.connections).toEqual([])
-  expect(appStore.project.workflow.plugins).toEqual([])
-  expect(appStore.getRootComponent().getModuleIds()).toEqual([])
-  expect(appStore.project.builderRendering.modulesView).toEqual([])
-  })
+  return [appStore, ...mdles]
+}
 
 test('add module', () => {
   AppDebugEnvironment.getInstance().debugOn = false
 
-  let appStore : AppStore = AppStore.getInstance(environment)
-  appStore.addModule(SimpleModule)
+  let [appStore, mdle] = setupProject({modulesCount:1})
   let workflow = appStore.project.workflow
-  expect(appStore.project.workflow.modules.length).toEqual(1)
-  let mdle = appStore.project.workflow.modules[0]
+
   expect(mdle.Factory.uid).toEqual("SimpleModule@flux-test")
   expect(mdle.inputSlots.length).toEqual(1)
   expect(mdle.inputSlots[0].slotId).toEqual("input0")
@@ -47,14 +48,14 @@ test('add module', () => {
 
   appStore.undo()
   workflow = appStore.project.workflow
-  expect(appStore.project.workflow.modules.length).toEqual(0)
+  expect(appStore.project.workflow.modules.length).toEqual(1)
   expect(appStore.getRootComponent().getModuleIds().length).toEqual(0)
   expect(appStore.project.builderRendering.modulesView.length).toEqual(0)
 
   appStore.redo()
   workflow = appStore.project.workflow
-  expect(appStore.project.workflow.modules.length).toEqual(1)
-  expect(appStore.project.workflow.modules[0]).toEqual(mdle)
+  expect(appStore.project.workflow.modules.length).toEqual(2)
+  expect(appStore.project.workflow.modules.find( mdle =>mdle instanceof SimpleModule.Module)).toEqual(mdle)
   expect(appStore.project.builderRendering.modulesView[0]).toEqual(mdleView)
 
   appStore.updateProjectToIndexHistory(0, appStore.indexHistory)
@@ -94,46 +95,41 @@ test('instantiate modules', () => {
 
 test('update module', () => {
 
-  AppDebugEnvironment.getInstance().debugOn = false
+  let [appStore, mdle] = setupProject({modulesCount:1})
   
-  let appStore : AppStore = AppStore.getInstance(environment)
-  appStore.addModule(SimpleModule)
-  let mdle = appStore.project.workflow.modules[0]
   expect(mdle.configuration.title).toEqual("SimpleModule")
   expect(mdle.configuration.data.property0).toEqual(0)
 
   appStore.updateModule(mdle, new SimpleModule['Configuration']({title:"new title",description:"",data:{property0:1} }))
 
   expect(appStore.getRootComponent().getModuleIds().length).toEqual(1)
-  let newMdle =  appStore.project.workflow.modules[0]
-  expect(newMdle.configuration.title).toEqual("new title")
+  let newMdle =  appStore.project.workflow.modules.find( mdle =>mdle instanceof SimpleModule.Module)
   expect(newMdle.configuration.data.property0).toEqual(1)
+  expect(newMdle.configuration.title).toEqual("new title")
 
   appStore.undo()
-  expect(appStore.project.workflow.modules[0]).toEqual(mdle)
+  let prevMdle = appStore.project.workflow.modules.find( mdle => mdle instanceof SimpleModule.Module)
+  expect(prevMdle).toEqual(mdle)
   appStore.redo()
-  expect(appStore.project.workflow.modules[0]).toEqual(newMdle)
+  let newMdleRe = appStore.project.workflow.modules.find( mdle => mdle instanceof SimpleModule.Module)
+  expect(newMdleRe).toEqual(newMdle)
 
   appStore.updateProjectToIndexHistory(0, appStore.indexHistory)
 })
 
 test('delete module', () => {
 
-  AppDebugEnvironment.getInstance().debugOn = false
-  
-  let appStore : AppStore = AppStore.getInstance(environment)
-  appStore.addModule(SimpleModule)
+  let [appStore, mdle] = setupProject({modulesCount:1})
 
-  let mdle = appStore.project.workflow.modules[0]
   appStore.deleteModule(mdle)
-  expect(appStore.project.workflow.modules.length).toEqual(0)
+  expect(appStore.project.workflow.modules.length).toEqual(1)
   expect(appStore.getRootComponent().getModuleIds().length).toEqual(0)
   
   appStore.undo()
-  expect(appStore.project.workflow.modules[0]).toEqual(mdle)
+  expect(appStore.project.workflow.modules.find( mdle => mdle instanceof SimpleModule.Module)).toEqual(mdle)
   expect(appStore.getRootComponent().getModuleIds()[0]).toEqual(mdle.moduleId)
   appStore.redo()
-  expect(appStore.project.workflow.modules.length).toEqual(0)
+  expect(appStore.project.workflow.modules.length).toEqual(1)
   expect(appStore.getRootComponent().getModuleIds().length).toEqual(0)
 
   appStore.updateProjectToIndexHistory(0, appStore.indexHistory)
@@ -141,23 +137,19 @@ test('delete module', () => {
 
 
 test('delete modules', () => {
-
-  AppDebugEnvironment.getInstance().debugOn = false
   
-  let appStore : AppStore = AppStore.getInstance(environment)
-  appStore.addModule(SimpleModule)
+  let [appStore, mdle] = setupProject({modulesCount:1})
 
-  let mdle = appStore.project.workflow.modules[0]
   appStore.deleteModules([])
   appStore.deleteModules([mdle])
-  expect(appStore.project.workflow.modules.length).toEqual(0)
+  expect(appStore.project.workflow.modules.length).toEqual(1)
   expect(appStore.getRootComponent().getModuleIds().length).toEqual(0)
   
   appStore.undo()
-  expect(appStore.project.workflow.modules[0]).toEqual(mdle)
+  expect(appStore.project.workflow.modules.find( mdle => mdle instanceof SimpleModule.Module)).toEqual(mdle)
   expect(appStore.getRootComponent().getModuleIds()[0]).toEqual(mdle.moduleId)
   appStore.redo()
-  expect(appStore.project.workflow.modules.length).toEqual(0)
+  expect(appStore.project.workflow.modules.length).toEqual(1)
   expect(appStore.getRootComponent().getModuleIds().length).toEqual(0)
 
   appStore.updateProjectToIndexHistory(0, appStore.indexHistory)
@@ -166,15 +158,12 @@ test('delete modules', () => {
 
 test('move module', () => {
 
-  AppDebugEnvironment.getInstance().debugOn = false
-  
-  let appStore : AppStore = AppStore.getInstance(environment)
-  appStore.addModule(SimpleModule)
+  let [appStore, mdle] = setupProject({modulesCount:1})
 
   function getView(id){
     return appStore.project.builderRendering.modulesView.find(m => m.moduleId == id)
   }
-  let mdle = appStore.project.workflow.modules[0]
+  
   let moduleId = mdle.moduleId
   expect(getView(moduleId).xWorld).toEqual(0)
   expect(getView(moduleId).yWorld).toEqual(0)
@@ -193,8 +182,8 @@ test('move module', () => {
 
 
   appStore.addModule(SimpleModule)
-  let mdle2 = appStore.project.workflow.modules[1]
-  appStore.moveModules([{moduleId:mdle2.moduleId,x:-10,y:20}])
+  let mdle2 = appStore.project.workflow.modules.find( m => m instanceof SimpleModule.Module && m != mdle)
+  appStore.moveModules([{moduleId:mdle2.moduleId,x:-10,y:20}]) 
 
   appStore.addGroup([mdle.moduleId,mdle2.moduleId])
   let activeModules = appStore.getActiveModulesView()

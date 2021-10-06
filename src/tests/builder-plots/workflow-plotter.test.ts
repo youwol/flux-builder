@@ -74,10 +74,10 @@ test('load simple project', (done) => {
 
         let eventDelete= new KeyboardEvent('keydown',{key:"Delete"})
         window.dispatchEvent(eventDelete)
+        // root component remains
+        expect(appStore.project.workflow.modules.length).toEqual(1)
 
-        expect(appStore.project.workflow.modules.length).toEqual(0)
-
-        done() 
+        done()
     })    
 
     appStore.loadProjectId("simpleProject")

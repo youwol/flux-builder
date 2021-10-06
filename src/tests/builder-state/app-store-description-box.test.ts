@@ -1,35 +1,31 @@
 import  './dependencies'
 
-import { AppDebugEnvironment, AppStore } from '../../app/builder-editor/builder-state'
+import { AppBuildViewObservables, AppDebugEnvironment, AppObservables, AppStore } from '../../app/builder-editor/builder-state'
 import { DescriptionBox, DescriptionBoxProperties } from '@youwol/flux-core'
 import { SimpleModule } from '../common/simple-module'
 import { environment } from '../common/dependencies'
 
 
-test('should return an empty workflow', () => {
+function setupProject({modulesCount}:{modulesCount:number}): any {
 
-  AppDebugEnvironment.getInstance().debugOn = false
+  let appStore: AppStore = new AppStore(
+      environment,
+      AppObservables.getInstance(),
+      AppBuildViewObservables.getInstance()
+  )
+  new Array(modulesCount).fill(0).map( () => appStore.addModule(SimpleModule) )
+  let workflow = appStore.project.workflow
+  expect(appStore.project.workflow.modules.length).toEqual(modulesCount+1)
+  let mdles = workflow.modules.filter(mdle => mdle instanceof SimpleModule.Module) as SimpleModule.Module[]
 
-  let appStore : AppStore = AppStore.getInstance(environment)
-  expect(appStore.project.workflow.modules).toEqual([])
-  expect(appStore.project.workflow.connections).toEqual([])
-  expect(appStore.project.workflow.plugins).toEqual([])
-  expect(appStore.getRootComponent().getModuleIds()).toEqual([])
-  expect(appStore.project.builderRendering.modulesView).toEqual([])
-  })
+  return [appStore, ...mdles]
+}
 
 
 test('add 2 module and connections + description box ', () => {
     AppDebugEnvironment.getInstance().debugOn = false
   
-    let appStore : AppStore = AppStore.getInstance(environment)
-    appStore.addModule(SimpleModule)
-    appStore.addModule(SimpleModule)
-
-    let workflow = appStore.project.workflow
-    expect(appStore.project.workflow.modules.length).toEqual(2)
-    let mdle0 = workflow.modules[0]
-    let mdle1 = workflow.modules[1]
+    let [appStore, mdle0, mdle1] = setupProject({modulesCount:2})
 
     let properties = new DescriptionBoxProperties("blue")
     let descriptionBox = new DescriptionBox("descriptionBoxId","title",[mdle0.moduleId,mdle1.moduleId],"",properties)
@@ -58,14 +54,7 @@ test('add 2 module and connections + description box ', () => {
 test('add 2 module and connections + description box + delete', () => {
     AppDebugEnvironment.getInstance().debugOn = false
   
-    let appStore : AppStore = AppStore.getInstance(environment)
-    appStore.addModule(SimpleModule)
-    appStore.addModule(SimpleModule)
-
-    let workflow = appStore.project.workflow
-    expect(appStore.project.workflow.modules.length).toEqual(2)
-    let mdle0 = workflow.modules[0]
-    let mdle1 = workflow.modules[1]
+    let [appStore, mdle0, mdle1] = setupProject({modulesCount:2})
 
     let properties = new DescriptionBoxProperties("blue")
     let descriptionBox = new DescriptionBox("descriptionBoxId","title",[mdle0.moduleId,mdle1.moduleId],"",properties)
@@ -92,14 +81,7 @@ test('add 2 module and connections + description box + delete', () => {
   test('add 2 module and connections + description box + update', () => {
     AppDebugEnvironment.getInstance().debugOn = false
   
-    let appStore : AppStore = AppStore.getInstance(environment)
-    appStore.addModule(SimpleModule)
-    appStore.addModule(SimpleModule)
-
-    let workflow = appStore.project.workflow
-    expect(appStore.project.workflow.modules.length).toEqual(2)
-    let mdle0 = workflow.modules[0]
-    let mdle1 = workflow.modules[1]
+    let [appStore, mdle0, mdle1] = setupProject({modulesCount:2})
 
     let properties = new DescriptionBoxProperties("blue")
     let descriptionBox = new DescriptionBox("descriptionBoxId","title",[mdle0.moduleId,mdle1.moduleId],"",properties)

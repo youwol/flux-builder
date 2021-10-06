@@ -4,6 +4,7 @@ import { AppDebugEnvironment, AppStore, AppObservables,
   AppBuildViewObservables, UiState } from '../../app/builder-editor/builder-state'
 import { environment } from '../common/dependencies'
 import { projects } from '../common/projects-data'
+import { Component } from '@youwol/flux-core'
 
 
 test('load empty project', (done) => {
@@ -18,13 +19,12 @@ test('load empty project', (done) => {
     filter( d=> d)
   ).subscribe( ()=>{
 
-    expect(appStore.project.workflow.modules).toEqual([])
+    expect(appStore.project.workflow.modules.length).toEqual(1)
+    expect(appStore.project.workflow.modules[0]).toBeInstanceOf(Component.Module)
     expect(appStore.project.workflow.connections).toEqual([])
     expect(appStore.project.workflow.plugins).toEqual([])
     expect(appStore.project.builderRendering.modulesView).toEqual([])
     expect(appStore.project.builderRendering.descriptionsBoxes).toEqual([])
-    expect(appStore.project.runnerRendering.layout).toEqual("")
-    expect(appStore.project.runnerRendering.style).toEqual("")
     done()
   })
 })
@@ -86,12 +86,6 @@ test('save project 0', done => {
 
     AppDebugEnvironment.getInstance().debugOn = false
     let appObservables = AppObservables.getInstance()
-    
-    /*
-    backend.onSavedProject = ( p)=> {
-      expect(p).toEqual(projects.simpleProject)
-      done()
-    }*/
 
     let appStore : AppStore =new AppStore(environment, appObservables, AppBuildViewObservables.getInstance()) 
     
@@ -100,7 +94,7 @@ test('save project 0', done => {
       let saved = environment.savedProjects[appStore.projectId]
       expect(saved.requirements).toEqual(projects.simpleProject.requirements)
       expect(saved.builderRendering).toEqual(projects.simpleProject.builderRendering)
-      expect(saved.runnerRendering).toEqual(projects.simpleProject.runnerRendering)
+      let tutu = projects.simpleProject.workflow
       expect(saved.workflow).toEqual(projects.simpleProject.workflow)
       done()
     })
@@ -108,7 +102,7 @@ test('save project 0', done => {
     appStore.loadProjectId("simpleProject")
   })
   
-  
+
 test('save project 1', done => {
 
   AppDebugEnvironment.getInstance().debugOn = false
@@ -121,7 +115,6 @@ test('save project 1', done => {
     let saved = environment.savedProjects[appStore.projectId]
     expect(saved.requirements).toEqual(projects.simpleProjectConnection.requirements)
     expect(saved.builderRendering).toEqual(projects.simpleProjectConnection.builderRendering)
-    expect(saved.runnerRendering).toEqual(projects.simpleProjectConnection.runnerRendering)
     expect(saved.workflow).toEqual(projects.simpleProjectConnection.workflow)
     done()
   })
@@ -176,13 +169,13 @@ test('selection', (done) => {
 
     let groupModule = appStore.getModule("GroupModules_child-layer")
 
-    expect( groupModule["layerId"] ).toEqual("child-layer")
+    expect( groupModule ).toBeTruthy()
     
-    appStore.selectActiveGroup("child-layer")
-    let activeLayer = appStore.getActiveGroup()
-    expect( activeLayer.moduleId ).toEqual("child-layer")
+    appStore.selectActiveGroup("GroupModules_child-layer")
+    let activeGroup = appStore.getActiveGroup()
+    expect( activeGroup.moduleId ).toEqual("GroupModules_child-layer")
     let activeModules = appStore.getActiveModulesId()
-    expect( activeModules ).toEqual(["module1"/*,"plugin0"*/])
+    expect( activeModules ).toEqual(["module1"])
 
     appStore.selectDescriptionBox("descriptionBoxId")
     expect( appStore.descriptionBoxSelected.descriptionBoxId).toEqual("descriptionBoxId")
@@ -193,38 +186,3 @@ test('selection', (done) => {
   appStore.loadProjectId("simpleProject")
 })
 
-
-test('deletion', (done) => {
-
-  let appObservables = new AppObservables()
-  
-  let appStore : AppStore =new AppStore(environment, appObservables, AppBuildViewObservables.getInstance()) 
-  appStore.loadProjectId("simpleProject")
-  appObservables.ready$.pipe(
-    filter( d=> d)
-  ).subscribe( (d)=>{
-
-    expect(appStore.project.workflow.connections.length).toEqual(2)
-    appStore.selectConnection(appStore.project.workflow.connections[0])
-    appStore.deleteSelected()
-    expect(appStore.project.workflow.connections.length).toEqual(1)
-    appStore.undo()
-    expect(appStore.project.workflow.connections.length).toEqual(2)
-
-    expect(appStore.project.workflow.modules.length).toEqual(3)
-    appStore.selectModule("module0")
-    appStore.deleteSelected()
-    expect(appStore.project.workflow.modules.length).toEqual(2)
-    appStore.undo()
-    expect(appStore.project.workflow.modules.length).toEqual(3)
-
-    expect(appStore.project.builderRendering.descriptionsBoxes.length).toEqual(1)
-    appStore.selectDescriptionBox("descriptionBoxId")
-    appStore.deleteSelected()
-    expect(appStore.project.builderRendering.descriptionsBoxes.length).toEqual(0)
-    appStore.undo()
-    expect(appStore.project.builderRendering.descriptionsBoxes.length).toEqual(1)
-
-    done()
-  })
-})

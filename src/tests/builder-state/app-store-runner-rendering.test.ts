@@ -1,33 +1,40 @@
 
 import  './dependencies'
-import { AppDebugEnvironment, AppStore } from '../../app/builder-editor/builder-state'
+import { AppBuildViewObservables, AppDebugEnvironment, AppObservables, AppStore } from '../../app/builder-editor/builder-state'
 import { environment } from '../common/dependencies'
 
-test('should return an empty workflow', () => {
 
-  AppDebugEnvironment.getInstance().debugOn = false
+function setupProject(): AppStore {
 
-  let appStore : AppStore = AppStore.getInstance(environment)
-  expect(appStore.project.workflow.modules).toEqual([])
-  expect(appStore.project.workflow.connections).toEqual([])
-  expect(appStore.project.workflow.plugins).toEqual([])
-  expect(appStore.getRootComponent().getModuleIds()).toEqual([])
-  expect(appStore.project.builderRendering.modulesView).toEqual([])
-  })
+  let appStore: AppStore = new AppStore(
+      environment,
+      AppObservables.getInstance(),
+      AppBuildViewObservables.getInstance()
+  )
+
+  return appStore
+}
 
 
 test('set rendering layout', () => {
 
-    AppDebugEnvironment.getInstance().debugOn = false
-    let appStore : AppStore = AppStore.getInstance(environment)
+    let appStore : AppStore = setupProject()
+    let html = `<div id='${appStore.rootComponentId}' class='flux-element flux-component'><div> test rendering layout </div></div>`
+    appStore.setRenderingLayout(html)
+    
+    let outerHtml = appStore.getRootComponent().getOuterHTML()
+    expect(outerHtml.id).toEqual(appStore.getRootComponent().moduleId)
+    expect(outerHtml.innerHTML).toEqual('<div> test rendering layout </div>')
 
-    appStore.setRenderingLayout("<div> test rendering layout </div>")
-    let layout = appStore.project.runnerRendering.layout
-    expect(layout).toEqual("<div> test rendering layout </div>")
     appStore.undo()
-    expect(appStore.project.runnerRendering.layout).toEqual("")
+    outerHtml = appStore.getRootComponent().getOuterHTML()
+    expect(outerHtml.id).toEqual(appStore.getRootComponent().moduleId)
+    expect(outerHtml.innerHTML).toEqual('')
+
     appStore.redo()
-    expect(appStore.project.runnerRendering.layout).toEqual(layout)
+    outerHtml = appStore.getRootComponent().getOuterHTML()
+    expect(outerHtml.id).toEqual(appStore.getRootComponent().moduleId)
+    expect(outerHtml.innerHTML).toEqual('<div> test rendering layout </div>')
 
     appStore.updateProjectToIndexHistory(0, appStore.indexHistory)
 })
@@ -35,7 +42,7 @@ test('set rendering layout', () => {
 class MockCSSStyleSheet{
   rules: Array<any> = []
   insertRule(rule){
-    this.rules.push(rule)
+    this.rules.push({selectorText:rule.split('{')[0], cssText:rule})
   }
 }
 (window as any)['CSSStyleSheet'] = MockCSSStyleSheet
@@ -45,13 +52,22 @@ test('set rendering style', () => {
     AppDebugEnvironment.getInstance().debugOn = false
     let appStore : AppStore = AppStore.getInstance(environment)
 
-    appStore.setRenderingStyle(".test{ background-color: black }")
-    let style = appStore.project.runnerRendering.style
-    expect(style).toEqual(".test{ background-color: black }")
+    appStore.setRenderingStyle(".test{background-color:'black'}")
+    // .test is not used in the project => it has not been set
+    let outerStyle = appStore.getRootComponent().getOuterCSS() as string
+    expect(outerStyle.trim()).toEqual("")
+
+    let style = `#${appStore.rootComponentId}{ background-color: black }`
+    appStore.setRenderingStyle(style)
+    outerStyle = appStore.getRootComponent().getOuterCSS() as string
+    expect(outerStyle.trim()).toEqual(style)
+
     appStore.undo()
-    expect(appStore.project.runnerRendering.style).toEqual("")
+    outerStyle = appStore.getRootComponent().getOuterCSS() as string
+    expect(outerStyle.trim()).toEqual("")
     appStore.redo()
-    expect(appStore.project.runnerRendering.style).toEqual(style)
+    outerStyle = appStore.getRootComponent().getOuterCSS() as string
+    expect(outerStyle.trim()).toEqual(style)
 
     appStore.updateProjectToIndexHistory(0, appStore.indexHistory)
 })

@@ -1,23 +1,26 @@
 
 import * as _operators from 'rxjs/operators'
 import  './dependencies'
-import { AppDebugEnvironment, AppStore, AppObservables,getPlugins } from '../../app/builder-editor/builder-state'
+import { AppDebugEnvironment, AppStore, AppObservables,getPlugins, AppBuildViewObservables } from '../../app/builder-editor/builder-state'
 import { SimpleModule2, SimplePlugin, testPack } from '../common/simple-module'
 import { ModuleConfiguration, instantiateProjectModules,instantiateProjectPlugins, Workflow} from '@youwol/flux-core'
 import { environment } from '../common/dependencies'
 import { Subject } from 'rxjs'
 
+function setupProject({modulesCount}:{modulesCount:number}): any {
 
-test('should return an empty workflow', () => {
+  let appStore: AppStore = new AppStore(
+      environment,
+      AppObservables.getInstance(),
+      AppBuildViewObservables.getInstance()
+  )
+  new Array(modulesCount).fill(0).map( () => appStore.addModule(SimpleModule2) )
+  let workflow = appStore.project.workflow
+  expect(appStore.project.workflow.modules.length).toEqual(modulesCount+1)
+  let mdles = workflow.modules.filter(mdle => mdle instanceof SimpleModule2.Module) as SimpleModule2.Module[]
 
-  AppDebugEnvironment.getInstance().debugOn = false
-
-  let appStore : AppStore = AppStore.getInstance(environment)
-  expect(appStore.project.workflow.modules).toEqual([])
-  expect(appStore.project.workflow.connections).toEqual([])
-  expect(appStore.project.workflow.plugins).toEqual([])
-  expect(appStore.project.builderRendering.modulesView).toEqual([])
-  })
+  return [appStore, ...mdles]
+}
 
 
 test('instantiate plugins', () => {
@@ -90,13 +93,8 @@ test('get available plugins', () => {/*
 
   
 test('add module with plugin', () => {
-  AppDebugEnvironment.getInstance().debugOn = false
-
-  let appStore : AppStore = AppStore.getInstance(environment)
-  appStore.addModule(SimpleModule2)
-  let workflow = appStore.project.workflow
-  expect(appStore.project.workflow.modules.length).toEqual(1)
-  let mdle = appStore.project.workflow.modules[0]
+  
+  let [appStore, mdle] = setupProject({modulesCount:1})
 
   appStore.addPlugin(SimplePlugin, mdle)
 
@@ -123,12 +121,8 @@ test('add module with plugin', () => {
 
 test('add module with plugin + module update', () => {
   // From bug https://gitlab.com/youwol/platform/-/issues/17
-  AppDebugEnvironment.getInstance().debugOn = false
-
-  let appStore : AppStore = AppStore.getInstance(environment)
-  appStore.addModule(SimpleModule2)
-  expect(appStore.project.workflow.modules.length).toEqual(1)
-  let mdle = appStore.project.workflow.modules[0]
+  
+  let [appStore, mdle] = setupProject({modulesCount:1})
   let plugin = appStore.addPlugin(SimplePlugin, mdle )
   expect(plugin.configuration.data.property0).toEqual(0)
   expect(plugin.configuration.title).toEqual("SimplePlugin")
