@@ -44,7 +44,7 @@ function getActions(appStore: AppStore) {
                 class: 'fas fa-undo',
                 visible: new BehaviorSubject(true),
                 enabled: observables.projectUpdated$.pipe(
-                    map((appStore: AppStore) => {
+                    map(() => {
                         return appStore.indexHistory > 1
                     })
                 ),
@@ -55,7 +55,7 @@ function getActions(appStore: AppStore) {
                 class: 'fas fa-redo',
                 visible: new BehaviorSubject(true),
                 enabled: observables.projectUpdated$.pipe(
-                    map((appStore: AppStore) => {
+                    map(() => {
                         return appStore.indexHistory < appStore.history.length - 1
                     })
                 ),
