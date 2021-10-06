@@ -21,7 +21,6 @@ import { setRenderingStyle, setRenderingLayout } from './app-store-runner-render
 
 import { createGroup, getDisplayedModulesView, getGroup} from './app-store-modules-group';
 import { filter, mergeMap,map, tap } from 'rxjs/operators';
-import {  getDelta, workflowDelta } from './project-delta';
 import * as _ from 'lodash'
 import { uuidv4, packageAssetComponent, plugBuilderViewsSignals } from './utils';
 import { BuilderStateAPI } from './extension';
@@ -744,7 +743,7 @@ export class AppStore {
             updatesDone.connections = true
         }
         if( !updatesDone.modulesView && (this.project.builderRendering.modulesView  !== oldProject.builderRendering.modulesView)){
-            let delta = getDelta( oldProject.builderRendering.modulesView, this.project.builderRendering.modulesView)
+            let delta = getCollectionsDelta( oldProject.builderRendering.modulesView, this.project.builderRendering.modulesView)
             let updates = [
                 ...delta.createdElements.filter( e => delta.removedElements.find( e2 => e2.moduleId == e.moduleId) == undefined ),
                 ...delta.createdElements.filter( e => delta.removedElements.find( e2 => e2.moduleId == e.moduleId) == undefined )
