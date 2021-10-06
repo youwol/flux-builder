@@ -1,5 +1,5 @@
 import { Subject, ReplaySubject } from "rxjs";
-import { Package, Connection, ModuleFlux, DescriptionBox, Project  }from '@youwol/flux-core';
+import { Package, Connection, ModuleFlux, DescriptionBox, Project, WorkflowDelta  }from '@youwol/flux-core';
 
 import { AppDebugEnvironment, LogLevel } from "./app-debug.environment";
 import { AppStore, UiState } from './app-store';
@@ -17,7 +17,7 @@ export class AppObservables{
 
     debugSingleton = AppDebugEnvironment.getInstance()
 
-    projectUpdated$             = new ReplaySubject<AppStore>(1)
+    projectUpdated$             = new ReplaySubject<WorkflowDelta>(1)
     packagesObserver$           = new ReplaySubject<any>(1)
     packagesLoaded$             = new ReplaySubject<any>(1)
     uiStateUpdated$             = new ReplaySubject<UiState>(1)

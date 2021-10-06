@@ -772,7 +772,7 @@ export class AppStore {
         } 
         subscribeConnections(this.allSubscriptions, delta.connections, this.project.workflow.modules, this.project.workflow.plugins )  
         
-        this.appObservables.projectUpdated$.next(this)
+        this.appObservables.projectUpdated$.next(delta)
         this.appExtensionsObservables.projectUpdated$.next(delta)
         
         this.debugSingleton.debugOn &&
