@@ -738,16 +738,24 @@ export class AppStore {
             .filter( m=> instanceOfSideEffects(m))
             .forEach( m => (m as any).dispose() )
         }
+        
+        // the synchronization of the modules 'workflowDependantTrait' are done:
+        //  - after the deleted modules 'disposed': the module depending on workflow$
+        // will dispose before an eventually inconsistent wf is emitted
+        //  - before the new modules eventually 'applied': the modules depending on workflow$
+        // will apply using a consistent workflow (ReplaySubject is used for workflow)
+        //  - before updates signals are send
+        if(delta.hasDiff){
+            this.workflow$.next(this.project.workflow) 
+        }
+
         if( delta.modules.createdElements ){
             plugBuilderViewsSignals( delta.modules.createdElements, this.builderViewsActions, 
                 this.appBuildViewObservables.notification$ )
-            delta.modules.createdElements.filter( m => instanceOfSideEffects(m)).forEach( m => m.apply() )
+            delta.modules.createdElements
+            .filter( m => instanceOfSideEffects(m))
+            .forEach( m => (m as any).apply() )
         }
-        // the synchronization of the modules 'workflowDependantTrait' are done after the 
-        // deleted modules 'disposed', and after new modules
-        // eventually 'applied'; but before updates signals are send
-        if(delta.hasDiff)
-            this.workflow$.next(this.project.workflow)
 
         if( !updatesDone.modules && (delta.modules.createdElements.length > 0 || delta.modules.removedElements.length > 0)  ){
             this.appObservables.modulesUpdated$.next(delta.modules)
