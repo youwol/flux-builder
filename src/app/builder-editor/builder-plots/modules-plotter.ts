@@ -63,7 +63,8 @@ function drawModules(
     let displayedModulesView = appStore.getDisplayedModulesView()
     let projection = undefined       
 
-    if(appStore.activeGroupId != appStore.rootComponentId ){
+    if( appStore.activeGroupId != appStore.rootComponentId && 
+        displayedModulesView.currentLayer.modulesView.length>0 ){
 
         let center = getCenter(displayedModulesView.currentLayer)
         let factors = getScaleFactors(displayedModulesView.currentLayer)
@@ -92,7 +93,7 @@ function drawModules(
 
     let plotsData0 = displayedModulesView.currentLayer.modulesView.map(fromModuleViewInside)
     let plotsData1 = displayedModulesView.parentLayer.modulesView.map(fromModuleOutside)
-
+    
     let grouped          = _.groupBy([...plotsData0,...plotsData1], d => d.Factory.uid  )
     let modulesDrawn     = {}
     let activeSeriesId   = []
@@ -118,7 +119,9 @@ function drawModules(
         groups.entered._groups.forEach( d =>  updateMdlesDrawn(d))
         groups.updated._groups.forEach( d =>  updateMdlesDrawn(d))
 
-        plot.entities$.subscribe( d=> plotObservables$.next(d)) 
+        plot.entities$.subscribe( d=> {
+            plotObservables$.next(d) 
+        }) 
         return plot
     })
     return {modulesDrawn : modulesDrawn,
@@ -139,10 +142,17 @@ function drawExpandedGroup( layerId :string, drawingArea : DrawingArea, appStore
 
     const displayedElements = appStore.getDisplayedModulesView()
     const includedEntities  = displayedElements.currentLayer.modulesView.map(g => g.moduleId)
-    let rect                = getBoundingBox(includedEntities,50,drawingArea)
-    
+    let rect                = includedEntities.length > 0
+        ? getBoundingBox(includedEntities,50,drawingArea)
+        : { x:drawingArea.hScale(displayedElements.parentLayer.currentGroupModuleView.xWorld), 
+            y:drawingArea.vScale(displayedElements.parentLayer.currentGroupModuleView.yWorld), 
+            width: 200, 
+            height:200 
+        }
+        
     let x = drawingArea.hScale.invert( rect.x + rect.width/2)
     let y = drawingArea.vScale.invert( rect.y + rect.height/2)
+    
     let plotData =  [{ 
         id: "expanded_"+groupMdle.moduleId, 
         x: x, y: y, 
