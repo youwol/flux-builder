@@ -7,6 +7,9 @@ import { buildCodePanel } from './code-editors';
 import { setDynamicComponentsBlocks } from './flux-blocks';
 import { replaceTemplateElements } from './flux-rendering-components';
 
+let cachedHTML = ""
+let cachedCSS= ""
+
 export function plugCommands(editor: any, appStore: AppStore) {
 
     let debugSingleton = AppDebugEnvironment.getInstance()
@@ -14,30 +17,32 @@ export function plugCommands(editor: any, appStore: AppStore) {
     editor.on('change', (element: any) => {
 
         let html = localStorage.getItem("gjs-html")
-        if (appStore.project.runnerRendering.layout !== html && html!="") {
+        if ( html != cachedHTML && html != "") {
             debugSingleton.debugOn &&
                 debugSingleton.logRenderTopic({
                     level: LogLevel.Info, message: "change => layout",
                     object: {
                         element,
-                        oldLayout: appStore.project.runnerRendering.layout,
+                        oldLayout: cachedHTML,
                         newLayout: html
                     }
                 })
             appStore.setRenderingLayout(localStorage.getItem("gjs-html"))
+            cachedHTML = html
         }
         let css = cleanCss(localStorage.getItem("gjs-css"))
-        if (appStore.project.runnerRendering.style !== css && css !="") {
+        if ( css != cachedCSS && css !="") {
             debugSingleton.debugOn &&
                 debugSingleton.logRenderTopic({
                     level: LogLevel.Info, message: "change => style",
                     object: {
                         element,
-                        oldCss: appStore.project.runnerRendering.style,
+                        oldCss: cachedCSS,
                         newCss: css
                     }
                 })
             appStore.setRenderingStyle(css)
+            cachedCSS = css
         }
     });
 
