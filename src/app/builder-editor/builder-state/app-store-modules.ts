@@ -443,26 +443,27 @@ export function deleteModules(modulesDeleted: Array<ModuleFlux>, project: Projec
         .filter(plugin => modulesNotReplacedId.includes(plugin.parentModule.moduleId))
         .map(p => p.moduleId)
 
+    // those are the ids that will be removed (not replaced) 
     let idsRemoved = [...modulesNotReplacedId, ...pluginsNotReplacedId]
 
-    let newModulesReplaced =  parentGroups.map((mdle: GroupModules.Module) => {
+    let newGroupsReplaced =  parentGroups.map((mdle: GroupModules.Module) => {
         let childIds = mdle.getModuleIds()
         let filtered = childIds.filter(mId => !idsRemoved.includes(mId))
         return updateGroup(mdle, { moduleIds: filtered })
     })
-
-    let newPluginsReplaced = clonePluginsForNewParents(newModulesReplaced, project.workflow)
+    
+    let newPluginsReplaced = clonePluginsForNewParents(newGroupsReplaced, project.workflow)
 
     let modulesToDeleteId = [
         ...modulesNotReplacedId,
         ...pluginsNotReplacedId,
-        ...newModulesReplaced.map( mdle => mdle.moduleId),
+        ...parentGroups.map( mdle => mdle.moduleId),
         ...newPluginsReplaced.map( mdle => mdle.moduleId)
     ]
 
     let modules = project.workflow.modules
         .filter(m => !modulesToDeleteId.includes(m.moduleId))
-        .concat(...newModulesReplaced)
+        .concat(...newGroupsReplaced)
 
     let plugins = project.workflow.plugins
         .filter(m => !modulesToDeleteId.includes(m.moduleId))
