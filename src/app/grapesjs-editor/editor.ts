@@ -1,14 +1,13 @@
-import { AppDebugEnvironment, LogLevel, AppStore } from '../builder-editor/builder-state/index'
+import {AppDebugEnvironment, AppStore, LogLevel} from '../builder-editor/builder-state/index'
 
-import { getRenderPanels } from './panels'
-import { getGeneralPanels } from '../top-banner/panels'
+import {getRenderPanels} from './panels'
 
-import { getBlocks } from './blocks'
-import { getStylesSectors } from './style-manager'
-import { plugCommands } from './commands'
-import { applyPatches } from './patches'
-import { Subject } from 'rxjs'
-import { take } from 'rxjs/operators'
+import {getBlocks} from './blocks'
+import {getStylesSectors} from './style-manager'
+import {plugCommands} from './commands'
+import {applyPatches} from './patches'
+import {Subject} from 'rxjs'
+import {take} from 'rxjs/operators'
 
 import * as grapesjs from 'grapesjs'
 
@@ -91,12 +90,12 @@ export async function createLayoutEditor(): grapesjs.Editor {
     .flux-fill-parent{width:100%; height:100%}`;
         document.body.appendChild(node);
         editor$.next(editor)
-        
+
     })
     editor.SelectorManager.getAll().each(selector => {
         console.log("Set privates class!!")
-        //selector.set('private', privateClasses.includes(selector.id)) 
-        selector.set('private', true) 
+        //selector.set('private', privateClasses.includes(selector.id))
+        selector.set('private', true)
     });
     editor.render();
     return new Promise((successCb) => editor$.pipe(take(1)).subscribe((edtr) => successCb(edtr)))
@@ -121,8 +120,7 @@ export function initLayoutEditor(
     plugCommands(editor, appStore)
     editor.BlockManager.getCategories().each((ctg: any) => ctg.set('open', false))
 
-    let panels = [...getGeneralPanels(appStore), ...getRenderPanels()]
-    panels.forEach(p => editor.Panels.addPanel(p))
+    getRenderPanels().forEach(p => editor.Panels.addPanel(p))
 
     applyPatches(editor)
 
@@ -131,4 +129,3 @@ export function initLayoutEditor(
 
     editor.setStyle(style);
 }
-
