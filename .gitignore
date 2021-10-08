@@ -8,3 +8,6 @@ chart/
 deploy
 nginx.conf
 Dockerfile
+yarn-error.log
+/.idea/
+/flux-builder.iml
