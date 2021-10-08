@@ -1,32 +1,64 @@
+import {
+    BuilderRendering,
+    Component,
+    Connection,
+    createProject,
+    DescriptionBox,
+    DescriptionBoxProperties,
+    FluxExtensionAPIs,
+    getCollectionsDelta,
+    GroupModules,
+    IEnvironment,
+    instanceOfSideEffects,
+    loadProjectDatabase$,
+    loadProjectDependencies$,
+    loadProjectURI$,
+    ModuleConfiguration,
+    ModuleFlux,
+    PluginFlux,
+    Project,
+    ProjectSchema,
+    Requirements,
+    Workflow,
+    workflowDelta
+} from '@youwol/flux-core';
 
-import {Requirements, 
-    Project,Workflow,BuilderRendering,
-    Component, Connection, ModuleFlux, PluginFlux,  ModuleConfiguration, 
-    DescriptionBox, LayerTree, instanceOfSideEffects, 
-    GroupModules, DescriptionBoxProperties,  FluxExtensionAPIs, loadProjectDatabase$, loadProjectURI$, ProjectSchema, IEnvironment, loadProjectDependencies$, createProject, SideEffects, getCollectionsDelta, workflowDelta } from '@youwol/flux-core';
+import {AppObservables} from './app-observables.service';
+import {AppDebugEnvironment, LogLevel} from './app-debug.environment';
+import {AppBuildViewObservables} from './observables-plotters';
+import {AppExtensionsObservables} from './app-extensions-observables.service';
+import {toProjectData, toProjectURI} from './factory-utils';
 
-import { AppObservables } from './app-observables.service';
-import { AppDebugEnvironment,LogLevel } from './app-debug.environment';
-import { AppBuildViewObservables } from './observables-plotters';
-import { AppExtensionsObservables } from './app-extensions-observables.service';
-import { toProjectData, toProjectURI } from './factory-utils';
+import {
+    addModule,
+    alignH,
+    alignV,
+    deleteModules,
+    duplicateModules,
+    moveModules,
+    updateModule
+} from './app-store-modules';
+import {addPlugin, getAvailablePlugins, getPlugins} from './app-store-plugins';
+import {
+    addAdaptor,
+    addConnection,
+    deleteAdaptor,
+    deleteConnection,
+    setConnectionView,
+    subscribeConnections,
+    updateAdaptor
+} from './app-store-connections';
 
-import { addModule,updateModule, moveModules,deleteModules, duplicateModules, alignH, alignV } from './app-store-modules';
-import { getAvailablePlugins, getPlugins, addPlugin } from './app-store-plugins';
-import { addConnection , deleteConnection, addAdaptor, 
-    deleteAdaptor, updateAdaptor, subscribeConnections, setConnectionView} from './app-store-connections';
-    
-import { addDescriptionBox, updateDescriptionBox, deleteDescriptionBox } from './app-store-description-box';
-import { setRenderingStyle, setRenderingLayout } from './app-store-runner-rendering';
+import {addDescriptionBox, deleteDescriptionBox, updateDescriptionBox} from './app-store-description-box';
+import {setRenderingLayout, setRenderingStyle} from './app-store-runner-rendering';
 
-import { createGroup, getDisplayedModulesView, getGroup} from './app-store-modules-group';
-import { filter, mergeMap,map, tap } from 'rxjs/operators';
+import {createGroup, getDisplayedModulesView, getGroup} from './app-store-modules-group';
+import {filter, map, mergeMap, tap} from 'rxjs/operators';
 import * as _ from 'lodash'
-import { uuidv4, packageAssetComponent, plugBuilderViewsSignals } from './utils';
-import { BuilderStateAPI } from './extension';
-import { addLibraries, cleanUnusedLibraries } from './app-store-dependencies';
-import { Observable, ReplaySubject, Subject } from 'rxjs';
-import { CdnEvent } from '@youwol/cdn-client';
+import {packageAssetComponent, plugBuilderViewsSignals, uuidv4} from './utils';
+import {BuilderStateAPI} from './extension';
+import {addLibraries, cleanUnusedLibraries} from './app-store-dependencies';
+import {Observable, ReplaySubject} from 'rxjs';
 
 
 export class UiState{
@@ -46,7 +78,7 @@ export interface BackendInterface{
 }
 
 export class AppStore {
-    
+
 
     private static instance : AppStore = undefined
 
@@ -67,18 +99,18 @@ export class AppStore {
     allSubscriptions = new Map<Connection,any>()
 
     projectId = undefined
-    project : Project  
+    project : Project
     workflow$ = new ReplaySubject<Workflow>(1)
-    
+
     rootComponentId = 'Component_root-component'
     activeGroupId   : string = this.rootComponentId
-    adaptors        = [] 
-    history         : Array<Project> 
+    adaptors        = []
+    history         : Array<Project>
     indexHistory    = 0
     uiState         = new UiState( "combined", false,false)
 
-    modulesFactory : Map<string, any> 
-    pluginsFactory : Map<string,any> 
+    modulesFactory : Map<string, any>
+    pluginsFactory : Map<string,any>
     packages        = []
 
     implicitModules         : Array<ModuleFlux> = []
@@ -90,31 +122,31 @@ export class AppStore {
     appExtensionsObservables : AppExtensionsObservables = AppExtensionsObservables.getInstance()
 
     constructor(
-        public readonly environment: IEnvironment, 
+        public readonly environment: IEnvironment,
         public appObservables : AppObservables,
         public appBuildViewObservables: AppBuildViewObservables,
-        ){  
+        ){
             this.environment = environment
             let html = `<div id='${this.rootComponentId}' class='flux-element flux-component'></div>`
             this.project = new Project({
-                name:"new project", 
+                name:"new project",
                 schemaVersion:"1.0",
                 description: "",
                 requirements: new Requirements([],[],{},{}),
                 workflow: new Workflow({
-                    modules:[ 
+                    modules:[
                         new Component.Module({
-                            workflow$: this.workflow$, 
-                            staticStorage:{}, 
+                            workflow$: this.workflow$,
+                            staticStorage:{},
                             moduleId: this.rootComponentId,
                             configuration: new ModuleConfiguration({
-                                title:'root-component', 
-                                description:'', 
+                                title:'root-component',
+                                description:'',
                                 data:new Component.PersistentData({
                                     html
                                 })
-                            }), 
-                            Factory: Component, 
+                            }),
+                            Factory: Component,
                             environment: environment
                         })
                     ],
@@ -124,28 +156,28 @@ export class AppStore {
                 builderRendering: new BuilderRendering([],[],[])
             })
             this.history = new Array<Project>(this.project)
-            this.debugSingleton.logWorkflowBuilder( {  
-                    level : LogLevel.Info, 
-                    message: "AppStore constructed", 
+            this.debugSingleton.logWorkflowBuilder( {
+                    level : LogLevel.Info,
+                    message: "AppStore constructed",
                     object:{ appStore:this }
             })
 
             GroupModules['BuilderView'].notifier$.pipe( filter((event:any)=>event.type=="groupFocused")).subscribe( d=>
-                this.selectActiveGroup(d.data))     
+                this.selectActiveGroup(d.data))
             Component['BuilderView'].notifier$.pipe( filter((event:any)=>event.type=="groupFocused")).subscribe( d=>
-                this.selectActiveGroup(d.data))  
+                this.selectActiveGroup(d.data))
             GroupModules['BuilderView'].notifier$.pipe( filter((event:any)=>event.type=="closeLayer")).subscribe( d=>
-                this.selectActiveGroup(this.getParentGroup(d.data).moduleId ))  
+                this.selectActiveGroup(this.getParentGroup(d.data).moduleId ))
             Component['BuilderView'].notifier$.pipe( filter((event:any)=>event.type=="closeLayer")).subscribe( d=>
-                this.selectActiveGroup(this.getParentGroup(d.data).moduleId ))  
+                this.selectActiveGroup(this.getParentGroup(d.data).moduleId ))
             this.appObservables.renderingLoaded$.next( { style: "", layout:"", cssLinks: [] } )
     }
 
     setUiState(state){
-        this.debugSingleton.debugOn && 
-        this.debugSingleton.logWorkflowBuilder( {  
-                level : LogLevel.Info, 
-                message: "ui state updated", 
+        this.debugSingleton.debugOn &&
+        this.debugSingleton.logWorkflowBuilder( {
+                level : LogLevel.Info,
+                message: "ui state updated",
                 object:{ state:state }
         })
 
@@ -154,19 +186,19 @@ export class AppStore {
     }
 
     loadProject(projectId: string, project: ProjectSchema, onEvent? : (CdnEvent) => void){
-        
+
         this.projectId = projectId
         let project$ = loadProjectDependencies$(project, this.environment, onEvent).pipe(
             map( ({ project, packages }) => {
                 return createProject(project, packages,  this.workflow$, this.allSubscriptions, this.environment)
             })
         )
-        
+
         this.initializeProject(project$)
     }
 
     loadProjectId(projectId: string){
-        
+
         this.projectId = projectId
 
         let project$ = loadProjectDatabase$(projectId, this.workflow$, this.allSubscriptions, this.environment)
@@ -174,12 +206,12 @@ export class AppStore {
     }
 
     loadProjectURI(projectURI: string){
-        
+
         this.projectId = undefined
         let project$ = loadProjectURI$(projectURI, this.workflow$, this.allSubscriptions, this.environment)
         this.initializeProject(project$)
     }
-    
+
     initializeProject( project$ : Observable<{project:Project, packages: Array<any>}>){
 
         project$.subscribe( ({project, packages}: {project:Project, packages: Array<any>}) => {
@@ -189,9 +221,9 @@ export class AppStore {
             this.activeGroupId = rootComponent.moduleId
 
             this.debugSingleton.debugOn &&
-            this.debugSingleton.logWorkflowBuilder( {  
-                level : LogLevel.Info, 
-                message: "project created", 
+            this.debugSingleton.logWorkflowBuilder( {
+                level : LogLevel.Info,
+                message: "project created",
                 object:{ project: this.project }
             })
             this.updateProject(project)
@@ -204,10 +236,10 @@ export class AppStore {
 
             let layout = rootComponent.getFullHTML(project.workflow)
             let style = rootComponent.getFullCSS(project.workflow, {asString: true})
-            this.appObservables.renderingLoaded$.next( { 
-                style, 
+            this.appObservables.renderingLoaded$.next( {
+                style,
                 layout,
-                cssLinks: [] 
+                cssLinks: []
             })
             this.unselect()
         })
@@ -229,7 +261,7 @@ export class AppStore {
                 this.updateProject(newProject)
             })
         )
-    }    
+    }
 
     projectSchema$(): Observable<ProjectSchema>{
 
@@ -250,19 +282,19 @@ export class AppStore {
     saveProject(){
 
         this.projectSchema$().pipe(
-            mergeMap( body => 
+            mergeMap( body =>
                 this.environment.postProject(this.projectId, body).pipe(
                     map( () => body)
-                ))  
+                ))
         )
         .subscribe( (body) => {
-            this.debugSingleton.debugOn && 
-            this.debugSingleton.logWorkflowBuilder( {  
-                level : LogLevel.Info, 
+            this.debugSingleton.debugOn &&
+            this.debugSingleton.logWorkflowBuilder( {
+                level : LogLevel.Info,
                 message: "project saved",
-                object:{ body, project: this.project } 
-            }) 
-        })        
+                object:{ body, project: this.project }
+            })
+        })
     }
 
     getModulesFactory(){
@@ -297,7 +329,7 @@ export class AppStore {
     }
 
     updateModule(mdle:ModuleFlux, configuration: ModuleConfiguration, unselect = true) {
-        
+
         let project = updateModule(mdle,configuration, this.project,this.allSubscriptions,this.appObservables.ready$)
         if(unselect)
             this.unselect()
@@ -314,7 +346,7 @@ export class AppStore {
 
         let project = alignH(modules.map(m=>m.moduleId), this.project, this.appObservables.ready$ )
         this.updateProject(project)
-    } 
+    }
 
     alignV( modules : Array<ModuleFlux>) {
 
@@ -332,7 +364,7 @@ export class AppStore {
     getModuleSelected(): ModuleFlux{
 
         if(this.moduleSelected )
-            return this.moduleSelected 
+            return this.moduleSelected
         if(this.modulesSelected.length == 1)
             return this.modulesSelected[0]
         return undefined
@@ -352,38 +384,41 @@ export class AppStore {
 
         if(this.moduleSelected && this.moduleSelected.moduleId === moduleId)
             return true
-        
+
         if(this.modulesSelected && this.modulesSelected.find( m => m.moduleId === moduleId) )
             return true
 
         return false
     }
 
-    selectModule(moduleId:string){
-        
-        if(  this.modulesSelected.find(m => m.moduleId == moduleId) || 
+    selectModule(moduleId:string, focus: boolean = false){
+
+        if(  this.modulesSelected.find(m => m.moduleId == moduleId) ||
             (this.moduleSelected && this.moduleSelected.moduleId == moduleId ) )
-            return 
+            return
 
         if( this.moduleSelected && this.moduleSelected.moduleId != moduleId ){
             this.appObservables.modulesUnselected$.next( [this.moduleSelected] )
             this.moduleSelected = undefined
         }
-        
+
         if( !this.modulesSelected.find(m => m.moduleId == moduleId) ){
             this.appObservables.modulesUnselected$.next( this.modulesSelected )
             this.modulesSelected  = []
         }
-        
+
         this.moduleSelected = this.getModule(moduleId)
-        this.debugSingleton.debugOn && 
-        this.debugSingleton.logWorkflowBuilder( {  
-            level : LogLevel.Info, 
-            message: "module selected", 
+        this.debugSingleton.debugOn &&
+        this.debugSingleton.logWorkflowBuilder( {
+            level : LogLevel.Info,
+            message: "module selected",
             object:{    module: this.moduleSelected
             }
         })
         this.appObservables.moduleSelected$.next(this.moduleSelected )
+        if(focus && this.activeGroupId != this.moduleSelected.moduleId) {
+            this.selectActiveGroup(this.getParentGroup(moduleId).moduleId)
+        }
     }
 
     selectConnection(connection: Connection | string){
@@ -392,10 +427,10 @@ export class AppStore {
         this.connectionSelected = connection instanceof Connection
             ? connection
             : this.getConnection(connection)
-        this.debugSingleton.debugOn && 
-        this.debugSingleton.logWorkflowBuilder( {  
-            level : LogLevel.Info, 
-            message: "connection selected", 
+        this.debugSingleton.debugOn &&
+        this.debugSingleton.logWorkflowBuilder( {
+            level : LogLevel.Info,
+            message: "connection selected",
             object:{    module: this.connectionSelected
             }
         })
@@ -433,16 +468,16 @@ export class AppStore {
         m = this.implicitModules.find( m => m.moduleId === moduleId)
         return m
     }
-    
+
     deleteModules(modulesDeleted:Array<ModuleFlux>){
         
         this.unselect()
         let project = deleteModules(modulesDeleted,this.project)
         if(!project)
-            return 
+            return
         let rootComponent = project.workflow.modules
         .find( mdle => mdle.moduleId == this.rootComponentId) as Component.Module
-        
+
         if(!getGroup(project.workflow, rootComponent, rootComponent, this.activeGroupId)){
             // if the group has been deleted => we focus on the root-component
             let oldLayer = this.activeGroupId
@@ -453,9 +488,9 @@ export class AppStore {
         }
         this.updateProject(project)            
     }
-        
+
     deleteModule(mdle:ModuleFlux){
-        
+
         if(mdle==this.moduleSelected)
             this.unselect()
         this.deleteModules([mdle])
@@ -466,7 +501,7 @@ export class AppStore {
         return getGroup(this.project.workflow, undefined, this.getModule(this.rootComponentId) as Component.Module, this.activeGroupId)[0]
     }
 
-    getRootComponent() :  Component.Module{ 
+    getRootComponent() :  Component.Module{
 
         return getGroup(this.project.workflow, undefined, this.getModule(this.rootComponentId) as Component.Module, this.rootComponentId)[0] as Component.Module
     }
@@ -483,11 +518,11 @@ export class AppStore {
 
     selectActiveGroup(moduleId: string) {
 
-        this.debugSingleton.debugOn && 
-        this.debugSingleton.logWorkflowBuilder( {  
-            level : LogLevel.Info, 
-            message: "selectActiveLayer", 
-            object:{    
+        this.debugSingleton.debugOn &&
+        this.debugSingleton.logWorkflowBuilder( {
+            level : LogLevel.Info,
+            message: "selectActiveLayer",
+            object:{
                 groupId: moduleId
             }
         })
@@ -496,7 +531,7 @@ export class AppStore {
         let oldLayerId = this.activeGroupId
         this.activeGroupId = moduleId
         this.appBuildViewObservables.modulesViewUpdated$.next(this.getActiveModulesView()) 
-        this.appObservables.descriptionsBoxesUpdated$.next(this.project.builderRendering.descriptionsBoxes) 
+        this.appObservables.descriptionsBoxesUpdated$.next(this.project.builderRendering.descriptionsBoxes)
         this.appObservables.activeLayerUpdated$.next({fromLayerId:oldLayerId, toLayerId:moduleId})
     }
 
@@ -509,15 +544,15 @@ export class AppStore {
         const displayed = this.getDisplayedModulesView()
         return [...displayed.currentLayer.modulesView, ...displayed.parentLayer.modulesView]
     }
-    
+
     getDisplayedModulesView(){
-        
+
         let [activeGroup, parentGroup] = getGroup(this.project.workflow, undefined, this.getModule(this.rootComponentId) as Component.Module, this.activeGroupId)
         return getDisplayedModulesView(activeGroup,parentGroup,this,this.project)
     }
 
     getGroupModule(groupId:string): GroupModules.Module{
-        
+
         return this.project.workflow.modules
         .find( m => m instanceof GroupModules.Module && m.moduleId == groupId) as GroupModules.Module
     }
@@ -537,17 +572,17 @@ export class AppStore {
 
         return this.project.workflow.modules.concat(this.project.workflow.plugins)
     }
-    
+
     getConnection(connectionId:string):Connection{
 
         let c = this.project.workflow.connections.find( c => c.connectionId === connectionId)
         return c
     }
-    
+
     addConnection( connection: Connection ){
 
         let project = addConnection(connection, this.project, this.allSubscriptions)
-        
+
         this.updateProject(project)
         this.unselect()
         this.appObservables.connectionsUpdated$.next(this.project.workflow.connections)
@@ -573,12 +608,12 @@ export class AppStore {
     }
 
     deleteConnection(connection : Connection) {
-        
+
         if( this.connectionSelected=== connection){
             this.connectionSelected = undefined
             this.appObservables.unselect$.next()
         }
-        let project = deleteConnection(connection,this.project, this.allSubscriptions)        
+        let project = deleteConnection(connection,this.project, this.allSubscriptions)
         this.updateProject(project)
         this.appObservables.connectionsUpdated$.next(this.project.workflow.connections)
     }
@@ -617,12 +652,12 @@ export class AppStore {
     deleteSelected(){
 
         if(this.uiState.isEditing)
-            return 
-            
-        this.debugSingleton.debugOn && 
-        this.debugSingleton.logWorkflowBuilder( {  
-            level : LogLevel.Info, 
-            message: "delete selected", 
+            return
+
+        this.debugSingleton.debugOn &&
+        this.debugSingleton.logWorkflowBuilder( {
+            level : LogLevel.Info,
+            message: "delete selected",
             object:{    connectionSelected: this.connectionSelected,
                 moduleSelected:this.moduleSelected,
                 modulesSelected:this.modulesSelected,
@@ -645,7 +680,7 @@ export class AppStore {
     }
 
     addGroup( moduleIds : Array<string> ){
-        
+
         let dBox = new DescriptionBox(uuidv4(),"grouped module",moduleIds,"",new DescriptionBoxProperties(undefined))
         let config = new GroupModules["Configuration"]({title:dBox.title})
         let {project} = createGroup(dBox.title,dBox.modulesId.map(mid=>this.getModule(mid)), this.project,
@@ -654,24 +689,24 @@ export class AppStore {
     }
 
     addComponent( moduleIds : Array<string> ){
-        
+
         let dBox = new DescriptionBox(uuidv4(),"component",moduleIds,"",new DescriptionBoxProperties(undefined))
         let config = new Component["Configuration"]({title:dBox.title})
         let {project} = createGroup(dBox.title,dBox.modulesId.map(mid=>this.getModule(mid)),this.project,
             this.activeGroupId, Component, config, this.workflow$, this.environment)
         this.updateProject(project)
-        
+
     }
 
     publishComponent(component: Component.Module){
-        
+
         let data = packageAssetComponent(component, this.project)
         sessionStorage.setItem( component.moduleId, JSON.stringify(data))
         window.open("/ui/assets-publish-ui?kind=flux-component&related_id="+ component.moduleId, '_blank');
     }
 
     setRenderingLayout( layout, asNewState = true ){
-        
+
         let project = setRenderingLayout(layout, this.project)
         this.updateProject(project, asNewState)
     }
@@ -687,7 +722,7 @@ export class AppStore {
 
 
     addDescriptionBox(descriptionBox : DescriptionBox){
-        
+
         let project = addDescriptionBox(descriptionBox,this.project)
         this.updateProject(project)
         this.appObservables.descriptionsBoxesUpdated$.next(this.project.builderRendering.descriptionsBoxes)
@@ -699,14 +734,14 @@ export class AppStore {
             b => b.descriptionBoxId == descriptionBoxId
         )
         this.appObservables.descriptionsBoxesUpdated$.next(this.project.builderRendering.descriptionsBoxes)
-    
+
     }
 
     updateDescriptionBox(descriptionBox){
         this.unselect()
         let project = updateDescriptionBox(descriptionBox,this.project)
         this.updateProject(project)
-        this.appObservables.descriptionsBoxesUpdated$.next(this.project.builderRendering.descriptionsBoxes)    
+        this.appObservables.descriptionsBoxesUpdated$.next(this.project.builderRendering.descriptionsBoxes)
     }
 
     deleteDescriptionBox(descriptionBox){
@@ -717,9 +752,9 @@ export class AppStore {
 
         this.appObservables.descriptionsBoxesUpdated$.next(this.project.builderRendering.descriptionsBoxes)
     }
-    
+
     updateProjectToIndexHistory(indexHistory, oldIndex){
-        
+
         let updatesDone ={
             modules: false,
             modulesView: false,
@@ -727,10 +762,10 @@ export class AppStore {
             activeLayer: false,
             descriptionBox: false
         }
-        this.indexHistory   = indexHistory   
+        this.indexHistory   = indexHistory
         this.project        = this.history[this.indexHistory]
         let oldProject      = this.history[oldIndex]
-        
+
         let delta           = workflowDelta(oldProject.workflow,this.project.workflow )
 
         if( delta.modules.removedElements ){
@@ -738,7 +773,7 @@ export class AppStore {
             .filter( m=> instanceOfSideEffects(m))
             .forEach( m => (m as any).dispose() )
         }
-        
+
         // the synchronization of the modules 'workflowDependantTrait' are done:
         //  - after the deleted modules 'disposed': the module depending on workflow$
         // will dispose before an eventually inconsistent wf is emitted
@@ -746,11 +781,11 @@ export class AppStore {
         // will apply using a consistent workflow (ReplaySubject is used for workflow)
         //  - before updates signals are send
         if(delta.hasDiff){
-            this.workflow$.next(this.project.workflow) 
+            this.workflow$.next(this.project.workflow)
         }
 
         if( delta.modules.createdElements ){
-            plugBuilderViewsSignals( delta.modules.createdElements, this.builderViewsActions, 
+            plugBuilderViewsSignals( delta.modules.createdElements, this.builderViewsActions,
                 this.appBuildViewObservables.notification$ )
             delta.modules.createdElements
             .filter( m => instanceOfSideEffects(m))
@@ -773,36 +808,36 @@ export class AppStore {
                 ...delta.createdElements.filter( e => delta.removedElements.find( e2 => e2.moduleId == e.moduleId) == undefined ),
                 ...delta.createdElements.filter( e => delta.removedElements.find( e2 => e2.moduleId == e.moduleId) == undefined )
             ]
-            updates.length > 0 
+            updates.length > 0
                 ? this.appBuildViewObservables.modulesViewUpdated$.next(this.getActiveModulesView())
                 : this.appObservables.connectionsUpdated$.next(this.project.workflow.connections)
             if(updates.length > 0 )
                 updatesDone.modulesView = true
-        }            
-        if( !updatesDone.activeLayer && 
+        }
+        if( !updatesDone.activeLayer &&
             (this.activeGroupId != this.rootComponentId ||
-             this.project.workflow.modules.find( m => m.moduleId == this.rootComponentId) != 
+             this.project.workflow.modules.find( m => m.moduleId == this.rootComponentId) !=
              oldProject.workflow.modules.find( m => m.moduleId == this.rootComponentId) )){
 
-            if(!updatesDone.modulesView)     
+            if(!updatesDone.modulesView)
                 this.appBuildViewObservables.modulesViewUpdated$.next(this.getActiveModulesView())
-            this.appObservables.descriptionsBoxesUpdated$.next(this.project.builderRendering.descriptionsBoxes)      
+            this.appObservables.descriptionsBoxesUpdated$.next(this.project.builderRendering.descriptionsBoxes)
             this.appObservables.activeLayerUpdated$.next({fromLayerId:undefined, toLayerId:this.activeGroupId})
             updatesDone.activeLayer = true
         }
-        if( !updatesDone.descriptionBox && (this.project.builderRendering.descriptionsBoxes  !== oldProject.builderRendering.descriptionsBoxes)){           
-            this.appObservables.descriptionsBoxesUpdated$.next(this.project.builderRendering.descriptionsBoxes) 
+        if( !updatesDone.descriptionBox && (this.project.builderRendering.descriptionsBoxes  !== oldProject.builderRendering.descriptionsBoxes)){
+            this.appObservables.descriptionsBoxesUpdated$.next(this.project.builderRendering.descriptionsBoxes)
             updatesDone.descriptionBox = true
-        } 
-        subscribeConnections(this.allSubscriptions, delta.connections, this.project.workflow.modules, this.project.workflow.plugins )  
-        
+        }
+        subscribeConnections(this.allSubscriptions, delta.connections, this.project.workflow.modules, this.project.workflow.plugins )
+
         this.appObservables.projectUpdated$.next(delta)
         this.appExtensionsObservables.projectUpdated$.next(delta)
-        
+
         this.debugSingleton.debugOn &&
-        this.debugSingleton.logWorkflowBuilder( {  
-            level : LogLevel.Info, 
-            message: "updateProjectToIndexHistory", 
+        this.debugSingleton.logWorkflowBuilder( {
+            level : LogLevel.Info,
+            message: "updateProjectToIndexHistory",
             object:{ oldProject, delta, newProject:this.project, history: this.history , updatesDone}
         })
 
@@ -813,9 +848,9 @@ export class AppStore {
         if(this.indexHistory==0)
             return
         this.debugSingleton.debugOn &&
-        this.debugSingleton.logWorkflowBuilder( {  
-            level : LogLevel.Info, 
-            message: "undo", 
+        this.debugSingleton.logWorkflowBuilder( {
+            level : LogLevel.Info,
+            message: "undo",
             object: {history: this.history}
         })
         this.updateProjectToIndexHistory( this.indexHistory- 1 , this.indexHistory )
@@ -825,12 +860,12 @@ export class AppStore {
 
         if(this.indexHistory==this.history.length - 1)
             return
-        this.debugSingleton.debugOn && 
-        this.debugSingleton.logWorkflowBuilder( {  
-                level : LogLevel.Info, 
-                message: "redo", 
+        this.debugSingleton.debugOn &&
+        this.debugSingleton.logWorkflowBuilder( {
+                level : LogLevel.Info,
+                message: "redo",
                 object:{history: this.history}
-            })        
+            })
         this.updateProjectToIndexHistory( this.indexHistory + 1 , this.indexHistory)
     }
 
@@ -852,11 +887,11 @@ export class AppStore {
             this.history.push(newProject)
             this.indexHistory = this.history.length-1
         }
-        this.debugSingleton.debugOn && 
-        this.debugSingleton.logWorkflowBuilder( {  
-                level : LogLevel.Info, 
-                message: "updateProject", 
-                object:{    
+        this.debugSingleton.debugOn &&
+        this.debugSingleton.logWorkflowBuilder( {
+                level : LogLevel.Info,
+                message: "updateProject",
+                object:{
                     newProject: newProject,
                     history: this.history
                 }
