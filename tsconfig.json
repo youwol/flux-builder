@@ -15,5 +15,19 @@
   },
   "include": [
     "src/**/*"
-  ]
+  ],
+  "typedocOptions": {
+    "entryPoints": ["src/"],
+    // For typedoc >= 0.22.x
+    //"entryPointStrategy": "Expand",
+    "exclude": ["src/tests"],
+    "out": ["dist/docs"],
+    "theme": "default",
+    "categorizeByGroup": false,
+    // For typedoc >= 0.22.x
+    // "validation": {"invalidLink": true},
+    // For typedoc < 0.22.x
+    "listInvalidSymbolLinks": true,
+  }
+
 }
