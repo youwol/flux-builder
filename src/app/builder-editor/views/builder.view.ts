@@ -83,8 +83,9 @@ function settingsView(appStore: AppStore){
 }
 
 function projectTreeView(appStore: AppStore) {
+    let panelId: string = "panel__left_builder"
    return {
-        id:"panel__left_builder",
+        id:panelId,
         class: "d-flex flex-column grapes-bg-color fv-color-primary p-1 border border-dark text-left fv-text-primary",
         style: {
             width: '300px',
@@ -92,7 +93,7 @@ function projectTreeView(appStore: AppStore) {
             fontSize: "small"
         },
         children:[
-            viewForAppstore(appStore)
+            viewForAppstore(appStore, panelId)
         ]
     }
 }

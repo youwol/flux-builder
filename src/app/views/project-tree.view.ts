@@ -16,6 +16,51 @@ export namespace ProjectTreeView {
      *
      */
 
+    /**
+     * Functions returning the id of a {@link ModuleNode|Node} representing a {@link ModuleFlux|module}; this node
+     * id shall contains the module id for convenient debugging.
+     *
+     * Shall be instantiate with {@linkcode nodeIdBuilderForUniq}
+     *
+     */
+    export interface NodeIdBuilder {
+        /**
+         * Return the id of the {@link ModuleNode|Node} representing a module
+         *
+         * @param mdle the module represented by the node
+         */
+        buildForModule: (mdle: ModuleFlux) => string,
+        /**
+         * Return the id of the {@link ModuleNode|Node} representing a module
+         *
+         * @param idModule the id of the module represented by the node
+         */
+        buildForModuleId: (idModule: string) => string,
+        /**
+         * Return the id of the {@link ModuleNode|Node} representing the root component
+         *
+         */
+        buildForRootComponent: () => string,
+    }
+
+    /**
+     * Factory for {@linkcode NodeIdBuilder}.
+     *
+     * Will return a collection of functions returning a unique, stable id based on a unique string and the id of a
+     * module
+     *
+     * @param uniq a (not empty, globally unique) string use to define {@link ModuleNode|nodes} id
+     */
+    export function nodeIdBuilderForUniq(uniq: string): NodeIdBuilder {
+        const nodeIdFromModuleId: (moduleId: string) => string =
+            (moduleId) => `project_tree_view-${uniq}-${moduleId}`
+        return {
+            buildForModule: (mdle) => nodeIdFromModuleId(mdle.moduleId),
+            buildForModuleId: (moduleId) => nodeIdFromModuleId(moduleId),
+            buildForRootComponent: () => nodeIdFromModuleId(Component.rootComponentId),
+        }
+    }
+
     /*
     Base class : representing a module
       - node.module will be the module represented
@@ -30,14 +75,18 @@ export namespace ProjectTreeView {
         module: ModuleFlux
 
         /* Call ImmutableTree.Node constructor and store the module */
-        constructor(module: ModuleFlux, childrenNodes?: ModuleNode[]) {
-            super({id: module.moduleId, children: childrenNodes});
+        constructor(nodeId: string, module: ModuleFlux, childrenNodes?: ModuleNode[]) {
+            super({id: nodeId, children: childrenNodes});
             this.module = module
         }
 
         /* The name of this node (for UI) is the title of the module represented */
-        getName(): string {
+        getModuleTitle(): string {
             return this.module.configuration.title
+        }
+
+        getModuleId(): string {
+            return this.module.moduleId
         }
     }
 
@@ -46,8 +95,8 @@ export namespace ProjectTreeView {
       Always has an array of children nodes, maybe empty
      */
     export class GroupNode extends ModuleNode {
-        constructor(module: GroupModules.Module, childrenNodes: ModuleNode[]) {
-            super(module, childrenNodes);
+        constructor(nodeId: string, module: GroupModules.Module, childrenNodes: ModuleNode[]) {
+            super(nodeId, module, childrenNodes);
         }
     }
 
@@ -56,8 +105,8 @@ export namespace ProjectTreeView {
       Always has an array of children nodes, maybe empty
      */
     export class ComponentNode extends GroupNode {
-        constructor(module: Component.Module, childrenNodes: ModuleNode[]) {
-            super(module, childrenNodes);
+        constructor(nodeId: string, module: Component.Module, childrenNodes: ModuleNode[]) {
+            super(nodeId, module, childrenNodes);
         }
     }
 
@@ -65,8 +114,8 @@ export namespace ProjectTreeView {
     PluginNode is a specialisation of ModuleNode for representing a Plugin ; never has children nodes
      */
     export class PluginNode extends ModuleNode {
-        constructor(module: PluginFlux<any>) {
-            super(module);
+        constructor(nodeId: string, module: PluginFlux<any>) {
+            super(nodeId, module);
         }
     }
 
@@ -81,11 +130,12 @@ export namespace ProjectTreeView {
      */
 
     /* Bootstrap the whole tree construction from the AppStore */
-    function rootFactory(appStore: AppStore) {
+    function rootFactory(appStore: AppStore, nodeIdBuilder: NodeIdBuilder) {
         let workflow = appStore.project.workflow
         return nodeFactory(
             workflow.modules.find(m => m.moduleId == 'Component_root-component') as Component.Module,
-            workflow
+            workflow,
+            nodeIdBuilder
         )
     }
 
@@ -93,7 +143,9 @@ export namespace ProjectTreeView {
       Construct a node, representing this module, with its content (if module is a Group or a Component) and
       its plugins attached as children nodes
      */
-    function nodeFactory(module: ModuleFlux, workflow: Workflow) {
+    function nodeFactory(module: ModuleFlux, workflow: Workflow, nodeIdBuilder: NodeIdBuilder) {
+        let nodeId = nodeIdBuilder.buildForModule(module)
+
         // Will hold nodes representing Group content and Plugins attached to this module
         let childrenNodes: ModuleNode[] = []
 
@@ -101,7 +153,7 @@ export namespace ProjectTreeView {
         childrenNodes.push(...
             workflow.plugins
                 .filter((plugin) => plugin.parentModule.moduleId == module.moduleId)
-                .map((plugin) => nodeFactory(plugin, workflow))
+                .map((plugin) => nodeFactory(plugin, workflow, nodeIdBuilder))
         )
 
         // Get content, if this module is a Group (or a Component, since it inherit from Group)
@@ -109,22 +161,22 @@ export namespace ProjectTreeView {
             childrenNodes.push(...
                 module.getDirectChildren(workflow)
                     .filter((child) => !(child instanceof PluginFlux))
-                    .map((child) => nodeFactory(child, workflow))
+                    .map((child) => nodeFactory(child, workflow, nodeIdBuilder))
             )
         }
 
         // Call the right constructor
         if (module instanceof Component.Module) { // Order DOES matter (ComponentNode is also a GroupNode)
-            return new ComponentNode(module, childrenNodes);
+            return new ComponentNode(nodeId, module, childrenNodes);
         } else if (module instanceof GroupModules.Module) {
-            return new GroupNode(module, childrenNodes)
+            return new GroupNode(nodeId, module, childrenNodes)
         } else if (module instanceof PluginFlux) {
             // This module can't have plugins and has no content
-            return new PluginNode(module)
+            return new PluginNode(nodeId, module)
         } else {
             // If there is no plugins, and since this module is not a Group, we don't pass an empty array to the
             // constructor because this would create an empty list of children nodes for this node
-            return (childrenNodes.length != 0) ? new ModuleNode(module, childrenNodes) : new ModuleNode(module)
+            return (childrenNodes.length != 0) ? new ModuleNode(nodeId, module, childrenNodes) : new ModuleNode(nodeId, module)
         }
 
     }
@@ -149,6 +201,20 @@ export namespace ProjectTreeView {
         /* The AppStore */
         public readonly appStore: AppStore
 
+        private readonly nodeIdBuilder: NodeIdBuilder
+
+        /**
+         * Convenient method to easily instantiate a State
+         *
+         * @param appStore
+         * @param uniq the string use to generate unique {@link ModuleNode|node} id from module id (See {@linkcode
+         * nodeIdBuilderForUniq})
+         */
+        static stateForAppStoreAndUniq(appStore: AppStore, uniq: string): State {
+            let nodeIdBuilder = nodeIdBuilderForUniq(uniq)
+            return new State(appStore, nodeIdBuilder)
+        }
+
         /*
         Constructor from AppStore
          - Use rootFactory to call the constructor of the parent
@@ -156,13 +222,14 @@ export namespace ProjectTreeView {
          - store AppStore
          - connect subscriptions
          */
-        constructor(appStore: AppStore) {
+        private constructor(appStore: AppStore, nodeIdBuilder: NodeIdBuilder) {
             super({
-                    rootNode: rootFactory(appStore),
-                    expandedNodes: [Component.rootComponentId]
+                    rootNode: rootFactory(appStore, nodeIdBuilder),
+                    expandedNodes: [nodeIdBuilder.buildForRootComponent()]
                 }
             )
             this.appStore = appStore
+            this.nodeIdBuilder = nodeIdBuilder
             this.subscribe();
         }
 
@@ -184,7 +251,7 @@ export namespace ProjectTreeView {
                     // get id from node and ensure module is not already selected and is not root Component
                     .pipe(
                         // node => moduleId
-                        map((node) => node.module.moduleId),
+                        map((node) => node.getModuleId()),
                         // module not selected in AppStore && module not root Component
                         filter((id) => !this.appStore.isSelected(id) && id != Component.rootComponentId)
                     )
@@ -202,10 +269,10 @@ export namespace ProjectTreeView {
          Action when a module is selected in AppStore
          */
         private onAppModuleSelected(module: ModuleFlux) {
-            this.selectedNode$.next(this.getNode(module.moduleId))
+            this.selectedNode$.next(this.getNode(this.nodeIdBuilder.buildForModule(module)))
 
             // Expand tree to show this node. This could (should ?) be implemented in immutable-tree.view.ts
-            let node = this.getNode(module.moduleId)
+            let node = this.getNode(this.nodeIdBuilder.buildForModule(module))
             let ensureExpanded: string[] = [node.id]
 
             // Ensure parents nodes are also expanded
@@ -235,7 +302,7 @@ export namespace ProjectTreeView {
          */
         private onAppProjectUpdated(delta: WorkflowDelta) {
             // TODO : effectively use delta …
-            this.reset(rootFactory(this.appStore))
+            this.reset(rootFactory(this.appStore, this.nodeIdBuilder))
         }
 
     }
@@ -283,7 +350,7 @@ export namespace ProjectTreeView {
             style: {fontSize: 'smaller'},
             children: [
                 {class: faClass ? `mx-2 fas ${faClass}` : ""},
-                {innerText: node.getName()}
+                {innerText: node.getModuleTitle()}
             ]
         }
     }
@@ -316,9 +383,9 @@ export namespace ProjectTreeView {
      */
 
     /* Helper function for instantiating both View and State from AppStore */
-    export function viewForAppstore(appStore: AppStore) {
+    export function viewForAppstore(appStore: AppStore, uniq: string) {
         return new ProjectTreeView.View({
-                state: new ProjectTreeView.State(appStore)
+                state: ProjectTreeView.State.stateForAppStoreAndUniq(appStore, uniq)
             }
         )
     }
