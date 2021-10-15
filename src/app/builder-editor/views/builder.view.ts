@@ -3,9 +3,8 @@ import {attr$, child$, VirtualDOM} from "@youwol/flux-view";
 import {AppStore, UiState} from "../builder-state";
 import {ConnectionSettingsState, ConnectionSettingsView} from "./connection-settings.view";
 import {ModuleSettingsState, ModuleSettingsView} from "./module-settings.view";
-import {ProjectTreeView} from "../../views/project-tree.view";
 import {merge} from "rxjs";
-import viewForAppstore = ProjectTreeView.viewForAppstore;
+import {ProjectTreeView} from "../../views/project-tree.view";
 
 
 export function builderView(appStore: AppStore) : VirtualDOM {
@@ -84,6 +83,7 @@ function settingsView(appStore: AppStore){
 
 function projectTreeView(appStore: AppStore) {
     let panelId: string = "panel__left_builder"
+    let state = ProjectTreeView.State.stateForAppStoreAndUniq(appStore, panelId)
    return {
         id:panelId,
         class: "d-flex flex-column grapes-bg-color fv-color-primary p-1 border border-dark text-left fv-text-primary",
@@ -93,7 +93,7 @@ function projectTreeView(appStore: AppStore) {
             fontSize: "small"
         },
         children:[
-            viewForAppstore(appStore, panelId)
+            new ProjectTreeView.View({state: state})
         ]
     }
 }

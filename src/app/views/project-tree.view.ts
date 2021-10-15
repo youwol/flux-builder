@@ -17,7 +17,7 @@ export namespace ProjectTreeView {
      * @category Nodes Id
      *
      */
-    interface NodeIdBuilder {
+    export interface NodeIdBuilder {
         /**
          * Return the id of the {@link ModuleNode|node} representing a {@link ModuleFlux|module}.
          *
@@ -48,7 +48,10 @@ export namespace ProjectTreeView {
      * @category Nodes Id
      *
      */
-    function nodeIdBuilderForUniq(uniq: string): NodeIdBuilder {
+    export function nodeIdBuilderForUniq(uniq: string): NodeIdBuilder {
+        if (uniq === undefined || uniq === null || uniq.length == 0) {
+            throw new Error("Unique string must be defined and not empty")
+        }
         const nodeIdFromModuleId: (moduleId: string) => string =
             (moduleId) => `project_tree_view-${uniq}-${moduleId}`
         return {
@@ -69,7 +72,7 @@ export namespace ProjectTreeView {
      */
     export class ModuleNode extends ImmutableTree.Node {
 
-        mdle: ModuleFlux
+        private readonly mdle: ModuleFlux
 
         constructor(nodeId: string, mdle: ModuleFlux, childrenNodes?: ModuleNode[]) {
             super({id: nodeId, children: childrenNodes});
@@ -143,10 +146,14 @@ export namespace ProjectTreeView {
      * @category Nodes
      *
      */
-    function rootFactory(appStore: AppStore, nodeIdBuilder: NodeIdBuilder) {
-        let workflow = appStore.project.workflow
+    export function rootFactory(workflow: Workflow, nodeIdBuilder: NodeIdBuilder): ModuleNode {
+        const rootComponent = workflow.modules.find(m => m.moduleId == Component.rootComponentId) as Component.Module;
+        if (rootComponent === undefined) {
+            throw new Error("No root component for this project")
+        }
+
         return nodeFactory(
-            workflow.modules.find(m => m.moduleId == 'Component_root-component') as Component.Module,
+            rootComponent,
             workflow,
             nodeIdBuilder
         )
@@ -161,7 +168,7 @@ export namespace ProjectTreeView {
      * @category Nodes
      *
      */
-    function nodeFactory(mdle: ModuleFlux, workflow: Workflow, nodeIdBuilder: NodeIdBuilder) {
+    export function nodeFactory(mdle: ModuleFlux, workflow: Workflow, nodeIdBuilder: NodeIdBuilder): ModuleNode {
         let nodeId = nodeIdBuilder.buildForModule(mdle)
 
         // Will hold nodes representing Group content and Plugins attached to this module
@@ -191,10 +198,12 @@ export namespace ProjectTreeView {
         } else if (mdle instanceof PluginFlux) {
             // This module can't have plugins and has no content
             return new PluginNode(nodeId, mdle)
-        } else {
+        } else if (mdle instanceof ModuleFlux) {
             // If there is no plugins, and since this module is not a Group, we don't pass an empty array to the
             // constructor because this would create an empty list of children nodes for this node
             return (childrenNodes.length != 0) ? new ModuleNode(nodeId, mdle, childrenNodes) : new ModuleNode(nodeId, mdle)
+        } else {
+            throw new Error("Unknown module class for project tree view node creation")
         }
 
     }
@@ -253,7 +262,7 @@ export namespace ProjectTreeView {
          */
         private constructor(appStore: AppStore, nodeIdBuilder: NodeIdBuilder) {
             super({
-                    rootNode: rootFactory(appStore, nodeIdBuilder),
+                    rootNode: rootFactory(appStore.project.workflow, nodeIdBuilder),
                     expandedNodes: [nodeIdBuilder.buildForRootComponent()]
                 }
             )
@@ -310,6 +319,8 @@ export namespace ProjectTreeView {
          */
         unsubscribe() {
             this.projectTreeSubscriptions.forEach((s) => s.unsubscribe())
+            // Clear array
+            this.projectTreeSubscriptions.splice(0, this.projectTreeSubscriptions.length)
             super.unsubscribe();
         }
 
@@ -363,7 +374,7 @@ export namespace ProjectTreeView {
          */
         private updateTree(delta: WorkflowDelta) {
             // TODO : effectively use delta …
-            this.reset(rootFactory(this.appStore, this.nodeIdBuilder))
+            this.reset(rootFactory(this.appStore.project.workflow, this.nodeIdBuilder))
         }
 
     }
@@ -376,9 +387,9 @@ export namespace ProjectTreeView {
      * @category View
      *
      */
-    function nodeHeaderView(state: State, node: ModuleNode): VirtualDOM {
+    export function nodeHeaderView(state: State, node: ModuleNode): VirtualDOM {
         // Classes for the vDOM
-        const vDomClasses = 'd-flex fv-pointer align-items-center';
+        const vDomClasses = 'project-tree-node d-flex fv-pointer align-items-center';
 
         // Root node is a special case («play» icon, bigger font, use project name)
         if (node.id == Component.rootComponentId) {
@@ -433,16 +444,4 @@ export namespace ProjectTreeView {
 
     }
 
-    /**
-     *  Helper function for instantiating both View and State from AppStore
-     *
-     *  @category Helpers
-     *
-     */
-    export function viewForAppstore(appStore: AppStore, uniq: string) {
-        return new ProjectTreeView.View({
-                state: ProjectTreeView.State.stateForAppStoreAndUniq(appStore, uniq)
-            }
-        )
-    }
 }
