@@ -4053,6 +4053,14 @@ jest-snapshot@^26.6.2:
     pretty-format "^26.6.2"
     semver "^7.3.2"
 
+jest-sonar@^0.2.12:
+  version "0.2.12"
+  resolved "https://registry.yarnpkg.com/jest-sonar/-/jest-sonar-0.2.12.tgz#9843cac11f65c997b03a6c94a57571f50decc02b"
+  integrity sha512-8hZO3rhxVobJkMhyuEgsZxfj0QQucCa+dkXVJ3ckz+Gi180F2ET12GwEGP/j4z1owc08Z2JgIt2Qlgl06+3asQ==
+  dependencies:
+    entities "^2.1.0"
+    strip-ansi "^6.0.0"
+
 jest-util@^26.1.0, jest-util@^26.6.2:
   version "26.6.2"
   resolved "https://registry.yarnpkg.com/jest-util/-/jest-util-26.6.2.tgz#907535dbe4d5a6cb4c47ac9b926f6af29576cbc1"
