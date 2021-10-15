@@ -1,9 +1,10 @@
-import { Connection, ModuleFlux } from "@youwol/flux-core";
-import { attr$, child$, VirtualDOM } from "@youwol/flux-view";
-import { merge } from "rxjs";
-import { AppStore, UiState } from "../builder-state";
-import { ConnectionSettingsState, ConnectionSettingsView } from "./connection-settings.view";
-import { ModuleSettingsState, ModuleSettingsView } from "./module-settings.view";
+import {Connection, ModuleFlux} from "@youwol/flux-core";
+import {attr$, child$, VirtualDOM} from "@youwol/flux-view";
+import {AppStore, UiState} from "../builder-state";
+import {ConnectionSettingsState, ConnectionSettingsView} from "./connection-settings.view";
+import {ModuleSettingsState, ModuleSettingsView} from "./module-settings.view";
+import {merge} from "rxjs";
+import {ProjectTreeView} from "../../views/project-tree.view";
 
 
 export function builderView(appStore: AppStore) : VirtualDOM {
@@ -21,6 +22,7 @@ export function builderView(appStore: AppStore) : VirtualDOM {
         ),
 
         children:[
+            projectTreeView(appStore),
             svgCanvasView(),
             settingsView(appStore)
         ]
@@ -39,15 +41,15 @@ function settingsView(appStore: AppStore){
     let settingsFactory = [
         {
             when: (d) => d instanceof ModuleFlux,
-            mapTo: (mdle: ModuleFlux) =>{
-                let state = new ModuleSettingsState(mdle, appStore)
+            mapTo: (m: ModuleFlux) =>{
+                let state = new ModuleSettingsState(m, appStore)
                 return new ModuleSettingsView(state)
             }
         },
         {
             when: (d) => d instanceof Connection,
-            mapTo: (connection: Connection) =>{
-                let state = new ConnectionSettingsState(connection, appStore)
+            mapTo: (c: Connection) =>{
+                let state = new ConnectionSettingsState(c, appStore)
                 return new ConnectionSettingsView(state)
             }
         }
@@ -56,7 +58,7 @@ function settingsView(appStore: AppStore){
     return {
         id:"panel__right_builder",
         class: "d-flex flex-column grapes-bg-color fv-color-primary p-1 border border-dark text-left fv-text-primary",
-        style: { 
+        style: {
             width: '300px',
             minHeight:"0px",
             fontSize: "small"
@@ -64,12 +66,12 @@ function settingsView(appStore: AppStore){
         children:[
             child$(
                 merge(
-                    appObservables.unselect$, 
-                    appObservables.moduleSelected$, 
+                    appObservables.unselect$,
+                    appObservables.moduleSelected$,
                     appObservables.connectionSelected$
                     ),
                 (selection) => {
-                    let factory = settingsFactory.find( factory => factory.when(selection))
+                    let factory = settingsFactory.find( f => f.when(selection))
                     if(!factory)
                         return {}
                     return factory.mapTo(selection)
@@ -79,3 +81,19 @@ function settingsView(appStore: AppStore){
     }
 }
 
+function projectTreeView(appStore: AppStore) {
+    let panelId: string = "panel__left_builder"
+    let state = ProjectTreeView.State.stateForAppStoreAndUniq(appStore, panelId)
+   return {
+        id:panelId,
+        class: "d-flex flex-column grapes-bg-color fv-color-primary p-1 border border-dark text-left fv-text-primary",
+        style: {
+            width: '300px',
+            minHeight: "0px",
+            fontSize: "small"
+        },
+        children:[
+            new ProjectTreeView.View({state: state})
+        ]
+    }
+}
