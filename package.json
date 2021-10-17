@@ -11,6 +11,10 @@
         "build:prod": "del-cli dist && webpack --mode production",
         "test": "jest -c ./jest.config.js --rootDir . -i",
         "test-coverage": "jest -c ./jest.config.js --rootDir . -i --collect-coverage --collectCoverageFrom=./src/app/**/*.ts ",
+        "lint-prettier": "prettier --check src/ --require-pragma true && prettier --check '{./,!(src/*)}' --insert-pragma false",
+        "lint": "yarn lint-prettier",
+        "format": "yarn format-prettier",
+        "format-prettier": "prettier --write src/ --require-pragma true && prettier --write '{./,!(src/*)}' --insert-pragma false",
         "doc": "typedoc",
         "start": "webpack serve",
         "upgrade-youwol": "yarn upgrade @youwol/cdn-client @youwol/flux-core @youwol/flux-svg-plots @youwol/flux-view @youwol/fv-button @youwol/fv-context-menu @youwol/fv-group @youwol/fv-input @youwol/fv-tabs @youwol/fv-tree",
@@ -51,6 +55,8 @@
         "jest-junit": "12.0.0",
         "jest-sonar": "^0.2.12",
         "mini-css-extract-plugin": "1.3.9",
+        "prettier": "^2.4.1",
+        "prettier-plugin-properties": "^0.1.0",
         "source-map-loader": "2.0.1",
         "ts-jest": "26.5.4",
         "ts-lib": "0.0.5",
@@ -86,5 +92,24 @@
             "reflect-metadata": "0.x",
             "rxjs": "6.x"
         }
+    },
+    "prettier": {
+        "printWidth": 80,
+        "tabWidth": 2,
+        "useTabs": false,
+        "semi": false,
+        "singleQuote": true,
+        "quoteProps": "as-needed",
+        "trailingComma": "all",
+        "bracketSpacing": true,
+        "arrowParens": "always",
+        "rangeStart": 0,
+        "requirePragma": false,
+        "insertPragma": true,
+        "proseWrap": "preserve",
+        "htmlWhitespaceSensitivity": "css",
+        "endOfLine": "lf",
+        "embeddedLanguageFormatting": "auto",
+        "keySeparator": "="
     }
 }
