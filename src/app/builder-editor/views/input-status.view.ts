@@ -3,7 +3,7 @@ import { ConfigurationStatus, ConsistentConfiguration, ExpectationStatus, IExpec
     Context} from "@youwol/flux-core";
 import { VirtualDOM } from "@youwol/flux-view";
 import { Tabs } from "@youwol/fv-tabs";
-import { BehaviorSubject, Observable } from "rxjs";
+import { BehaviorSubject } from "rxjs";
 import { ConfigurationStatusView } from "./configuration-status.view";
 import { ExpectationView } from "./expectation.view";
 

@@ -5,7 +5,6 @@ import { createDrawingArea } from '@youwol/flux-svg-plots'
 import '../common/dependencies'
 import { AppObservables, AppDebugEnvironment, AppStore, AppBuildViewObservables } from '../../app/builder-editor/builder-state/index'
 import { ModulesPlotter, DescriptionsBoxesPlotter } from '../../app/builder-editor/builder-plots/index'
-import { MockEnvironment } from '@youwol/flux-core'
 import { environment } from '../common/dependencies'
 import { projects } from '../common/projects-data'
 

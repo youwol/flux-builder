@@ -1,12 +1,10 @@
 import './dependencies'
 import { AppBuildViewObservables, AppDebugEnvironment, AppObservables, AppStore } from '../../app/builder-editor/builder-state/index'
-import { Component, Connection, GroupModules, ModuleConfiguration, SlotRef } from '@youwol/flux-core'
-import { filter, take } from 'rxjs/operators'
+import { Connection, GroupModules, SlotRef } from '@youwol/flux-core'
+import { take } from 'rxjs/operators'
 
 import * as FluxEntitiesPlot from '@youwol/flux-svg-plots';
 import { environment } from '../common/dependencies'
-import { projects } from '../common/projects-data'
-import { BehaviorSubject } from 'rxjs';
 
 
 let appObservables = AppObservables.getInstance()

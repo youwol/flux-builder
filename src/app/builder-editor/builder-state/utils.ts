@@ -1,6 +1,6 @@
-import { Component, PluginFlux, Workflow, Project, GroupModules, ModuleFlux} from '@youwol/flux-core';
+import { Component, Project, GroupModules, ModuleFlux} from '@youwol/flux-core';
 import { filter } from 'rxjs/operators';
-import { serializeWorkflow, toProjectData } from './factory-utils';
+import { toProjectData } from './factory-utils';
 
 
 export function uuidv4() {

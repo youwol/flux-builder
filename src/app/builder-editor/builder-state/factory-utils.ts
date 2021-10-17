@@ -1,4 +1,4 @@
-import { Project, LayerTree, Workflow, WorkflowSchema, ProjectSchema, RequirementsSchema } from '@youwol/flux-core';
+import { Project, Workflow, WorkflowSchema, ProjectSchema, RequirementsSchema } from '@youwol/flux-core';
 
 
 

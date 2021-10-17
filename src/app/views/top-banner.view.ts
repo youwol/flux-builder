@@ -1,7 +1,7 @@
 import { ModuleFlux } from "@youwol/flux-core"
 import { attr$, VirtualDOM } from "@youwol/flux-view"
 import { BehaviorSubject, merge, Observable, of } from "rxjs"
-import { map, tap } from "rxjs/operators"
+import { map } from "rxjs/operators"
 import { AppStore, UiState } from "../builder-editor/builder-state"
 
 interface Action {

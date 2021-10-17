@@ -3,7 +3,7 @@ import { Factory, uuidv4 } from "@youwol/flux-core"
 import { attr$, child$ } from "@youwol/flux-view"
 import { ImmutableTree } from "@youwol/fv-tree"
 import { BehaviorSubject, Observable, of, Subject } from "rxjs"
-import { map, scan, tap } from "rxjs/operators"
+import { map, tap } from "rxjs/operators"
 import { AssetsBrowserClient, ChildrenResp, GroupsResp } from "../../clients/assets-browser.client"
 import { AppStore } from "../builder-state"
 

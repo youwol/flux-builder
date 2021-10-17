@@ -1,4 +1,4 @@
-import { Component, LoadingGraphSchema, ModuleFlux, Workflow } from "@youwol/flux-core"
+import { Component, ModuleFlux, Workflow } from "@youwol/flux-core"
 import { AppDebugEnvironment, AppStore, LogLevel } from "../builder-editor/builder-state"
 import { getAllComponentsRec } from "./utils"
 import * as grapesjs from 'grapesjs'

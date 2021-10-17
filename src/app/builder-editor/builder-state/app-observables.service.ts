@@ -1,8 +1,8 @@
 import { Subject, ReplaySubject } from "rxjs";
-import { Package, Connection, ModuleFlux, DescriptionBox, Project, WorkflowDelta  }from '@youwol/flux-core';
+import { Package, Connection, ModuleFlux, DescriptionBox, WorkflowDelta  }from '@youwol/flux-core';
 
 import { AppDebugEnvironment, LogLevel } from "./app-debug.environment";
-import { AppStore, UiState } from './app-store';
+import { UiState } from './app-store';
 
 
 export class AppObservables{

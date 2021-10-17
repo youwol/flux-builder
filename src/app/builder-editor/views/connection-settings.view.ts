@@ -1,4 +1,4 @@
-import { Adaptor, Connection, flattenSchemaWithValue, ModuleConfiguration, ModuleFlux, Property, Schema, uuidv4 } from "@youwol/flux-core"
+import { Adaptor, Connection, flattenSchemaWithValue, Property, Schema, uuidv4 } from "@youwol/flux-core"
 import { HTMLElement$, VirtualDOM } from "@youwol/flux-view"
 import { BehaviorSubject, Subscription } from "rxjs"
 import { filter } from "rxjs/operators"

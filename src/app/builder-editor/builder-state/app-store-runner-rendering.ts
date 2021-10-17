@@ -1,5 +1,5 @@
 
-import { Component, Project, RunnerRendering, Workflow } from '@youwol/flux-core'
+import { Component, Project } from '@youwol/flux-core'
 import { LogLevel, AppDebugEnvironment } from './app-debug.environment'
 import { applyHtmlCss, applyHtmlLayout } from './app-store-component'
 

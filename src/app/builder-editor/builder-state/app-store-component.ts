@@ -1,10 +1,7 @@
-import { Project, LayerTree, Workflow, BuilderRendering, ModuleView,
-    ModuleFlux, GroupModules, IEnvironment, ModuleConfiguration, Component} from '@youwol/flux-core';
+import { Workflow, Component} from '@youwol/flux-core';
     
-import { uuidv4 } from './utils';
 import { AppDebugEnvironment, LogLevel } from './app-debug.environment';
-import { updateComponent, updateGroup } from './app-store-modules-group';
-import { Observable } from 'rxjs';
+import { updateComponent } from './app-store-modules-group';
 import { clonePluginsForNewParents } from './app-store-modules';
 
 

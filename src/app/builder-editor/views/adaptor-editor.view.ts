@@ -1,5 +1,5 @@
-import { Connection, Contract, IExpectation, ModuleFlux } from "@youwol/flux-core";
-import { child$, render, VirtualDOM } from "@youwol/flux-view";
+import { Connection, IExpectation, ModuleFlux } from "@youwol/flux-core";
+import { child$, VirtualDOM } from "@youwol/flux-view";
 import { BehaviorSubject, combineLatest, Observable } from "rxjs";
 import { debounceTime, map } from "rxjs/operators";
 import { AppStore } from "../builder-state";
@@ -8,8 +8,6 @@ import * as _ from 'lodash'
 import { infoView } from "./info.view";
 import { DataTreeView } from "./data-tree.view";
 import { InputStatusView } from "./input-status.view";
-import { Button } from "@youwol/fv-button";
-import { Modal } from "@youwol/fv-group";
 import { ModalView } from "./modal.view";
 
 export namespace AdaptorEditoView{

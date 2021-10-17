@@ -1,6 +1,6 @@
 import  './dependencies'
 
-import { AppDebugEnvironment, AppObservables, AppStore } from '../../app/builder-editor/builder-state'
+import { AppDebugEnvironment } from '../../app/builder-editor/builder-state'
 import { instantiateProjectModules, instantiateProjectBuilderRendering, Workflow } from '@youwol/flux-core'
 import { testPack } from '../common/simple-module'
 import { environment } from '../common/dependencies'

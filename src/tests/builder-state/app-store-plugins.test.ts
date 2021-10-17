@@ -1,7 +1,6 @@
 
-import * as _operators from 'rxjs/operators'
 import  './dependencies'
-import { AppDebugEnvironment, AppStore, AppObservables,getPlugins, AppBuildViewObservables } from '../../app/builder-editor/builder-state'
+import { AppStore, AppObservables,getPlugins, AppBuildViewObservables } from '../../app/builder-editor/builder-state'
 import { SimpleModule2, SimplePlugin, testPack } from '../common/simple-module'
 import { ModuleConfiguration, instantiateProjectModules,instantiateProjectPlugins, Workflow} from '@youwol/flux-core'
 import { environment } from '../common/dependencies'

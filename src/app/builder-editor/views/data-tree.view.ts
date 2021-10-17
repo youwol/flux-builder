@@ -1,5 +1,4 @@
 import {ImmutableTree} from '@youwol/fv-tree'
-import { exception } from 'node:console'
 import { BehaviorSubject, Observable, of } from 'rxjs'
 import { map } from 'rxjs/operators'
 

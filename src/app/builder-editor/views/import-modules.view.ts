@@ -1,6 +1,5 @@
-import { child$, render, VirtualDOM } from "@youwol/flux-view"
+import { child$, VirtualDOM } from "@youwol/flux-view"
 import { Button } from "@youwol/fv-button"
-import { Modal } from "@youwol/fv-group"
 import { BehaviorSubject, Subject } from "rxjs"
 import { scan } from "rxjs/operators"
 import { AppStore } from "../builder-state"
