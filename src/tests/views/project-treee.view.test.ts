@@ -31,7 +31,7 @@ describe('ProjectTreeView.nodeIdBuilder', () => {
     it('should return node id for moduleId containing both moduleId and unique string', () => {
         // Given
         const uniq: string = "UNIQ_" + Date.now()
-        const moduleId: string = "ModuleId"
+        const moduleId = "ModuleId"
 
         const subject = ProjectTreeView.nodeIdBuilderForUniq(uniq)
 
@@ -49,7 +49,7 @@ describe('ProjectTreeView.nodeIdBuilder', () => {
     it('should return node id for module containing both moduleId and unique string', () => {
         // Given
         const uniq: string = "UNIQ_" + Date.now()
-        const moduleId: string = "ModuleId"
+        const moduleId = "ModuleId"
 
         const subject = nodeIdBuilderForUniq(uniq);
 
@@ -246,7 +246,7 @@ describe('ProjectTreeView.rootFactory', () => {
         expect(actualRootNode.getModuleId()).toBe(expectedRootModuleId)
         expect(actualRootNode.getModuleTitle()).toBe(expectedRootTitle)
         expect(actualRootNode.resolvedChildren()).toBeDefined()
-        expect(actualRootNode.resolvedChildren().length).toBe(expectedRootChildrenLength)
+        expect(actualRootNode.resolvedChildren()).toHaveLength(expectedRootChildrenLength)
 
         // Expect GroupNode
         const actualGroup = (actualRootNode.resolvedChildren())[0] as GroupNode
@@ -256,7 +256,7 @@ describe('ProjectTreeView.rootFactory', () => {
         expect(actualGroup.getModuleId()).toBe(expectedGroupModuleId)
         expect(actualGroup.getModuleTitle()).toBe(expectedGroupTitle)
         expect(actualGroup.resolvedChildren()).toBeDefined()
-        expect(actualGroup.resolvedChildren().length).toBe(expectedGroupChildrenLength)
+        expect(actualGroup.resolvedChildren()).toHaveLength(expectedGroupChildrenLength)
 
         // Expect ModuleNode
         const actualChild = (actualGroup.resolvedChildren())[0] as ModuleNode
@@ -265,7 +265,7 @@ describe('ProjectTreeView.rootFactory', () => {
         expect(actualChild.id).toBe(expectedNodeId)
         expect(actualChild.getModuleId()).toBe(expectedNodeModuleId)
         expect(actualChild.getModuleTitle()).toBe(expectedNodeTitle)
-        expect(actualChild.resolveChildren()).not.toBeDefined()
+        expect(actualChild.resolveChildren()).toBeUndefined()
 
         // Expect ModuleNode, with child
         const actualChildWithPlugin = (actualGroup.resolvedChildren())[1] as ModuleNode
@@ -275,7 +275,7 @@ describe('ProjectTreeView.rootFactory', () => {
         expect(actualChildWithPlugin.getModuleId()).toBe(expectedNodeWithChildModuleId)
         expect(actualChildWithPlugin.getModuleTitle()).toBe(expectedNodeWithChildTitle)
         expect(actualChildWithPlugin.resolvedChildren()).toBeDefined()
-        expect(actualChildWithPlugin.resolvedChildren().length).toBe(expectedNodeWithChildChildrenLength)
+        expect(actualChildWithPlugin.resolvedChildren()).toHaveLength(expectedNodeWithChildChildrenLength)
 
         // Expect PluginNode
         const actualPlugin = (actualChildWithPlugin.resolvedChildren())[0] as PluginNode
@@ -454,7 +454,7 @@ describe('ProjectTreeView.State', () => {
     const expectedRootId = nodeIdBuilder.buildForRootComponent()
 
     let appStoreSelection$: ReplaySubject<ModuleFlux>
-    let appStoreProjectUpdated$: ReplaySubject<WorkflowDelta> = new ReplaySubject<WorkflowDelta>()
+    const appStoreProjectUpdated$: ReplaySubject<WorkflowDelta> = new ReplaySubject<WorkflowDelta>()
     let appStoreMocker
 
 
@@ -500,7 +500,7 @@ describe('ProjectTreeView.State', () => {
         expect(actualRootNode.getModuleId()).toBe(Component.rootComponentId)
         expect(actualRootNode.getModuleTitle()).toBe(expectedRootTitle)
         expect(actualRootNode.resolvedChildren()).toBeDefined()
-        expect(actualRootNode.resolvedChildren().length).toBe(expectedRootChildrenLength)
+        expect(actualRootNode.resolvedChildren()).toHaveLength(expectedRootChildrenLength)
 
         // Expect GroupNode
         const actualGroup = (actualRootNode.resolvedChildren())[0] as GroupNode
@@ -510,7 +510,7 @@ describe('ProjectTreeView.State', () => {
         expect(actualGroup.getModuleId()).toBe(expectedGroupModuleId)
         expect(actualGroup.getModuleTitle()).toBe(expectedGroupTitle)
         expect(actualGroup.resolvedChildren()).toBeDefined()
-        expect(actualGroup.resolvedChildren().length).toBe(expectedGroupChildrenLength)
+        expect(actualGroup.resolvedChildren()).toHaveLength(expectedGroupChildrenLength)
 
         // Expect ModuleNode
         const actualChild = (actualGroup.resolvedChildren())[0] as ModuleNode
@@ -520,7 +520,7 @@ describe('ProjectTreeView.State', () => {
         expect(actualChild.getModuleId()).toBe(expectedNodeModuleId)
         expect(actualChild.getModuleTitle()).toBe(expectedNodeTitle)
         expect(actualChild.resolvedChildren()).toBeDefined()
-        expect(actualChild.resolvedChildren().length).toBe(expectedNodeChildrenLength)
+        expect(actualChild.resolvedChildren()).toHaveLength(expectedNodeChildrenLength)
 
         // Expect PluginNode
         const actualPlugin = (actualChild.resolvedChildren())[0] as PluginNode
@@ -529,7 +529,7 @@ describe('ProjectTreeView.State', () => {
         expect(actualPlugin.id).toBe(expectedPluginId)
         expect(actualPlugin.getModuleId()).toBe(expectedPluginModuleId)
         expect(actualPlugin.getModuleTitle()).toBe(expectedPluginTitle)
-        expect(actualPlugin.resolveChildren()).not.toBeDefined()
+        expect(actualPlugin.resolveChildren()).toBeUndefined()
 
     })
 
@@ -586,7 +586,7 @@ describe('ProjectTreeView.State', () => {
         const expectedSecondNodeSelected = expectedPluginId
         const expectedSecondExpansion = [expectedRootId, expectedGroupId, expectedNodeId, expectedPluginId]
 
-        let nodesSelected = []
+        const nodesSelected = []
         subscriptions.push(
             subject.selectedNode$
                 .subscribe(
@@ -601,8 +601,8 @@ describe('ProjectTreeView.State', () => {
         appStoreSelection$.next(secondModuleSelected)
         const actualSecondExpansion = subject.expandedNodes$.getValue()
 
-        let actualFirstNodeSelected = nodesSelected[0]
-        let actualSecondNodeSelected = nodesSelected[1]
+        const actualFirstNodeSelected = nodesSelected[0]
+        const actualSecondNodeSelected = nodesSelected[1]
 
 
         // Expect
@@ -636,7 +636,7 @@ describe('ProjectTreeView.State', () => {
 
     })
 
-    it('should unsubscribe its own subscriptions ', () => {
+    it('should unsubscribe its own subscriptions', () => {
         // Given
         const observersProjectUpdatedBefore = appStoreProjectUpdated$.observers.length
         const observersSelectionBefore = appStoreSelection$.observers.length

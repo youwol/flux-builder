@@ -1,1 +1,13 @@
-/src/
+# Ignore all contents of src/app
+/src/app/*
+# … except src/app/views
+!/src/app/views/
+# and ignore all this content
+/src/app/views/*
+# … except one file
+!/src/app/views/project-tree.view.ts
+
+# Ignore all contents of src/tests
+/src/tests/*
+# … except src/tests/views
+!/src/tests/views/

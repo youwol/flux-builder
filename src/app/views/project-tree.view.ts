@@ -169,10 +169,10 @@ export namespace ProjectTreeView {
      *
      */
     export function nodeFactory(mdle: ModuleFlux, workflow: Workflow, nodeIdBuilder: NodeIdBuilder): ModuleNode {
-        let nodeId = nodeIdBuilder.buildForModule(mdle)
+        const nodeId = nodeIdBuilder.buildForModule(mdle)
 
         // Will hold nodes representing Group content and Plugins attached to this module
-        let childrenNodes: ModuleNode[] = []
+        const childrenNodes: ModuleNode[] = []
 
         // Get plugins attach to this module
         childrenNodes.push(...
@@ -245,7 +245,7 @@ export namespace ProjectTreeView {
          *
          */
         static stateForAppStoreAndUniq(appStore: AppStore, uniq: string): State {
-            let nodeIdBuilder = nodeIdBuilderForUniq(uniq)
+            const nodeIdBuilder = nodeIdBuilderForUniq(uniq)
             return new State(appStore, nodeIdBuilder)
         }
 
@@ -285,7 +285,7 @@ export namespace ProjectTreeView {
          *
          */
         private subscribe() {
-            let appObservables = this.appStore.appObservables
+            const appObservables = this.appStore.appObservables
 
             this.projectTreeSubscriptions.push(
                 // WHEN App project change UPDATE Tree
@@ -336,8 +336,8 @@ export namespace ProjectTreeView {
             this.selectedNode$.next(this.getNode(this.nodeIdBuilder.buildForModule(mdle)))
 
             // Expand tree to show this node. This could (should ?) be implemented in immutable-tree.view.ts
-            let node = this.getNode(this.nodeIdBuilder.buildForModule(mdle))
-            let ensureExpanded: string[] = [node.id]
+            const node = this.getNode(this.nodeIdBuilder.buildForModule(mdle))
+            const ensureExpanded: string[] = [node.id]
 
             // Ensure parents nodes are also expanded
             let parent = this.getParent(node.id)
