@@ -856,12 +856,12 @@
   resolved "https://registry.yarnpkg.com/@youwol/cdn-client/-/cdn-client-0.0.8.tgz#313407ae0c791a7e73d8401ac11c97424c73d570"
   integrity sha512-KzCt647Jxfzu7wO0FIYX+HNSU3mR0JDLu6jJQ6T/5jA2CxNbbMrHI7Na7q/KMrmnMHX7fXRwwcGXzXFotfMJAQ==
 
-"@youwol/flux-core@~0.0.20":
-  version "0.0.20"
-  resolved "https://registry.yarnpkg.com/@youwol/flux-core/-/flux-core-0.0.20.tgz#b84e363b1e59a010f1e652fa1f67ff8be483e091"
-  integrity sha512-t4P8YZ0JxGif01yhI0/f5finlpqFqE67D9BHudhXY+JdV46EBkvK3aO483RgCd4V9P1qH+YJyka02SVPZjAQjg==
+"@youwol/flux-core@~0.0.21":
+  version "0.0.21"
+  resolved "https://registry.yarnpkg.com/@youwol/flux-core/-/flux-core-0.0.21.tgz#1710317b9d14946122ea187c4d8ec477e56e3f65"
+  integrity sha512-hHn8ODizOwS1o0vZT7pYCPqdVPb466PZCVtVtGoT+tuv3NC6dJ12LXdYOhUfvruxTXZDoXS1PVJNca7MhcQFJw==
 
-"@youwol/flux-svg-plots@0.x":
+"@youwol/flux-svg-plots@~0.0.0":
   version "0.0.0"
   resolved "https://registry.yarnpkg.com/@youwol/flux-svg-plots/-/flux-svg-plots-0.0.0.tgz#a6c1a64d601fbfd744a22644b8a21b41daa9959f"
   integrity sha512-wL3xLkmPrF5aMJXxF5tuy/znXtuR9ZoSMyCwppv4sqCNkm/u/gwE3Yl9LQh94oIFpML+qW/XKr8+RWaMAlzsBA==
@@ -2300,7 +2300,7 @@ entities@^1.1.1:
   resolved "https://registry.yarnpkg.com/entities/-/entities-1.1.2.tgz#bdfa735299664dfafd34529ed4f8522a275fea56"
   integrity sha512-f2LZMYl1Fzu7YSBKg+RoROelpOaNrcGmE9AZubeDfrCEia483oW4MI4VyFd5VNHIgQ/7qm1I0wUHK1eJnn2y2w==
 
-entities@^2.0.0:
+entities@^2.0.0, entities@^2.1.0:
   version "2.2.0"
   resolved "https://registry.yarnpkg.com/entities/-/entities-2.2.0.tgz#098dc90ebb83d8dffa089d55256b351d34c4da55"
   integrity sha512-p92if5Nz619I0w+akJrLZH0MX0Pb5DX39XOwQTtXSdQQOaYH03S1uIQp4mhOZtAXrxq4ViO67YTiLBo2638o9A==
@@ -4053,6 +4053,14 @@ jest-snapshot@^26.6.2:
     pretty-format "^26.6.2"
     semver "^7.3.2"
 
+jest-sonar@^0.2.12:
+  version "0.2.12"
+  resolved "https://registry.yarnpkg.com/jest-sonar/-/jest-sonar-0.2.12.tgz#9843cac11f65c997b03a6c94a57571f50decc02b"
+  integrity sha512-8hZO3rhxVobJkMhyuEgsZxfj0QQucCa+dkXVJ3ckz+Gi180F2ET12GwEGP/j4z1owc08Z2JgIt2Qlgl06+3asQ==
+  dependencies:
+    entities "^2.1.0"
+    strip-ansi "^6.0.0"
+
 jest-util@^26.1.0, jest-util@^26.6.2:
   version "26.6.2"
   resolved "https://registry.yarnpkg.com/jest-util/-/jest-util-26.6.2.tgz#907535dbe4d5a6cb4c47ac9b926f6af29576cbc1"
@@ -4338,7 +4346,7 @@ lodash.truncate@^4.4.2:
   resolved "https://registry.yarnpkg.com/lodash.truncate/-/lodash.truncate-4.4.2.tgz#5a350da0b1113b837ecfffd5812cbe58d6eae193"
   integrity sha1-WjUNoLERO4N+z//VgSy+WNbq4ZM=
 
-lodash@4.x, lodash@^4.17.11, lodash@^4.17.14, lodash@^4.17.19, lodash@^4.17.20, lodash@^4.17.21, lodash@^4.7.0:
+lodash@4.x, lodash@^4.17.11, lodash@^4.17.14, lodash@^4.17.19, lodash@^4.17.20, lodash@^4.17.21, lodash@^4.17.5, lodash@^4.7.0:
   version "4.17.21"
   resolved "https://registry.yarnpkg.com/lodash/-/lodash-4.17.21.tgz#679591c564c3bffaae8454cf0b3df370c3d6911c"
   integrity sha512-v2kDEe57lecTulaDIuNTPy3Ry4gLGJ6Z1O3vE1krgXZNrsQ+LFTGHVxVjcXPs17LhbZVGedAJv8XZ1tvj5FvSg==

@@ -11,3 +11,4 @@ Dockerfile
 yarn-error.log
 /.idea/
 /flux-builder.iml
+.scannerwork
