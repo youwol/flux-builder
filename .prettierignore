@@ -1,0 +1,13 @@
+node_modules
+dist/
+coverage/
+junit.xml
+yarn.lock
+.editorconfig
+.gitignore
+.npmignore
+.prettierignore
+LICENSE
+yarn-error.log
+/*.iml
+.eslintignore.transition
