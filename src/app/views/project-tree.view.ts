@@ -1,6 +1,5 @@
 /** @format */
 
-import { ImmutableTree } from '@youwol/fv-tree'
 import {
   Component,
   GroupModules,
@@ -9,12 +8,36 @@ import {
   Workflow,
   WorkflowDelta,
 } from '@youwol/flux-core'
-import { AppStore } from '../builder-editor/builder-state'
 import { VirtualDOM } from '@youwol/flux-view'
+import { ImmutableTree } from '@youwol/fv-tree'
+import { ReplaySubject, Subject, Subscription } from 'rxjs'
 import { filter, map } from 'rxjs/operators'
-import { Subscription } from 'rxjs'
+import { AppStore } from '../builder-editor/builder-state'
 
 export namespace ProjectTreeView {
+  export interface ProjectManager {
+    name: () => string
+    workflow: () => Workflow
+    projectUpdated$: ReplaySubject<WorkflowDelta>
+    moduleSelected$: Subject<ModuleFlux>
+    filterSelection: (moduleId: string) => boolean
+    selectModule: (moduleId: string) => void
+    filterNode?: (node: ModuleNode) => boolean
+  }
+
+  export function appStoreAsProjectManager(appStore: AppStore): ProjectManager {
+    return {
+      name: () => appStore.project.name,
+      workflow: () => appStore.project.workflow,
+      projectUpdated$: appStore.appObservables.projectUpdated$,
+      moduleSelected$: appStore.appObservables.moduleSelected$,
+      selectModule: (moduleId) => appStore.selectModule(moduleId, true),
+      filterSelection: (moduleId) =>
+        !appStore.isSelected(moduleId) &&
+        moduleId !== Component.rootComponentId,
+    }
+  }
+
   /**
    * Functions returning the id of a {@link ModuleNode|node} representing a {@link ModuleFlux|module}; this string
    * shall contains the module id for convenient debugging.
@@ -158,7 +181,7 @@ export namespace ProjectTreeView {
   }
 
   /**
-   *  Bootstrap the whole tree construction from an {@link AppStore|appStore} and
+   *  Bootstrap the whole tree construction from a {@link ProjectManager|projectManager} and
    *  a {@link NodeIdBuilder|nodeIdBuilder}.
    *
    * @category Nodes
@@ -238,12 +261,12 @@ export namespace ProjectTreeView {
 
   /**
    * Maintain state for the {@link View}.
-   * - Update the tree using the {@link AppStore|appStore} observable for
-   *   {@link AppObservables.projectUpdated$|project update}.
-   * - Update selected node using the {@link AppStore|appStore} observable for
-   *   {@link AppObservables.moduleSelected$|module selection}.
-   * - Update selected {@link ModuleFlux|module} selected in the {@link AppStore|appStore} by calling
-   *   {@link AppStore.modulesSelected|appStore.modulesSelected()}.
+   * - Update the tree using the {@link ProjectManager|projectManager} observable for
+   *   {@link ProjectManager.projectUpdated$|project update}.
+   * - Update selected node using the {@link ProjectManager|projectManager} observable for
+   *   {@link ProjectManager.moduleSelected$|module selection}.
+   * - Update selected {@link ModuleFlux|module} selected in the {@link ProjectManager|projectManager} by calling
+   *   {@link ProjectManager.modulesSelected|projectManager.modulesSelected()}.
    *
    * @category State
    *
@@ -256,43 +279,49 @@ export namespace ProjectTreeView {
      *
      */
     private readonly projectTreeSubscriptions: Subscription[] = []
-    /* The AppStore */
-    public readonly appStore: AppStore
+    /* The ProjectManager */
+    public readonly projectManager: ProjectManager
 
     private readonly nodeIdBuilder: NodeIdBuilder
 
     /**
      * Convenient method to easily instantiate a State
      *
-     * @param appStore the AppStore
+     * @param projectManager an implementation of {@link ProjectManager}
      * @param uniq the string use to generate unique {@link ModuleNode|node} id from {@link ModuleFlux|module} id
      * (See {@link nodeIdBuilderForUniq})
      *
      * @category Construction
      *
      */
-    static stateForAppStoreAndUniq(appStore: AppStore, uniq: string): State {
+    static stateForProjectManagerAndUniq(
+      projectManager: ProjectManager,
+      uniq: string,
+    ): State {
       const nodeIdBuilder = nodeIdBuilderForUniq(uniq)
-      return new State(appStore, nodeIdBuilder)
+      return new State(projectManager, nodeIdBuilder)
     }
 
     /**
-     * Constructor from AppStore
+     * Constructor from ProjectManager
      * - build the root node with {@link rootFactory})
-     * - connect subscriptions
+     * - connect subscriptions to projectManager
      *
      * @category Construction
      *
-     * @param appStore
+     * @param projectManager
      * @param nodeIdBuilder
      *
      */
-    private constructor(appStore: AppStore, nodeIdBuilder: NodeIdBuilder) {
+    private constructor(
+      projectManager: ProjectManager,
+      nodeIdBuilder: NodeIdBuilder,
+    ) {
       super({
-        rootNode: rootFactory(appStore.project.workflow, nodeIdBuilder),
+        rootNode: rootFactory(projectManager.workflow(), nodeIdBuilder),
         expandedNodes: [nodeIdBuilder.buildForRootComponent()],
       })
-      this.appStore = appStore
+      this.projectManager = projectManager
       this.nodeIdBuilder = nodeIdBuilder
       this.subscribe()
     }
@@ -300,27 +329,25 @@ export namespace ProjectTreeView {
     /**
      * Create {@link Subscription|subscriptions} and store them in {@link State.projectTreeSubscriptions}.
      *
-     * - {@link AppStore|appStore}’s {@link AppObservables.projectUpdated$|project update}
+     * - {@link ProjectManager|projectManager}’s {@link AppObservables.projectUpdated$|project update}
      *   => {@link State.updateTree()}
-     * - {@link AppStore|appStore}’s {@link AppObservables.moduleSelected$|module selection}
+     * - {@link ProjectManager|projectManager}’s {@link AppObservables.moduleSelected$|module selection}
      *   => {@link State.selectNodeRepresentingModule()}
      * - parent’s {@link ImmutableTree.State.selectedNode$|node selection}
-     *   => {@link AppStore.modulesSelected|appStore.moduleSelected()}
+     *   => {@link ProjectManager.modulesSelected|projectManager.moduleSelected()}
      *
      * @category Subscriptions
      *
      */
     private subscribe() {
-      const appObservables = this.appStore.appObservables
-
       this.projectTreeSubscriptions.push(
         // WHEN App project change UPDATE Tree
-        appObservables.projectUpdated$.subscribe((delta) =>
+        this.projectManager.projectUpdated$.subscribe((delta) =>
           this.updateTree(delta),
         ),
 
         // WHEN App selected module change UPDATE Tree selected node
-        appObservables.moduleSelected$.subscribe((mdle) =>
+        this.projectManager.moduleSelected$.subscribe((mdle) =>
           this.selectNodeRepresentingModule(mdle),
         ),
 
@@ -332,14 +359,10 @@ export namespace ProjectTreeView {
           .pipe(
             // node => moduleId
             map((node) => node.getModuleId()),
-            // module not selected in AppStore && module not root Component
-            filter(
-              (id) =>
-                !this.appStore.isSelected(id) &&
-                id != Component.rootComponentId,
-            ),
+            // filter from projectManager
+            filter((v) => this.projectManager.filterSelection(v)),
           )
-          .subscribe((id) => this.appStore.selectModule(id, true)),
+          .subscribe((id) => this.projectManager.selectModule(id)),
       )
     }
 
@@ -364,7 +387,7 @@ export namespace ProjectTreeView {
     /**
      * Select the {@link ModuleNode|node} representing a given {@link ModuleFlux|module}
      *
-     * To be called When {@link AppStore|appStore} module selection change
+     * To be called When {@link ProjectManager|projectManager} module selection change
      *
      * @category Subscriptions
      *
@@ -404,7 +427,7 @@ export namespace ProjectTreeView {
     /**
      * Update tree.
      *
-     * To be called when {@link AppStore|appStore} project update.
+     * To be called when {@link ProjectManager|projectManager} project update.
      *
      * TODO: effectively use delta from {@link AppObservables.projectUpdated$}, currently
      * calling {@link ImmutableTree.State.reset|reset()}
@@ -416,7 +439,7 @@ export namespace ProjectTreeView {
     private updateTree(delta: WorkflowDelta) {
       // TODO : effectively use delta …
       this.reset(
-        rootFactory(this.appStore.project.workflow, this.nodeIdBuilder),
+        rootFactory(this.projectManager.workflow(), this.nodeIdBuilder),
       )
     }
   }
@@ -439,7 +462,7 @@ export namespace ProjectTreeView {
         class: vDomClasses,
         children: [
           { class: 'p-0 mx-2 fas fa-play' },
-          { innerText: `${state.appStore.project.name}` },
+          { innerText: `${state.projectManager.name()}` },
         ],
       }
     }

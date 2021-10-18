@@ -17,13 +17,6 @@
  */
 
 import {
-  AppObservables,
-  AppStore,
-} from '../../app/builder-editor/builder-state'
-
-import { ProjectTreeView } from '../../app/views/project-tree.view'
-import { anything, instance, mock, when } from 'ts-mockito'
-import {
   Component,
   GroupModules,
   ModuleConfiguration,
@@ -34,10 +27,18 @@ import {
   WorkflowDelta,
 } from '@youwol/flux-core'
 import { ReplaySubject, Subject } from 'rxjs'
+import { anything, instance, mock, when } from 'ts-mockito'
+import {
+  AppObservables,
+  AppStore,
+} from '../../app/builder-editor/builder-state'
+
+import { ProjectTreeView } from '../../app/views/project-tree.view'
 import ComponentNode = ProjectTreeView.ComponentNode
-import ModuleNode = ProjectTreeView.ModuleNode
 import GroupNode = ProjectTreeView.GroupNode
+import ModuleNode = ProjectTreeView.ModuleNode
 import PluginNode = ProjectTreeView.PluginNode
+import ProjectManager = ProjectTreeView.ProjectManager
 
 function noop(_: ModuleFlux) {
   // Do nothing but do it well
@@ -155,7 +156,15 @@ type Fn<T> = () => T
 
 type Either<T> = T | Fn<T>
 
-function convert<T>(v: Either<T>): () => T {
+function asValue<T>(v: Either<T>): T {
+  if (typeof v == 'function') {
+    return (v as Fn<T>)()
+  } else {
+    return v
+  }
+}
+
+function asFn<T>(v: Either<T>): () => T {
   if (typeof v == 'function') {
     return v as Fn<T>
   } else {
@@ -179,7 +188,7 @@ export function getMockedModuleConfiguration(
   }
   const moduleConfigurationMocker = mock(ModuleConfiguration)
 
-  when(moduleConfigurationMocker.title).thenCall(convert(finalFixture.title))
+  when(moduleConfigurationMocker.title).thenCall(asFn(finalFixture.title))
   const mockModuleConfiguration = instance(moduleConfigurationMocker)
   Object.setPrototypeOf(
     moduleConfigurationMocker,
@@ -204,7 +213,7 @@ export function getMockedModule(
     ...fixture,
   }
   const moduleFluxMocker = mock(ModuleFlux)
-  when(moduleFluxMocker.moduleId).thenCall(convert(finalFixture.moduleId))
+  when(moduleFluxMocker.moduleId).thenCall(asFn(finalFixture.moduleId))
   when(moduleFluxMocker.configuration).thenReturn(
     getMockedModuleConfiguration(finalFixture.moduleConfiguration),
   )
@@ -223,7 +232,7 @@ export function getMockedGroup(fixture?: FixtureGroupModule) {
     ...fixture,
   }
   const groupMocker = mock(GroupModules.Module)
-  when(groupMocker.moduleId).thenCall(convert(finalFixture.moduleId))
+  when(groupMocker.moduleId).thenCall(asFn(finalFixture.moduleId))
   when(groupMocker.configuration).thenReturn(
     getMockedModuleConfiguration(finalFixture.moduleConfiguration),
   )
@@ -245,7 +254,7 @@ export function getMockedComponent(fixture?: FixtureComponentModule) {
     ...fixture,
   }
   const componentMocker = mock(Component.Module)
-  when(componentMocker.moduleId).thenCall(convert(finalFixture.moduleId))
+  when(componentMocker.moduleId).thenCall(asFn(finalFixture.moduleId))
   when(componentMocker.configuration).thenReturn(
     getMockedModuleConfiguration(finalFixture.moduleConfiguration),
   )
@@ -268,7 +277,7 @@ export function getMockedPlugin(fixture: FixturePlugin) {
   }
 
   const pluginFluxMocker = mock(PluginFlux)
-  when(pluginFluxMocker.moduleId).thenCall(convert(finalFixture.moduleId))
+  when(pluginFluxMocker.moduleId).thenCall(asFn(finalFixture.moduleId))
   when(pluginFluxMocker.configuration).thenReturn(
     getMockedModuleConfiguration(finalFixture.moduleConfiguration),
   )
@@ -336,7 +345,7 @@ export function getMockedProject(fixture?: FixtureProject | Project): Project {
   when(projectMocker.workflow).thenReturn(
     getMockedWorkflow(finalFixture.workflow),
   )
-  when(projectMocker.name).thenCall(convert(finalFixture.projectName))
+  when(projectMocker.name).thenCall(asFn(finalFixture.projectName))
   const mockProject = instance(projectMocker)
   Object.setPrototypeOf(mockProject, projectMocker)
   return mockProject
@@ -419,12 +428,64 @@ export function getMockedAppStore(
   return mockAppStore
 }
 
-interface FixtureState {
-  appStore?: FixtureAppStore | AppStore
+export interface FixtureProjectManager {
+  name?: Either<string>
+  projectUpdated$?: ReplaySubject<WorkflowDelta>
+  moduleSelected$?: Subject<ModuleFlux>
+  workflow?: Either<FixtureWorkflow>
+  filterSelection?: (moduleId: string) => boolean
+  selectModule?: (moduleId: string) => void
+}
+
+const defaultFixtureProjectManager: FixtureProjectManager = {
+  name: defaultsFlux.project.fixture.projectName,
+  workflow: getMockedWorkflow(),
+  projectUpdated$: getMockedAppObservables().projectUpdated$,
+  moduleSelected$: getMockedAppObservables().moduleSelected$,
+  filterSelection: (_m) => false,
+  selectModule: (_m) => {
+    /* Do nothing but do it well */
+  },
+}
+
+export function getMockedProjectManager(
+  fixture?: FixtureProjectManager,
+  customizeMocker: (mocker) => void = (_m) => {
+    /* Do nothing but do it well */
+  },
+): ProjectManager {
+  const finalFixture: FixtureProjectManager = {
+    ...defaultFixtureProjectManager,
+    ...fixture,
+  }
+  const projectManagerMocked = mock<ProjectManager>()
+
+  when(projectManagerMocked.name).thenReturn(() => asValue(finalFixture.name))
+  when(projectManagerMocked.workflow).thenReturn(() =>
+    getMockedWorkflow(asValue(finalFixture.workflow)),
+  )
+  when(projectManagerMocked.projectUpdated$).thenReturn(
+    finalFixture.projectUpdated$,
+  )
+  when(projectManagerMocked.moduleSelected$).thenReturn(
+    finalFixture.moduleSelected$,
+  )
+  when(projectManagerMocked.filterSelection(anything())).thenCall(
+    finalFixture.filterSelection,
+  )
+  when(projectManagerMocked.selectModule(anything())).thenCall((moduleId) =>
+    finalFixture.selectModule(moduleId),
+  )
+  customizeMocker(projectManagerMocked)
+  return instance(projectManagerMocked)
+}
+
+export interface FixtureState {
+  projectManager?: FixtureProjectManager | ProjectManager
 }
 
 const defaultFixtureState = {
-  appStore: defaultAppStore.appStore,
+  projectManager: {},
 }
 
 // CustomizeMocker should be generalized and better exposed to caller
@@ -434,8 +495,8 @@ export function getMockedState(
 ) {
   const finalFixture: FixtureState = { ...defaultFixtureState, ...fixture }
   const stateMocker = mock(ProjectTreeView.State)
-  when(stateMocker.appStore).thenReturn(
-    getMockedAppStore(finalFixture.appStore),
+  when(stateMocker.projectManager).thenReturn(
+    getMockedProjectManager(finalFixture.projectManager),
   )
   customizeMocker(stateMocker)
   const mockState = instance(stateMocker)
