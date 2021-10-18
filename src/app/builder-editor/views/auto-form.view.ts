@@ -1,8 +1,8 @@
-import { BehaviorSubject, combineLatest, Observable, Subscription } from 'rxjs'
+import { BehaviorSubject, combineLatest, Observable } from 'rxjs'
 
-import { map, tap } from 'rxjs/operators'
+import { map } from 'rxjs/operators'
 import { Switch } from '@youwol/fv-button'
-import { TextInput, NumberInput, Select, ColorPicker, Slider} from '@youwol/fv-input'
+import { Select, ColorPicker, Slider} from '@youwol/fv-input'
 import { Tabs } from '@youwol/fv-tabs'
 import { attr$, child$, HTMLElement$, VirtualDOM } from '@youwol/flux-view'
 import {cloneDeep} from 'lodash'

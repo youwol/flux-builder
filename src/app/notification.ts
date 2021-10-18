@@ -1,8 +1,7 @@
 import { ErrorLog, GroupModules, ModuleError, ModuleFlux, Process, ProcessMessage, ProcessMessageKind } from '@youwol/flux-core';
 import { attr$, HTMLElement$, render, Stream$, VirtualDOM } from '@youwol/flux-view';
-import { cpuUsage } from 'node:process';
-import { merge, Observable } from 'rxjs';
-import { delay, filter, map, take } from 'rxjs/operators';
+import { Observable } from 'rxjs';
+import { delay, filter, take } from 'rxjs/operators';
 import { WorkflowPlotter } from './builder-editor/builder-plots';
 import { AppStore } from './builder-editor/builder-state';
 import { ContextView } from './builder-editor/views/context.view';

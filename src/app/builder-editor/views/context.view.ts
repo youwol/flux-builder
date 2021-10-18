@@ -1,12 +1,7 @@
-import { ConfigurationStatus, Context, ErrorLog, ExpectationStatus, Log, 
-    ModuleError, uuidv4, ContextStatus, Journal } from "@youwol/flux-core";
-import { render, VirtualDOM } from "@youwol/flux-view";
-import { Button } from "@youwol/fv-button";
-import { Modal } from "@youwol/fv-group";
+import { Context, Log, uuidv4, ContextStatus, Journal } from "@youwol/flux-core";
+import { VirtualDOM } from "@youwol/flux-view";
 import { ImmutableTree } from "@youwol/fv-tree";
-import { ConfigurationStatusView } from "./configuration-status.view";
 import { DataTreeView } from "./data-tree.view";
-import { ExpectationView } from "./expectation.view";
 import { ModalView } from "./modal.view";
 
 

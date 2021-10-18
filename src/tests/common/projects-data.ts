@@ -1,4 +1,4 @@
-import { Component, ModuleConfiguration, ProjectSchema, RequirementsSchema } from "@youwol/flux-core"
+import { Component, ProjectSchema, RequirementsSchema } from "@youwol/flux-core"
 
 let requirements: RequirementsSchema = {
     fluxPacks: ["flux-test"],

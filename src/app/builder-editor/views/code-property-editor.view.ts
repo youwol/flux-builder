@@ -1,7 +1,5 @@
 import { ModuleFlux } from "@youwol/flux-core"
-import { render, VirtualDOM } from "@youwol/flux-view"
-import { Button } from "@youwol/fv-button"
-import { Modal } from "@youwol/fv-group"
+import { VirtualDOM } from "@youwol/flux-view"
 import { BehaviorSubject } from "rxjs"
 import { CodeEditorView } from "./code-editor.view"
 import { ModalView } from "./modal.view"

@@ -143,6 +143,9 @@
       ],
       "eslint-comments/no-unused-disable": [
         "error"
+      ],
+      "curly": [
+        "error"
       ]
     },
     "overrides": [

@@ -1,5 +1,4 @@
 
-import * as _operators from 'rxjs/operators'
 import {instantiateProjectModules, Workflow } from '@youwol/flux-core'
 import  './dependencies'
 

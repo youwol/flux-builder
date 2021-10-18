@@ -2,7 +2,7 @@ import { LogLevel, AppDebugEnvironment } from './app-debug.environment'
 import { uuidv4 } from './utils'
 import {
     ModuleView, Workflow, BuilderRendering, Project, ModuleFlux, GroupModules,
-    ModuleConfiguration, PluginFlux, Connection, RunnerRendering, DescriptionBox, LayerTree, IEnvironment, Component
+    ModuleConfiguration, PluginFlux, Connection, DescriptionBox, IEnvironment
 }
     from '@youwol/flux-core'
 import { Subscription } from 'rxjs'

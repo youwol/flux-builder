@@ -2,7 +2,6 @@
 // Following import is to include style.css in the dist directory (using MiniCssExtractPlugin)
 require('./style.css');
 
-import { CdnEvent, LoadingGraphError, SourceLoadedEvent, SourceLoadingEvent, StartEvent, UnauthorizedEvent } from "@youwol/cdn-client";
 import { includeYouWolLogoView, loadingErrorView, loadingLibView } from "./loading.views";
 
 // (index.html is handled by HtmlWebpackPlugin)

@@ -1,6 +1,5 @@
 
-import { VirtualDOM, render, attr$ } from '@youwol/flux-view'
-import { Modal } from '@youwol/fv-group'
+import { VirtualDOM, attr$ } from '@youwol/flux-view'
 import { Button } from '@youwol/fv-button'
 import { Select } from '@youwol/fv-input'
 import { combineLatest, from, Observable } from 'rxjs'

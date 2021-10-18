@@ -1,6 +1,6 @@
 
 
-import { Environment, IEnvironment, LoadingGraphSchema, Project, Requirements } from '@youwol/flux-core'
+import { IEnvironment, LoadingGraphSchema, Project, Requirements } from '@youwol/flux-core'
 import { Observable, of } from 'rxjs'
 import { map } from 'rxjs/operators'
 

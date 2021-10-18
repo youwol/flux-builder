@@ -1,4 +1,4 @@
-import { Component, ModuleFlux, renderTemplate, Workflow } from "@youwol/flux-core"
+import { Component, ModuleFlux, renderTemplate } from "@youwol/flux-core"
 import { AppDebugEnvironment, AppStore, LogLevel } from "../builder-editor/builder-state"
 import { getFluxBlockContent } from "./flux-blocks"
 import { getAllComponentsRec } from "./utils"

@@ -1,6 +1,6 @@
 
-import { combineLatest, merge, ReplaySubject } from 'rxjs';
-import { filter, take } from 'rxjs/operators';
+import { merge } from 'rxjs';
+import { take } from 'rxjs/operators';
 import * as grapesjs from 'grapesjs'
 
 import { ModuleFlux, Environment, Journal, ConfigurationStatus, ExpectationStatus } from '@youwol/flux-core';
