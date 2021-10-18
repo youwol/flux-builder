@@ -9,5 +9,8 @@
 
 # Ignore all contents of src/tests
 /src/tests/*
+!/src/tests/common/
+/src/tests/common/*
+!/src/tests/common/mockito.ts
 # … except src/tests/views
 !/src/tests/views/
