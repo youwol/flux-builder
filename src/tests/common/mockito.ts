@@ -435,6 +435,7 @@ export interface FixtureProjectManager {
   workflow?: Either<FixtureWorkflow>
   filterSelection?: (moduleId: string) => boolean
   selectModule?: (moduleId: string) => void
+  filterNode?: (node: ModuleNode) => boolean
 }
 
 const defaultFixtureProjectManager: FixtureProjectManager = {
@@ -446,6 +447,7 @@ const defaultFixtureProjectManager: FixtureProjectManager = {
   selectModule: (_m) => {
     /* Do nothing but do it well */
   },
+  filterNode: (_n) => true,
 }
 
 export function getMockedProjectManager(
@@ -470,11 +472,14 @@ export function getMockedProjectManager(
   when(projectManagerMocked.moduleSelected$).thenReturn(
     finalFixture.moduleSelected$,
   )
-  when(projectManagerMocked.filterSelection(anything())).thenCall(
-    finalFixture.filterSelection,
+  when(projectManagerMocked.filterSelection(anything())).thenCall((moduleId) =>
+    finalFixture.filterSelection(moduleId),
   )
   when(projectManagerMocked.selectModule(anything())).thenCall((moduleId) =>
     finalFixture.selectModule(moduleId),
+  )
+  when(projectManagerMocked.filterNode(anything())).thenCall((node) =>
+    finalFixture.filterNode(node),
   )
   customizeMocker(projectManagerMocked)
   return instance(projectManagerMocked)

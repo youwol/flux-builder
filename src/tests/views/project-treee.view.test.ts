@@ -193,7 +193,7 @@ describe('ProjectTreeView.rootFactory', () => {
       moduleConfiguration: { title: expectedNodeTitle },
     })
 
-    // Given ModuleFlux
+    // Given ModuleFlux with Plugin
     const expectedNodeWithChildId = 'NODE_WITH_CHILD_ID'
     const expectedNodeWithChildTitle = 'MODULE_WITH_PLUGIN_TITLE'
     const expectedNodeWithChildModuleId = 'NODE_WITH_CHILD_MODULE_ID'
@@ -201,6 +201,12 @@ describe('ProjectTreeView.rootFactory', () => {
     const mockModuleWithPlugin: ModuleFlux = getMockedModule({
       moduleId: expectedNodeWithChildModuleId,
       moduleConfiguration: { title: expectedNodeWithChildTitle },
+    })
+
+    // Given ModuleFlux filtered
+    const mockModuleFilteredModuleId = 'MODULE_FILTERED_MODULE_ID'
+    const mockModuleFiltered: ModuleFlux = getMockedModule({
+      moduleId: mockModuleFilteredModuleId,
     })
 
     // Given GroupModules.Module, containing Module
@@ -211,7 +217,7 @@ describe('ProjectTreeView.rootFactory', () => {
     const mockGroup: GroupModules.Module = getMockedGroup({
       moduleId: expectedGroupModuleId,
       moduleConfiguration: { title: expectedGroupTitle },
-      children: [mockModule, mockModuleWithPlugin],
+      children: [mockModule, mockModuleFiltered, mockModuleWithPlugin],
     })
 
     // Given PluginFlux, attached to ModuleFlux
@@ -224,6 +230,13 @@ describe('ProjectTreeView.rootFactory', () => {
       parent: mockModuleWithPlugin,
     })
 
+    // Given PluginFlux filtered, attached to ModuleFlux
+    const mockPluginFilteredModuleId = 'PLUGIN_FILTERED_MODULE_ID'
+    const mockPluginFiltered: PluginFlux<ModuleFlux> = getMockedPlugin({
+      moduleId: mockPluginFilteredModuleId,
+      parent: mockModuleWithPlugin,
+    })
+
     // Given Root, containing GroupModules.Module and PluginFlux
     const expectedRootId = 'ROOT_ID'
     const expectedRootTitle = 'ROOT_TITLE'
@@ -232,12 +245,18 @@ describe('ProjectTreeView.rootFactory', () => {
     const mockRootModule: Component.Module = getMockedComponent({
       moduleId: Component.rootComponentId,
       moduleConfiguration: { title: expectedRootTitle },
-      children: [mockGroup, mockPlugin],
+      children: [mockGroup, mockPlugin, mockPluginFiltered],
     })
 
     const mockWorkflow = getMockedWorkflow({
-      modules: [mockRootModule, mockModule, mockGroup, mockPlugin],
-      plugins: [mockPlugin],
+      modules: [
+        mockRootModule,
+        mockModule,
+        mockGroup,
+        mockPlugin,
+        mockPluginFiltered,
+      ],
+      plugins: [mockPlugin, mockPluginFiltered],
     })
 
     const nodeIdBuilder = getMockedNodeIdBuilder([
@@ -249,7 +268,13 @@ describe('ProjectTreeView.rootFactory', () => {
     ])
 
     // Then
-    const actualRootNode = subject(mockWorkflow, nodeIdBuilder)
+    const actualRootNode = subject(
+      mockWorkflow,
+      nodeIdBuilder,
+      (node) =>
+        node.getModuleId() !== mockModuleFiltered.moduleId &&
+        node.getModuleId() !== mockPluginFiltered.moduleId,
+    )
 
     // Expect root
     expect(actualRootNode).toBeDefined()
@@ -825,6 +850,12 @@ describe('ProjectTreeView.State', () => {
   })
   const expectedNodeId = nodeIdBuilder.buildForModuleId(expectedNodeModuleId)
 
+  // ModuleFlux filtered
+  const mockModuleFilteredModuleId = 'MODULE_FILTERED_MODULE_ID'
+  const mockModuleFiltered = getMockedModule({
+    moduleId: mockModuleFilteredModuleId,
+  })
+
   // GroupModules.Module, containing Module
   const expectedGroupTitle = 'GROUP_TITLE'
   const expectedGroupModuleId = 'GROUP_MODULE_ID'
@@ -833,7 +864,7 @@ describe('ProjectTreeView.State', () => {
   const mockGroup: GroupModules.Module = getMockedGroup({
     moduleId: expectedGroupModuleId,
     moduleConfiguration: { title: () => dynamicGroupModuleTitle },
-    children: [mockModule],
+    children: [mockModule, mockModuleFiltered],
   })
   const expectedGroupId = nodeIdBuilder.buildForModuleId(expectedGroupModuleId)
 
@@ -849,12 +880,18 @@ describe('ProjectTreeView.State', () => {
     expectedPluginModuleId,
   )
 
+  const mockPluginFilteredModuleId = 'PLUGIN_FILTERED_MODULE_ID'
+  const mockPluginFiltered = getMockedPlugin({
+    moduleId: mockPluginFilteredModuleId,
+    parent: mockModule,
+  })
+
   // Root, containing GroupModules.Module and PluginFlux
   const expectedRootTitle = 'ROOT_TITLE'
   const expectedRootChildrenLength = 1
   const mockRootModule: Component.Module = getMockedRootModule({
     moduleConfiguration: { title: expectedRootTitle },
-    children: [mockGroup, mockPlugin],
+    children: [mockGroup, mockPlugin, mockPluginFiltered],
   })
   const expectedRootId = nodeIdBuilder.buildForRootComponent()
 
@@ -870,12 +907,22 @@ describe('ProjectTreeView.State', () => {
       getMockedProjectManager(
         {
           workflow: {
-            modules: [mockRootModule, mockModule, mockGroup, mockPlugin],
-            plugins: [mockPlugin],
+            modules: [
+              mockRootModule,
+              mockModule,
+              mockModuleFiltered,
+              mockGroup,
+              mockPlugin,
+              mockPluginFiltered,
+            ],
+            plugins: [mockPlugin, mockPluginFiltered],
           },
           moduleSelected$: appStoreSelection$,
           projectUpdated$: appStoreProjectUpdated$,
           filterSelection: (_m) => filterResult,
+          filterNode: (node) =>
+            node.getModuleId() !== mockModuleFiltered.moduleId &&
+            node.getModuleId() !== mockPluginFiltered.moduleId,
         },
         (mocker) => {
           projectManager = mocker

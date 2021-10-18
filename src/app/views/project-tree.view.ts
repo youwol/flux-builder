@@ -190,6 +190,7 @@ export namespace ProjectTreeView {
   export function rootFactory(
     workflow: Workflow,
     nodeIdBuilder: NodeIdBuilder,
+    filterNode: (node: ModuleNode) => boolean = (_m) => true,
   ): ModuleNode {
     const rootComponent = workflow.modules.find(
       (m) => m.moduleId == Component.rootComponentId,
@@ -198,7 +199,7 @@ export namespace ProjectTreeView {
       throw new Error('No root component for this project')
     }
 
-    return nodeFactory(rootComponent, workflow, nodeIdBuilder)
+    return nodeFactory(rootComponent, workflow, nodeIdBuilder, filterNode)
   }
 
   /**
@@ -214,6 +215,7 @@ export namespace ProjectTreeView {
     mdle: ModuleFlux,
     workflow: Workflow,
     nodeIdBuilder: NodeIdBuilder,
+    filterNode: (node: ModuleNode) => boolean,
   ): ModuleNode {
     const nodeId = nodeIdBuilder.buildForModule(mdle)
 
@@ -224,7 +226,10 @@ export namespace ProjectTreeView {
     childrenNodes.push(
       ...workflow.plugins
         .filter((plugin) => plugin.parentModule.moduleId == mdle.moduleId)
-        .map((plugin) => nodeFactory(plugin, workflow, nodeIdBuilder)),
+        .map((plugin) =>
+          nodeFactory(plugin, workflow, nodeIdBuilder, filterNode),
+        )
+        .filter((node) => filterNode(node)),
     )
 
     // Get content, if this module is a Group (or a Component, since it inherit from Group)
@@ -233,7 +238,10 @@ export namespace ProjectTreeView {
         ...mdle
           .getDirectChildren(workflow)
           .filter((child) => !(child instanceof PluginFlux))
-          .map((child) => nodeFactory(child, workflow, nodeIdBuilder)),
+          .map((child) =>
+            nodeFactory(child, workflow, nodeIdBuilder, filterNode),
+          )
+          .filter((node) => filterNode(node)),
       )
     }
 
@@ -318,7 +326,11 @@ export namespace ProjectTreeView {
       nodeIdBuilder: NodeIdBuilder,
     ) {
       super({
-        rootNode: rootFactory(projectManager.workflow(), nodeIdBuilder),
+        rootNode: rootFactory(
+          projectManager.workflow(),
+          nodeIdBuilder,
+          projectManager.filterNode,
+        ),
         expandedNodes: [nodeIdBuilder.buildForRootComponent()],
       })
       this.projectManager = projectManager
