@@ -44,6 +44,6 @@ test('instantiateBuilderRendering', () => {
 
     const builderRendering = instantiateProjectBuilderRendering(modules,renderBuilderData)
 
-    expect(builderRendering.modulesView.length).toEqual(modulesData.length)
+    expect(builderRendering.modulesView).toHaveLength(modulesData.length)
 })
   

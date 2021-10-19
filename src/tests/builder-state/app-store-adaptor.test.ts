@@ -19,7 +19,7 @@ test('add 2 module + connection + adaptator', () => {
     appStore.addModule(SimpleModule)
 
     const workflow = appStore.project.workflow
-    expect(appStore.project.workflow.modules.length).toBe(3)
+    expect(appStore.project.workflow.modules).toHaveLength(3)
     const mdle0 = workflow.modules[0]
     const mdle1 = workflow.modules[1]
 
@@ -61,10 +61,10 @@ test('add 2 module + connection + adaptator', () => {
     expect(appStore.allSubscriptions.has(connectionAdapted)).toBeTruthy()
 
     appStore.deleteConnection(connectionAdapted)
-    expect(appStore.project.workflow.connections.length).toBe(0)
+    expect(appStore.project.workflow.connections).toHaveLength(0)
 
     appStore.undo()
-    expect(appStore.project.workflow.connections.length).toBe(1)
+    expect(appStore.project.workflow.connections).toHaveLength(1)
     expect(appStore.project.workflow.connections[0]).toEqual(connectionAdapted)
     appStore.updateProjectToIndexHistory(0, appStore.indexHistory)
 })
@@ -82,7 +82,7 @@ test('add 2 module + connection + adaptator + update', () => {
     appStore.addModule(SimpleModule)
 
     const workflow = appStore.project.workflow
-    expect(appStore.project.workflow.modules.length).toBe(3)
+    expect(appStore.project.workflow.modules).toHaveLength(3)
     const mdle0 = workflow.modules[0]
     const mdle1 = workflow.modules[1]
 

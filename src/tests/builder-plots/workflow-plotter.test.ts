@@ -35,7 +35,7 @@ test('load simple project', (done) => {
         
         appStore.selectModule("module0")
         let selectedModules = appStore.getModulesSelected()
-        expect(selectedModules.length).toBe(1)
+        expect(selectedModules).toHaveLength(1)
         expect(selectedModules[0].moduleId).toBe("module0")
 
         const drawingDiv = document.getElementById(div.id+"-drawing-area")        
@@ -44,7 +44,7 @@ test('load simple project', (done) => {
         drawingDiv.dispatchEvent(eventClick)
 
         selectedModules = appStore.getModulesSelected()
-        expect(selectedModules.length).toBe(0)
+        expect(selectedModules).toHaveLength(0)
 
         // The issue herefafter is that offsetX/Y is undefined => no selection
         const eventMouseDown= new MouseEvent('mousedown',{ctrlKey:true,clientX:0,clientY:0})
@@ -55,12 +55,12 @@ test('load simple project', (done) => {
         const eventMouseMove= new MouseEvent('mousemove',{ctrlKey:true,clientX:55,clientY:100})
         drawingDiv.dispatchEvent(eventMouseMove)
         let highlighteds = document.querySelectorAll(".highlighted")
-        expect(highlighteds.length).toBe(1)
+        expect(highlighteds).toHaveLength(1)
         expect(highlighteds[0].id).toBe("module0")
 
         drawingDiv.dispatchEvent(new MouseEvent('mousemove',{ctrlKey:true,clientX:100,clientY:100}))
         highlighteds = document.querySelectorAll(".highlighted")
-        expect(highlighteds.length).toBe(2)
+        expect(highlighteds).toHaveLength(2)
         expect(highlighteds[0].id).toBe("module0")
         expect(highlighteds[1].id).toBe("GroupModules_child-layer")
 
@@ -68,14 +68,14 @@ test('load simple project', (done) => {
 
         expect(wfPlotter.boxSelectorPlotter.start).toBeFalsy()
         selectedModules = appStore.getModulesSelected()
-        expect(selectedModules.length).toBe(2)
+        expect(selectedModules).toHaveLength(2)
         expect(selectedModules[0].moduleId).toBe("module0")
         expect(selectedModules[1].moduleId).toBe("GroupModules_child-layer")
 
         const eventDelete= new KeyboardEvent('keydown',{key:"Delete"})
         window.dispatchEvent(eventDelete)
         // root component remains
-        expect(appStore.project.workflow.modules.length).toBe(1)
+        expect(appStore.project.workflow.modules).toHaveLength(1)
 
         done()
     })    

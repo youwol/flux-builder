@@ -82,6 +82,8 @@
 /src/tests/builder-state/*
 
 # Un-ignored
+!/src/tests/builder-state/app-store-adaptor.test.ts
+!/src/tests/builder-state/app-store-builder-rendering.test.ts
 !/src/tests/builder-state/app-store-layer.test_.ts
 
 # Allow un-ignoring some contents of /src/app/common

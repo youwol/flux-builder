@@ -42,7 +42,7 @@ test('load simple project', (done) => {
     plottersObservables.modulesDrawn$.pipe(take(1)).subscribe(() => {
 
         const modules = document.querySelectorAll("g.module.entity")
-        expect(modules.length).toBe(2)
+        expect(modules).toHaveLength(2)
 
         const module0 = document.getElementById("module0")
         expect(module0).toBeDefined()
@@ -69,7 +69,7 @@ test('load simple project', (done) => {
 
         const modulesView = appStore.getActiveModulesView()
 
-        expect(modulesView.length).toBe(2)
+        expect(modulesView).toHaveLength(2)
         expect(modulesView[0].moduleId).toBe("module0")
         expect(modulesView[0].xWorld).toBe(0)
         expect(modulesView[0].yWorld).toBe(0)
@@ -93,7 +93,7 @@ test('load simple project', (done) => {
             appStore.selectActiveGroup("GroupModules_child-layer")
             const modulesView = appStore.getActiveModulesView()
             // there is module 0 from root-component and module1 from child_layer
-            expect(modulesView.length).toBe(2) // plugin not here, should it be?
+            expect(modulesView).toHaveLength(2) // plugin not here, should it be?
             const mdleView1 = modulesView.find(m => m.moduleId === "module1")
             expect(mdleView1).toBeDefined()
             expect(mdleView1.xWorld).toBe(10)
@@ -103,7 +103,7 @@ test('load simple project', (done) => {
             const selected = appStore.getModuleSelected()
             expect(selected.moduleId).toBe("module0")
             const newPos = plotter.dragSelection({ dx: 10, dy: 10 }, true)
-            expect(newPos.length).toBe(0)
+            expect(newPos).toHaveLength(0)
 
             expect(document.getElementById("module0")).toBeDefined()
 
@@ -125,7 +125,7 @@ test('load simple project', (done) => {
             expect(module0).toBeTruthy()
 
             const modulesView = appStore.getActiveModulesView()
-            expect(modulesView.length).toBe(1)
+            expect(modulesView).toHaveLength(1)
             const module1 = document.getElementById("module1")
             expect(module1).toBeNull()
             const grpMdleExpanded = document.getElementById("expanded_GroupModules_child-layer")
@@ -144,7 +144,7 @@ test('load simple project', (done) => {
             expect(module0).toBeTruthy()
 
             const modulesView = appStore.getActiveModulesView()
-            expect(modulesView.length).toBe(2)
+            expect(modulesView).toHaveLength(2)
             const module1 = document.getElementById("module1")
             expect(module1).toBeNull()
             const grpMdleExpanded = document.getElementById("expanded_GroupModules_child-layer")

@@ -42,7 +42,7 @@ test('load simple project + test its unique description box rendering', (done) =
         take(1)
     ).subscribe( (svgElements) =>
     {
-        expect(svgElements.length).toBe(1)
+        expect(svgElements).toHaveLength(1)
         expect(svgElements[0].id ).toEqual(descriptionBoxSaved.descriptionBoxId)
 
         const descriptionBox =  document.getElementById(svgElements[0].id)

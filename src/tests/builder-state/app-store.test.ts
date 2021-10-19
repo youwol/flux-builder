@@ -19,7 +19,7 @@ test('load empty project', (done) => {
     filter( d=> d)
   ).subscribe( ()=>{
 
-    expect(appStore.project.workflow.modules.length).toBe(1)
+    expect(appStore.project.workflow.modules).toHaveLength(1)
     expect(appStore.project.workflow.modules[0]).toBeInstanceOf(Component.Module)
     expect(appStore.project.workflow.connections).toEqual([])
     expect(appStore.project.workflow.plugins).toEqual([])
@@ -41,9 +41,9 @@ test('load simple project', done => {
   appObservables.ready$.pipe(
     filter( d=> d)
   ).subscribe( (d)=>{
-    expect(appStore.project.workflow.modules.length).toEqual(projectData.workflow.modules.length)
-    expect(appStore.project.workflow.connections.length).toEqual(projectData.workflow.connections.length)
-    expect(appStore.project.workflow.plugins.length).toEqual(projectData.workflow.plugins.length)
+    expect(appStore.project.workflow.modules).toHaveLength(projectData.workflow.modules.length)
+    expect(appStore.project.workflow.connections).toHaveLength(projectData.workflow.connections.length)
+    expect(appStore.project.workflow.plugins).toHaveLength(projectData.workflow.plugins.length)
 
     expect(appStore.project.workflow.modules[0].configuration.title)
     .toEqual(projectData.workflow.modules[0].configuration.title)
@@ -56,7 +56,7 @@ test('load simple project', done => {
     //expect(appStore.adaptors[0].adaptorId).toEqual("fake-adaptor")
 
     const plugins = appStore.getPlugins("module0")
-    expect(plugins.length).toBe(1)
+    expect(plugins).toHaveLength(1)
     expect(plugins[0].moduleId).toBe("plugin0")
 
     done()
@@ -135,7 +135,7 @@ test('selection', (done) => {
     expect(m).toBeUndefined()
     expect(c).toBeUndefined()
     let ms = appStore.getModulesSelected()
-    expect(ms.length).toBe(0)
+    expect(ms).toHaveLength(0)
     appStore.selectModule("module0")
     m = appStore.getModuleSelected()
     ms = appStore.getModulesSelected()
@@ -149,12 +149,12 @@ test('selection', (done) => {
     m = appStore.getModuleSelected()
     ms = appStore.getModulesSelected()
     expect(m).toBeUndefined()
-    expect(ms.length).toBe(0)
+    expect(ms).toHaveLength(0)
 
     appStore.select({modulesId:["module0","module1"], connectionsId:[]})
 
     expect( appStore.getConnectionSelected() ).toBeUndefined()
-    expect( appStore.getModulesSelected().length ).toBe(2)
+    expect( appStore.getModulesSelected() ).toHaveLength(2)
 
     expect(appStore.isSelected("module1")).toBe(true)
     expect(appStore.isSelected("module-toto")).toBe(false)
