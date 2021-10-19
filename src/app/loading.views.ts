@@ -13,7 +13,7 @@ export function loadingLibView(event: CdnEvent, loadingDiv: HTMLDivElement){
     
     const libraryName = event.targetName
     const cssId = libraryName.replace("/","-").replace("@","")
-    let divLib = document.querySelector(`#${cssId}`) as HTMLDivElement
+    let divLib : HTMLDivElement = document.querySelector(`#${cssId}`) 
     if(!divLib){
         divLib = document.createElement('div')
         divLib.id =cssId
