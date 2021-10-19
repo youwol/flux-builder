@@ -13,7 +13,7 @@
     "test-coverage": "jest -c ./jest.config.js --rootDir . -i --collect-coverage --collectCoverageFrom=./src/app/**/*.ts ",
     "lint-prettier": "prettier --check src/ --require-pragma true && prettier --check '{./,!(src/*)}' --insert-pragma false",
     "lint-eslint": "eslint . --ignore-path .eslintignore.transition",
-    "eslint-fix-rule-ts": "yarn eslint --no-eslintrc --fix --parser '@typescript-eslint/parser' --plugin '[\"unused-imports\", \"@typescript-eslint\"]' --no-ignore '**/*.ts' --rule",
+    "eslint-fix-rule-ts": "yarn eslint --no-eslintrc --fix --parser '@typescript-eslint/parser' --plugin '[\"jest\", \"unused-imports\", \"@typescript-eslint\"]' --no-ignore '**/*.ts' --rule",
     "lint": "yarn lint-prettier && yarn lint-eslint",
     "format": "yarn format-prettier && yarn format-eslint",
     "format-prettier": "prettier --write src/ --require-pragma true && prettier --write '{./,!(src/*)}' --insert-pragma false",
