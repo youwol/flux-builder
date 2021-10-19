@@ -57,7 +57,7 @@ test('load simple project and test connections plot', (done) => {
       let slots = document.querySelectorAll(".slot")
       let slotsId = []
       for(let i=0;i<slots.length;i++)
-        slotsId.push(slots[i].id)
+        {slotsId.push(slots[i].id)}
     
       expect(slotsId.includes("input-slot_input0_module0")).toBeTruthy()
       expect(slotsId.includes("output-slot_output0_module0")).toBeTruthy()

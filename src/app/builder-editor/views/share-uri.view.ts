@@ -23,7 +23,7 @@ export namespace ShareUriView{
                 new Select.ItemData('relative-url','Relative URL')
             ]
             if( location.hostname=='localhost')
-                selectItems.push(new Select.ItemData('localhost-url','Localhost URL'))
+                {selectItems.push(new Select.ItemData('localhost-url','Localhost URL'))}
 
             this.selectState = new Select.State(selectItems,'youwol-url')
 
@@ -33,9 +33,9 @@ export namespace ShareUriView{
         toUrl( uri: string, mode: string){
 
             if(mode=='relative-url')
-              return `${uri}`
+              {return `${uri}`}
             if(mode=='localhost-url')
-              return `${location.hostname}:${location.port}${uri}`
+              {return `${location.hostname}:${location.port}${uri}`}
             return `https://platform.youwol.com${uri}`
           }
       

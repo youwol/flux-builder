@@ -87,12 +87,12 @@ export function plugCommands(editor: any, appStore: AppStore) {
 
         // a drop of any component is done => do nothing as the  canvas:drop wil handle the addition
         if (typeof (modelToDrop) == "string")
-            return
+            {return}
 
         // from here: the drag end is a move => in case of flux-component the cache has the appropriate content 
         let mdle = appStore.getModule(modelToDrop.ccid)
         if(!mdle)
-            return
+            {return}
             
 
         let moduleIds = (mdle instanceof Component.Module)
@@ -104,7 +104,7 @@ export function plugCommands(editor: any, appStore: AppStore) {
 
     editor.on('component:remove', (component) => {
         if (appStore.getActiveGroup().getModuleIds().includes(component.ccid))
-            setDynamicComponentsBlocks(appStore, editor)
+            {setDynamicComponentsBlocks(appStore, editor)}
     });
 
     editor.on('selector:add', selector => {
@@ -178,7 +178,7 @@ export function plugCommands(editor: any, appStore: AppStore) {
             const panel = pn.getPanel(id) || pn.addPanel({ id });
             let divi = this.getCodeEl(this.getRowEl(editor));
             console.log("Code elements", divi)
-            if (!this.codePanel) this.codePanel = buildCodePanel(appStore, editor, panel)
+            if (!this.codePanel) {this.codePanel = buildCodePanel(appStore, editor, panel)}
             console.log("Code Panel", this.codePanel)
             this.codePanel.style.display = 'block';
             divi.appendChild(this.codePanel)
@@ -186,7 +186,7 @@ export function plugCommands(editor: any, appStore: AppStore) {
             //editor.$('.gjs-cv-canvas').get(0).style.width = '65%';
         },
         stop: function (editor, senderBtn) {
-            if (this.codePanel) this.codePanel.style.display = 'none';
+            if (this.codePanel) {this.codePanel.style.display = 'none';}
             //editor.$('#panel__right_render').get(0).style.width = '15%';
             //editor.$('.gjs-cv-canvas').get(0).style.width = '85%';
         },
@@ -211,7 +211,7 @@ export function plugCommands(editor: any, appStore: AppStore) {
             panel.querySelectorAll(".buttons-toolbox").forEach((e: HTMLDivElement) => {
                 let div = e.firstChild as HTMLElement
                 if (div && div.style)
-                    div.style.flexDirection = "column"
+                    {div.style.flexDirection = "column"}
             })
         },
         stop(editor: any, sender: any) {
@@ -234,7 +234,7 @@ export function plugCommands(editor: any, appStore: AppStore) {
             panel.querySelectorAll(".buttons-toolbox").forEach((e: HTMLDivElement) => {
                 let div = e.firstChild as HTMLElement
                 if (div && div.style)
-                    div.style.flexDirection = "row"
+                    {div.style.flexDirection = "row"}
             })
         }
     })

@@ -263,12 +263,12 @@ export namespace ContextView{
             let views = Journal.getViews(node.data).map( view => view.view)
             
             if(views.length>0)
-                return {
+                {return {
                     class: 'd-flex flex-grow-1',
                     style:{'white-space': 'nowrap', "min-width":'0px'},
                     children: 
                         views
-                }
+                }}
 
             let dataState = new DataTreeView.State({
                 title: "",

@@ -73,7 +73,7 @@ function settingsView(appStore: AppStore){
                 (selection) => {
                     let factory = settingsFactory.find( f => f.when(selection))
                     if(!factory)
-                        return {}
+                        {return {}}
                     return factory.mapTo(selection)
                 }
             )

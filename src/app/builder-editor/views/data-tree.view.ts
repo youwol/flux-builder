@@ -13,28 +13,28 @@ export namespace DataTreeView{
         ): DataNode {
     
         if(data==undefined)
-            return new UndefinedNode({name, nestedIndex})
+            {return new UndefinedNode({name, nestedIndex})}
     
         if(typeof data == 'string')
-            return new StringNode({name, data, nestedIndex})
+            {return new StringNode({name, data, nestedIndex})}
         
         if(typeof data == 'number')
-            return new NumberNode({name, data, nestedIndex})
+            {return new NumberNode({name, data, nestedIndex})}
         
         if(typeof data == 'boolean')
-            return new BoolNode({name, data, nestedIndex})
+            {return new BoolNode({name, data, nestedIndex})}
     
         if(typeof data == 'function')
-            return new FunctionNode({name, data, nestedIndex})
+            {return new FunctionNode({name, data, nestedIndex})}
     
         if( Array.isArray(data))
-            return new ArrayNode({name, data, nestedIndex})
+            {return new ArrayNode({name, data, nestedIndex})}
           
         if( data instanceof ArrayBuffer)
-            return new ArrayBufferNode({name, data, nestedIndex})
+            {return new ArrayBufferNode({name, data, nestedIndex})}
           
         if(typeof data == 'object')
-            return new ObjectNode({name, data, nestedIndex})
+            {return new ObjectNode({name, data, nestedIndex})}
     
         return new UnknownNode({name, nestedIndex})           
     }
@@ -220,32 +220,32 @@ export namespace DataTreeView{
     export function dataNodeHeaderView(state: State, node:DataNode ){
 
         if(node instanceof UnknownNode)
-            return {
+            {return {
                 class:'d-flex fv-text-disabled flex-wrap',
                 innerText: node.name
-            }
+            }}
         let content = ""
         if(node instanceof ValueNode){
             content = String(node.data)
             if(typeof node.data=='string')
-                content= "'"+content+"'"
+                {content= "'"+content+"'"}
         }
 
         if(node instanceof UndefinedNode)
-            content = 'undefined'
+            {content = 'undefined'}
 
         if(node instanceof FunctionNode){
             content = `f(${node.data.length} arg(s))`
         }
 
         if(node instanceof ObjectNode)
-            content = '{...}'
+            {content = '{...}'}
         
         if(node instanceof ArrayNode)
-            content = '[...]'
+            {content = '[...]'}
 
         if(node instanceof ArrayBufferNode)
-            content = `Array Buffer (${node.data.byteLength} bytes)`
+            {content = `Array Buffer (${node.data.byteLength} bytes)`}
 
         return {
             class:'d-flex fv-pointer',

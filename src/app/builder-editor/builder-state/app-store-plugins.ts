@@ -9,9 +9,9 @@ export function getAvailablePlugins( mdle , pluginsFactory ) {
     let plugins = []
     Array.from(pluginsFactory.entries()).forEach( ([k,v]) => {
         if(mdle.factory && v.parentModule === mdle.factory.id)
-            plugins.push({
+            {plugins.push({
                 factoryId: k,pluginFactory:v
-            })
+            })}
     })
     return plugins
 }

@@ -24,7 +24,7 @@ export function applyPatches(editor:any){
     run(ed :any, sender:any, opts :any = {}) {
         /* If the dedicated icon is used => opts["event"].target is not defined */
         if(opts && opts["event"] && opts["event"].target)
-            return
+            {return}
         defaultMove.run(ed, sender, opts)
       }
     })

@@ -38,7 +38,7 @@ export function setRenderingStyle(rootComponent: Component.Module, style, projec
     })
     let workflow = applyHtmlCss(rootComponent, project.workflow, style)
     if(workflow==project.workflow)
-        return project
+        {return project}
         
     let projectNew = new Project({
         ...project,

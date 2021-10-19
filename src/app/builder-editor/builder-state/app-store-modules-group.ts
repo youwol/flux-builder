@@ -8,7 +8,7 @@ export function getGroup(workflow: Workflow, parentGroup: GroupModules.Module, g
 [GroupModules.Module, GroupModules.Module] {
 
     if( group.moduleId === id )
-        return [group,parentGroup]
+        {return [group,parentGroup]}
     
     let found = undefined
     let groups = group.getDirectChildren(workflow)

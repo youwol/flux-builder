@@ -32,23 +32,23 @@ export namespace ConfigurationStatusView{
             let statusAny = status as any
 
             if( statusAny.intrus.length == 0 && !statusAny.typeErrors && !statusAny.missings)
-                return 
+                {return} 
 
             if( statusAny.typeErrors && statusAny.typeErrors.length > 0 )
-                this.typingErrors = new DataTreeView.State({
+                {this.typingErrors = new DataTreeView.State({
                     title: 'typing errors',
                     data: statusAny.typeErrors
-                })
+                })}
             if(  statusAny.missings && statusAny.missings.length > 0 )
-                this.missingFields = new DataTreeView.State({
+                {this.missingFields = new DataTreeView.State({
                     title: 'missing fields',
                     data: statusAny.missings
-                })
+                })}
             if(statusAny.intrus.length>0)
-                this.unexpectedFields = new DataTreeView.State({
+                {this.unexpectedFields = new DataTreeView.State({
                     title: 'unexpected fields',
                     data: statusAny.intrus
-                })
+                })}
         }
     }
 

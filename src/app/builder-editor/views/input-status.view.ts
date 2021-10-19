@@ -111,10 +111,10 @@ export namespace InputStatusView{
                 headerView: (state, data) => { 
         
                     if(data instanceof DataTab)
-                        return dataHeaderView(this.state.dataStatus)
+                        {return dataHeaderView(this.state.dataStatus)}
         
                     if(data instanceof ConfigTab)
-                        return configurationHeaderView(this.state.configStatus)
+                        {return configurationHeaderView(this.state.configStatus)}
         
                     return {innerText:data.name, class:"px-2"}
                 },
@@ -133,9 +133,9 @@ export namespace InputStatusView{
     
         let classes = 'fas fa-check fv-text-success px-1'
         if(!status)
-            classes = 'fas fa-question px-1'
+            {classes = 'fas fa-question px-1'}
         else if(!status.succeeded)  
-            classes = 'fas fa-times fv-text-error px-1'
+            {classes = 'fas fa-times fv-text-error px-1'}
         return {
             class:'d-flex align-items-center px-2',
             children:[
@@ -149,11 +149,11 @@ export namespace InputStatusView{
 
         let icon = {}
         if (status instanceof InconsistentConfiguration)
-            icon = { class:'fas fa-times fv-text-error px-1'}
+            {icon = { class:'fas fa-times fv-text-error px-1'}}
         if (status instanceof ConsistentConfiguration &&  status.intrus.length>0)
-            icon = { class:'fas fa-exclamation fv-text-danger px-1'}
+            {icon = { class:'fas fa-exclamation fv-text-danger px-1'}}
         if (status instanceof ConsistentConfiguration &&  status.intrus.length==0)
-            icon = { class:'fas fa-check fv-text-success px-1'}  
+            {icon = { class:'fas fa-check fv-text-success px-1'}}  
         
         return {
             class:'d-flex align-items-center px-2',

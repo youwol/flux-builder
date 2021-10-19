@@ -68,13 +68,13 @@ export async function createLayoutEditor(): grapesjs.Editor {
 
     let bootstrapCss = document.getElementById("bootstrap-css")
     if (!bootstrapCss)
-        console.error("Bootstrap css needs to be included in host application with id 'bootstrap-css' ")
+        {console.error("Bootstrap css needs to be included in host application with id 'bootstrap-css' ")}
     let fontawesomeCss = document.getElementById("fontawesome-css")
     if (!fontawesomeCss)
-        console.error("Fontawesome css needs to be included in host application with id 'fontawesome-css' ")
+        {console.error("Fontawesome css needs to be included in host application with id 'fontawesome-css' ")}
     let youwolCss = document.getElementById("youwol-css")
     if (!youwolCss)
-        console.error("Fontawesome css needs to be included in host application with id 'fontawesome-css' ")
+        {console.error("Fontawesome css needs to be included in host application with id 'fontawesome-css' ")}
 
     editor.on('load', function () {
         let document = editor.Canvas.getDocument() as HTMLDocument

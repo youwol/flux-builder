@@ -203,7 +203,7 @@ export namespace AdaptorEditoView{
                         ( input ) => {
 
                             if (input instanceof ExecutionError || !input.data)
-                                return invalidParsingView(input)
+                                {return invalidParsingView(input)}
 
                             let state = new InputStatusView.State({
                                 mdle: this.state.mdleEnd,
@@ -286,7 +286,7 @@ export namespace AdaptorEditoView{
                         input$,
                         (result) => {
                             if(!result)
-                                return { 'innerText': 'code not valid', class:'p-3'}
+                                {return { 'innerText': 'code not valid', class:'p-3'}}
         
                             let treeState = new DataTreeView.State({
                                 title: rootNodeName,

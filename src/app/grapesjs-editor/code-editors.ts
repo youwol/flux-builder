@@ -20,7 +20,7 @@ export function buildCodeEditor(editor, type) {
 function setupHtmlAutoUpdates(appStore, editor, htmlCodeEditor) {
     function update() {
       const htmlCode = htmlCodeEditor.editor.getValue()
-      if (!htmlCode) return;
+      if (!htmlCode) {return;}
       editor.setComponents(htmlCode);
       replaceTemplateElements(appStore.project.workflow.modules.map(m => m.moduleId),editor,appStore)
       let style = Object.values(editor.fluxCache).reduce( (acc, cache: any)=> acc+" "+cache.styles, "")
@@ -37,7 +37,7 @@ function setupHtmlAutoUpdates(appStore, editor, htmlCodeEditor) {
   function setupCssAutoUpdates(editor, cssCodeEditor) {
     function update() {
       const cssCode = cssCodeEditor.editor.getValue()
-      if (!cssCode) return;
+      if (!cssCode) {return;}
       editor.setStyle(cssCode);
     }
     var delay;

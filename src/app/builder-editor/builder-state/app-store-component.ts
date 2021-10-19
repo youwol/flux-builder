@@ -21,7 +21,7 @@ export function applyHtmlLayout(
 
     let htmlDiv = toHtml(html)
     if(!htmlDiv)
-        return workflow
+        {return workflow}
 
     let componentsDiv = Array.from(htmlDiv.querySelectorAll(".flux-component"))
     .reduce( (acc,e) => {
@@ -37,18 +37,18 @@ export function applyHtmlLayout(
     let newComponents = componentsToEventuallyUpdate.map( (component: Component.Module) => {
         let deepHtml = componentsDiv[component.moduleId]
         if(!deepHtml)
-            return undefined
+            {return undefined}
 
         component.getDirectChildren(workflow)
         .filter( child => child instanceof Component.Module)
         .forEach( (childComponent: Component.Module) => {
             let childComponentDiv = deepHtml.querySelector(`#${childComponent.moduleId}`)
             if(childComponentDiv)
-                childComponentDiv.innerHTML = '' 
+                {childComponentDiv.innerHTML = ''} 
         })
         let html = deepHtml.outerHTML
         if(html == component.getPersistentData<Component.PersistentData>().html)
-            return undefined
+            {return undefined}
 
         let newComponent = updateComponent(component, {html})
         return newComponent
@@ -109,7 +109,7 @@ export function applyHtmlCss(
         oldRules = oldRules.filter( d => d!= "")
         newRules = newRules.filter( d => d!= "")
         if(oldRules.length!=newRules.length)
-            return false
+            {return false}
         let founds = oldRules.map( oldRule => newRules.includes(oldRule))
         return founds.reduce( (acc,e)=> acc && e, true)
     }
@@ -117,7 +117,7 @@ export function applyHtmlCss(
     let htmlRoot = wrapDiv(rootComponent.getFullHTML(workflow))
 
     if(!htmlRoot)
-        return workflow
+        {return workflow}
 
     
     let newComponents = workflow.modules
@@ -145,12 +145,12 @@ export function applyHtmlCss(
                 return !childrenComponentId.includes(element.id) 
             })
             if(elements.length>0 )
-                cssRules.add(cssRule.cssText)
+                {cssRules.add(cssRule.cssText)}
         }
         let oldCssRules = component.getPersistentData<Component.PersistentData>().css.split("\n")
 
         if(isEquivalent(oldCssRules, [...cssRules] ))
-            return undefined
+            {return undefined}
 
         let css : string = [...cssRules].reduce((acc: string,e: string) => acc+"\n"+e, ""); 
        

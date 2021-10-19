@@ -58,26 +58,26 @@ export namespace ExpectationView{
                 nestedIndex:0
             })
             if( nodeChildren && status.succeeded != undefined && !(status.expectation instanceof Contract) )
-                nodeChildren = [dataNode, ...nodeChildren ]
+                {nodeChildren = [dataNode, ...nodeChildren ]}
             if(status.expectation instanceof Contract)
-                return new ExpectationNode({name: status.expectation.description, children: nodeChildren, 
-                    isRealized: status.succeeded, evaluatedFrom: status.fromValue})
+                {return new ExpectationNode({name: status.expectation.description, children: nodeChildren, 
+                    isRealized: status.succeeded, evaluatedFrom: status.fromValue})}
 
             if(status.expectation instanceof AnyOf)
-                return new AnyOfNode({name:  status.expectation.description, children: nodeChildren, 
-                    isRealized: status.succeeded, evaluatedFrom: status.fromValue})
+                {return new AnyOfNode({name:  status.expectation.description, children: nodeChildren, 
+                    isRealized: status.succeeded, evaluatedFrom: status.fromValue})}
 
             if(status.expectation instanceof AllOf)
-                return new AllOfNode({name: status.expectation.description, children: nodeChildren,
-                    isRealized: status.succeeded, evaluatedFrom: status.fromValue})
+                {return new AllOfNode({name: status.expectation.description, children: nodeChildren,
+                    isRealized: status.succeeded, evaluatedFrom: status.fromValue})}
 
             if(status.expectation instanceof Of )
-                return new OfNode({name:  status.expectation.description, children: nodeChildren, 
-                    isRealized: status.succeeded, evaluatedFrom: status.fromValue})
+                {return new OfNode({name:  status.expectation.description, children: nodeChildren, 
+                    isRealized: status.succeeded, evaluatedFrom: status.fromValue})}
             
             if(status.expectation instanceof OptionalsOf )
-                return new AnyOfNode({name:  status.expectation.description, children: nodeChildren, 
-                    isRealized: status.succeeded, evaluatedFrom: status.fromValue})
+                {return new AnyOfNode({name:  status.expectation.description, children: nodeChildren, 
+                    isRealized: status.succeeded, evaluatedFrom: status.fromValue})}
                     
             return new ExpectationNode({
                 name: status.expectation.description, 
@@ -251,17 +251,17 @@ export namespace ExpectationView{
 
         let classes = ""
         if(node.isRealized)
-            classes = "fv-text-success"
+            {classes = "fv-text-success"}
         //if(node.isRealized==false)
         //    classes = "fv-text-error"
         if(node.isRealized==undefined)
-            classes = "fv-text-disabled"
+            {classes = "fv-text-disabled"}
             
         let icon = ""
         if(node.isRealized)
-            icon = "fas fa-check fv-text-success px-1"
+            {icon = "fas fa-check fv-text-success px-1"}
         if(node.isRealized==false)
-            icon = "fas fa-times fv-text-error px-1"
+            {icon = "fas fa-times fv-text-error px-1"}
 
         if(node instanceof AllOfNode){
             return {

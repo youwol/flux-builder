@@ -10,7 +10,7 @@ export class AppObservables{
     private static instance : AppObservables = undefined
     static getInstance() {
         if(!AppObservables.instance)
-            AppObservables.instance =  new AppObservables()
+            {AppObservables.instance =  new AppObservables()}
         return AppObservables.instance
     }
 

@@ -30,7 +30,7 @@ let ALL_ACTIONS = {
         createNode: (state : AppStore) => new DocumentationNode(state),
         applicable: ( state: AppStore) => {
             if(state.getModulesSelected().length !=1 )
-                return false
+                {return false}
             let mdle = state.getModuleSelected()
             let resources = mdle.Factory.resources 
             return resources && Object.entries(resources).length > 0

@@ -219,7 +219,7 @@ export class ModulesPlotter{
             mdle =>{
                 let elem =  document.getElementById(mdle.moduleId)
                 if(elem && !elem.classList.contains("selected"))
-                    elem.classList.add("selected")}
+                    {elem.classList.add("selected")}}
         )
         
         this.appObservables.modulesUnselected$.subscribe(
@@ -227,7 +227,7 @@ export class ModulesPlotter{
                 mdles.forEach( mdle => {
                 let elem =  document.getElementById(mdle.moduleId)
                 if(elem && elem.classList.contains("selected"))
-                    elem.classList.remove("selected")
+                    {elem.classList.remove("selected")}
                 })
         })
 
@@ -240,7 +240,7 @@ export class ModulesPlotter{
 
         let htmlElems= modulesId
         .map( (mid:string) => document.getElementById(mid))
-        htmlElems.forEach( e => { if(e) e.classList.add("highlighted") })
+        htmlElems.forEach( e => { if(e) {e.classList.add("highlighted")} })
     }
     unselect(){
 
@@ -276,9 +276,9 @@ export class ModulesPlotter{
             g.onmousedown = onclick
             
             if(this.appStore.project.workflow.plugins.map(m=>m.moduleId).includes(moduleId))
-                return
+                {return}
             if(g.classList.contains("active-layer-box"))
-                return
+                {return}
 
             var drag = d3Drag();
             drag

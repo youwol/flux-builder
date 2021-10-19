@@ -6,7 +6,7 @@ import * as grapesjs from 'grapesjs'
 
 function scaleSvgIcons(g: any) {
     if (g.style.transform)
-        return
+        {return}
     let parentBRect = g.parentElement.getBoundingClientRect()
     let bRect = g.getBoundingClientRect()
     let ty = parentBRect.top - bRect.top

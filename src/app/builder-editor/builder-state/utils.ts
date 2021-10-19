@@ -99,7 +99,7 @@ export function uuidv4() {
 
           // This should go somewhere else above at some point (when multiple FluxAppstore data will be needed) 
           if(!mdle.Factory.consumersData.FluxAppstore)
-            mdle.Factory.consumersData.FluxAppstore = {notifiersPluged: false}
+            {mdle.Factory.consumersData.FluxAppstore = {notifiersPluged: false}}
 
           // notifier is static, we subscribe only one time to it
           if(mdle.Factory.BuilderView.notifier$ && !mdle.Factory.consumersData.FluxAppstore.notifiersPluged){

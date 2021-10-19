@@ -56,7 +56,7 @@ export class BoxSelectorPlotter{
     }
     moveTo(coordinates){
         if( !this.start)
-            return 
+            {return} 
         coordinates = this.convert(coordinates)
         this.rect.attr("width", Math.max(0, coordinates[0] - +this.rect.attr("x")))
         .attr("height", Math.max(0, coordinates[1] - +this.rect.attr("y")));

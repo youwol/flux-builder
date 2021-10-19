@@ -164,7 +164,7 @@ export async function connectStreams(appStore:AppStore, layoutEditor: grapesjs.E
 
         removeTemplateElements(notReplaced, layoutEditor)
         if(loading)
-            replaceTemplateElements(createdIds, layoutEditor,appStore)
+            {replaceTemplateElements(createdIds, layoutEditor,appStore)}
         if(!loading){
             autoAddElementInLayout(diff, layoutEditor,appStore ) 
             updateElementsInLayout(diff, layoutEditor,appStore ) 

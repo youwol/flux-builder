@@ -61,7 +61,7 @@ function retrieveSvgContainerGroup(
     // that contains 'moduleId'
     let svgGroup = modulesGroup[moduleId] 
     if(svgGroup)
-        return svgGroup
+        {return svgGroup}
     let container = appStore.getParentGroup(moduleId)
     return container ? modulesGroup[container.moduleId] : undefined
 }
@@ -86,7 +86,7 @@ function drawWirelessSlots( drawingArea: DrawingArea, appStore: AppStore){
     let drawingGroup = drawingArea.drawingGroup.node()
     let gPlugs       = drawingGroup.querySelector("#wireless-slots")
     if(gPlugs)
-        gPlugs.remove()
+        {gPlugs.remove()}
     gPlugs      = document.createElementNS("http://www.w3.org/2000/svg", "g")
     gPlugs.id   = "wireless-slots"
     drawingGroup.appendChild(gPlugs)
@@ -139,7 +139,7 @@ function getSlot(
     let slotId = domPlugElement.getAttribute("slotId") || domPlugElement.getAttribute("slotid")
     let slot = mdle.getSlot( slotId )
     if( slot)
-        return slot
+        {return slot}
     if( mdle instanceof GroupModules.Module && slotId){
         // we end up here in case of slot corresponding to an implicit input of a group
         let moduleId = domPlugElement.getAttribute("moduleId") || domPlugElement.getAttribute("moduleid")
@@ -281,7 +281,7 @@ export class ConnectionsPlotter{
         this.appObservables.unselect$.subscribe( () =>{ 
             let connection = document.getElementById("drawing-connection")
             if(connection)
-                connection.remove()
+                {connection.remove()}
             this.drawingConnection = undefined 
         })
     }

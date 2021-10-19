@@ -76,7 +76,7 @@ function mapToFocusCoordinate(activeLayerUpdated$ : Observable<{fromLayerId:stri
     map( ({fromLayer, toLayer}) =>{ 
         // if zoom-in
         if( fromLayer.getAllChildren(appStore.project.workflow).includes(toLayer))
-            return document.getElementById("expanded_"+toLayer.moduleId)    
+            {return document.getElementById("expanded_"+toLayer.moduleId)}    
         
         // if zoom-out
         if( toLayer.getAllChildren(appStore.project.workflow).includes(fromLayer)){

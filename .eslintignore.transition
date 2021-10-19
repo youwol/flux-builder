@@ -17,6 +17,7 @@
 /src/app/builder-editor/builder-state/*
 
 # Un-ignored
+!/src/app/builder-editor/builder-state/app-extensions-observables.service.ts
 !/src/app/builder-editor/builder-state/extension.ts
 !/src/app/builder-editor/builder-state/factory-utils.ts
 !/src/app/builder-editor/builder-state/index.ts

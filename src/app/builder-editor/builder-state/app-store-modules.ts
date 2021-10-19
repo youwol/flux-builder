@@ -17,10 +17,10 @@ export function defaultModuleRendering(mdle) {
     div.setAttribute("name", mdle.configuration.title)
     div.classList.add("flux-component")
     if (mdle.moduleId.includes("viewer3d"))
-        div.classList.add("fill-parent")
+        {div.classList.add("fill-parent")}
 
     if (mdle.moduleId.includes("cesium"))
-        div.classList.add("fill-parent")
+        {div.classList.add("fill-parent")}
     return div
 }
 export function isGroupingModule(moduleData) {
@@ -176,7 +176,7 @@ export function updateModule(
         let directChildren = project.workflow.plugins.filter(plugin => plugin.parentModule.moduleId == mdle.moduleId)
         let indirectChildren = directChildren.map(child => getChildrenRec(child)).filter(d => d.length > 0)
         if (indirectChildren.length > 0)
-            throw "UPDATE MODULE: IMPLEMENTATION NOT DONE IN CASE OF NESTED PLUGINS"
+            {throw "UPDATE MODULE: IMPLEMENTATION NOT DONE IN CASE OF NESTED PLUGINS"}
         return directChildren.concat(indirectChildren.reduce((acc, e) => acc.concat(e), []))
     }
     let children = getChildrenRec(mdle)
@@ -197,9 +197,9 @@ export function updateModule(
     let remainingOutputSlots = newModule.outputSlots.map(s => s.slotId)
     let connections = project.workflow.connections.filter((connection) => {
         if (connection.start.moduleId == newModule.moduleId && !remainingOutputSlots.includes(connection.start.slotId))
-            return false
+            {return false}
         if (connection.end.moduleId == newModule.moduleId && !remainingInputSlots.includes(connection.end.slotId))
-            return false
+            {return false}
         return true
     })
 
@@ -358,7 +358,7 @@ export function moveModules(modulesPosition, moduleViews, project: Project, impl
         .map(([mdle, mOld]) => new ModuleView(mdle.moduleId, mdle.x, mdle.y, mOld.Factory))
 
     if (modulesViewNew.length == 0)
-        return undefined
+        {return undefined}
 
     debugSingleton.debugOn &&
         debugSingleton.logWorkflowBuilder({
@@ -373,7 +373,7 @@ export function moveModules(modulesPosition, moduleViews, project: Project, impl
     let descriptionBoxes = boxNeedUpdate ? project.builderRendering.descriptionsBoxes.map(
         box => {
             if (!box.modulesId.find(mId => modulesViewNew.map(m => m.moduleId).indexOf(mId) >= 0))
-                return box
+                {return box}
             return new DescriptionBox(box.descriptionBoxId, box.title, box.modulesId, box.descriptionHtml, box.properties)
         }) :
         project.builderRendering.descriptionsBoxes
@@ -410,7 +410,7 @@ export function deleteModules(modulesDeleted: Array<ModuleFlux>, project: Projec
     let debugSingleton = AppDebugEnvironment.getInstance()
 
     if (modulesDeleted.length === 0)
-        return undefined
+        {return undefined}
     let modulesDeletedId = modulesDeleted.map(m => m.moduleId)
     debugSingleton.debugOn &&
         debugSingleton.logWorkflowBuilder({
@@ -489,7 +489,7 @@ export function deleteModules(modulesDeleted: Array<ModuleFlux>, project: Projec
         box => {
             let moduleIdsToKeep = box.modulesId.filter(mId => modulesDeleted.map(m => m.moduleId).indexOf(mId) < 0)
             if (moduleIdsToKeep.length == box.modulesId.length)
-                return box
+                {return box}
             console.log("REMOVE MODULE FORM DBOX", moduleIdsToKeep)
             return new DescriptionBox(box.descriptionBoxId, box.title, moduleIdsToKeep, box.descriptionHtml, box.properties)
         }) :

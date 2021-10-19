@@ -186,7 +186,7 @@ export namespace AssetsExplorerView{
 
         resolveChildren() : Observable<Array<ExplorerTreeNode>> {
             if(!this.children || Array.isArray(this.children))
-                return
+                {return}
             
             let uid = uuidv4()
             this.addStatus( {type:'request-pending', id:uid })

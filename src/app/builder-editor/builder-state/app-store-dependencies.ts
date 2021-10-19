@@ -34,7 +34,7 @@ export function addLibraries(
         .filter(lib => actualLibraries[lib.name] != undefined && actualLibraries[lib.name] != lib.version)
 
     if (versionChecks.length > 0)
-        console.error("You can not dynamically add libraries that are already used with different version")
+        {console.error("You can not dynamically add libraries that are already used with different version")}
 
     let newLibraries = libraries
     .filter(lib => actualLibraries[lib.name] == undefined)
@@ -52,9 +52,9 @@ export function addLibraries(
     .forEach((name) => {
         let install = (window[name].install || window[name].pack.install)(environment)
         if(install instanceof Observable)
-            install.subscribe()
+            {install.subscribe()}
         if(install instanceof Promise) 
-            install.then( ()=> {})
+            {install.then( ()=> {})}
     })
     let body = {
         libraries: {
@@ -82,7 +82,7 @@ export function cleanUnusedLibraries(project: Project, environment: IEnvironment
     )
     let packagesUsed = new Array(...setPackagesUsed)
     if (packagesUsed.length == project.requirements.fluxPacks.length)
-        return of(project)
+        {return of(project)}
 
     let libraries = Object.entries(project.requirements.libraries)
         .filter(([k, v]) => packagesUsed.find(p => k.includes(p)))

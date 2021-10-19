@@ -32,7 +32,7 @@ export function replaceTemplateElements(
 
     let debugSingleton = AppDebugEnvironment.getInstance()
     if(moduleIds.length==0)
-        return
+        {return}
 
     debugSingleton.debugOn &&
     debugSingleton.logRenderTopic({

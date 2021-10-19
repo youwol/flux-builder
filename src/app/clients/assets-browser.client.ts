@@ -95,11 +95,11 @@ export class AssetsBrowserClient {
                 let selectedGroups = allGroups
                 .filter(grp => {
                     if (pathParent == "")
-                        return grp.path == "private" || grp.path == "/youwol-users"
+                        {return grp.path == "private" || grp.path == "/youwol-users"}
                     return grp.path != pathParent && grp.path.includes(pathParent) && (grp.path.slice(pathParent.length).match(/\//g)).length == 1
                 })
                 if(pathParent=="")
-                    return of({groups:selectedGroups, drives:[], groupId: undefined});
+                    {return of({groups:selectedGroups, drives:[], groupId: undefined});}
                     
                 let groupId = allGroups.find(g => g.path == pathParent).id
                 return AssetsBrowserClient
@@ -122,7 +122,7 @@ export class AssetsBrowserClient {
             mergeMap( (targetLibrary: any) => {
 
                 if(window[targetLibrary.name])
-                    return of({targetLibrary, loadingGraph:{lock:[], fluxPacks:[], libraries:{}}})
+                    {return of({targetLibrary, loadingGraph:{lock:[], fluxPacks:[], libraries:{}}})}
 
                 let libraries = {
                     ...AssetsBrowserClient.appStore.project.requirements.libraries,

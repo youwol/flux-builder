@@ -168,7 +168,7 @@ export namespace AutoForm {
         
         items= items.sort( (lhs, rhs) => order.indexOf(lhs[0]) - order.indexOf(rhs[0]))
         if (items.length == 0) 
-            return {}
+            {return {}}
 
         return {
             class:'row', style:{ padding:'0px', margin:'0px'},
@@ -202,7 +202,7 @@ export namespace AutoForm {
         let value0 = path.reduce((acc, e) => acc[e], configuration)
         let factory = state.elementsViewFactory.find(element => element.test(valueMeta))
         if(! factory)
-            return { id:'unkwnown-element-'+ valueMeta.name+'-'+valueMeta.type}
+            {return { id:'unkwnown-element-'+ valueMeta.name+'-'+valueMeta.type}}
         let value$ = new BehaviorSubject(value0)
         let view = factory.view(value$, valueMeta);
         let obs = ( value$ as Observable<any>).pipe(map(value => ({ path, value })))
@@ -229,7 +229,7 @@ export namespace AutoForm {
             })
             .reduce((acc: any, [prefix, val, basePath]: any) => {
                 if (!acc[prefix])
-                    acc[prefix] = { values: [], basePath }
+                    {acc[prefix] = { values: [], basePath }}
                 acc[prefix].values.push(val)
                 return acc
             }, {})
@@ -246,10 +246,10 @@ export namespace AutoForm {
             return tabData
         }) 
         if(tabsData.length==0)
-            return {
+            {return {
                 'class': 'p-2',
                 'children': [itemsView]
-            }
+            }}
         let tabState = new Tabs.State(tabsData)
         let tabView = new Tabs.View({
             state: tabState,

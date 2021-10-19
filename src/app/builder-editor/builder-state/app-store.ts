@@ -84,11 +84,11 @@ export class AppStore {
 
     static getInstance(environment: IEnvironment) {
         if(!AppStore.instance)
-            AppStore.instance =  new AppStore(
+            {AppStore.instance =  new AppStore(
                 environment,
                 AppObservables.getInstance(),
                 AppBuildViewObservables.getInstance()
-            )
+            )}
         return AppStore.instance
     }
     debugSingleton = AppDebugEnvironment.getInstance()
@@ -248,7 +248,7 @@ export class AppStore {
     loadExtensions(){
         // this test is for backward compatibility w/ flux-lib-core
         if(!FluxExtensionAPIs)
-            return
+            {return}
         BuilderStateAPI.initialize(this)
         FluxExtensionAPIs.registerAPI('BuilderState', BuilderStateAPI)
     }
@@ -332,7 +332,7 @@ export class AppStore {
 
         let project = updateModule(mdle,configuration, this.project,this.allSubscriptions,this.appObservables.ready$)
         if(unselect)
-            this.unselect()
+            {this.unselect()}
         this.updateProject(project)
     }
 
@@ -364,18 +364,18 @@ export class AppStore {
     getModuleSelected(): ModuleFlux{
 
         if(this.moduleSelected )
-            return this.moduleSelected
+            {return this.moduleSelected}
         if(this.modulesSelected.length == 1)
-            return this.modulesSelected[0]
+            {return this.modulesSelected[0]}
         return undefined
     }
 
     getModulesSelected(): Array<ModuleFlux>{
 
         if(this.moduleSelected )
-            return [this.moduleSelected]
+            {return [this.moduleSelected]}
         if(this.modulesSelected.length > 0)
-            return this.modulesSelected
+            {return this.modulesSelected}
 
         return []
     }
@@ -383,10 +383,10 @@ export class AppStore {
     isSelected(moduleId:string){
 
         if(this.moduleSelected && this.moduleSelected.moduleId === moduleId)
-            return true
+            {return true}
 
         if(this.modulesSelected && this.modulesSelected.find( m => m.moduleId === moduleId) )
-            return true
+            {return true}
 
         return false
     }
@@ -395,7 +395,7 @@ export class AppStore {
 
         if(  this.modulesSelected.find(m => m.moduleId == moduleId) ||
             (this.moduleSelected && this.moduleSelected.moduleId == moduleId ) )
-            return
+            {return}
 
         if( this.moduleSelected && this.moduleSelected.moduleId != moduleId ){
             this.appObservables.modulesUnselected$.next( [this.moduleSelected] )
@@ -443,7 +443,7 @@ export class AppStore {
             a.fromModuleSlotId === this.connectionSelected.start.slotId &&
             a.toModuleSlotId === this.connectionSelected.end.slotId)
         if(!this.connectionSelected.adaptor)
-            this.appObservables.suggestions$.next(suggestions)
+            {this.appObservables.suggestions$.next(suggestions)}
     }
 
     select( {modulesId,connectionsId}: {modulesId:Array<String>, connectionsId:Array<Connection>}){
@@ -464,7 +464,7 @@ export class AppStore {
 
         let m = this.getModulesAndPlugins().find( m => m.moduleId === moduleId)
         if(m)
-            return m
+            {return m}
         m = this.implicitModules.find( m => m.moduleId === moduleId)
         return m
     }
@@ -474,7 +474,7 @@ export class AppStore {
         this.unselect()
         let project = deleteModules(modulesDeleted,this.project)
         if(!project)
-            return
+            {return}
         let rootComponent = project.workflow.modules
         .find( mdle => mdle.moduleId == this.rootComponentId) as Component.Module
 
@@ -492,7 +492,7 @@ export class AppStore {
     deleteModule(mdle:ModuleFlux){
 
         if(mdle==this.moduleSelected)
-            this.unselect()
+            {this.unselect()}
         this.deleteModules([mdle])
     }
 
@@ -527,7 +527,7 @@ export class AppStore {
             }
         })
         if(this.activeGroupId == moduleId)
-            return
+            {return}
         let oldLayerId = this.activeGroupId
         this.activeGroupId = moduleId
         this.appBuildViewObservables.modulesViewUpdated$.next(this.getActiveModulesView()) 
@@ -561,7 +561,7 @@ export class AppStore {
 
         let mdle = this.getModule(moduleId)
         if( this.project.workflow.plugins.map(plugin=>plugin.moduleId).includes(mdle.moduleId))
-            mdle = (mdle as PluginFlux<any>).parentModule
+            {mdle = (mdle as PluginFlux<any>).parentModule}
 
         return this.project.workflow.modules
             .filter( mdle => mdle instanceof GroupModules.Module)
@@ -593,7 +593,7 @@ export class AppStore {
         let project = setConnectionView(connection, properties, this.project)
         this.updateProject(project)
         if(unselect)
-            this.unselect()
+            {this.unselect()}
         this.appObservables.connectionsUpdated$.next(this.project.workflow.connections)
     }
 
@@ -652,7 +652,7 @@ export class AppStore {
     deleteSelected(){
 
         if(this.uiState.isEditing)
-            return
+            {return}
 
         this.debugSingleton.debugOn &&
         this.debugSingleton.logWorkflowBuilder( {
@@ -717,7 +717,7 @@ export class AppStore {
 
         let project = setRenderingStyle(rootComponent, style, this.project)
         if(project != this.project)
-            this.updateProject(project, asNewState)
+            {this.updateProject(project, asNewState)}
     }
 
 
@@ -746,7 +746,7 @@ export class AppStore {
 
     deleteDescriptionBox(descriptionBox){
         if(descriptionBox==this.descriptionBoxSelected)
-            this.unselect()
+            {this.unselect()}
         let project = deleteDescriptionBox(descriptionBox,this.project)
         this.updateProject(project)
 
@@ -812,7 +812,7 @@ export class AppStore {
                 ? this.appBuildViewObservables.modulesViewUpdated$.next(this.getActiveModulesView())
                 : this.appObservables.connectionsUpdated$.next(this.project.workflow.connections)
             if(updates.length > 0 )
-                updatesDone.modulesView = true
+                {updatesDone.modulesView = true}
         }
         if( !updatesDone.activeLayer &&
             (this.activeGroupId != this.rootComponentId ||
@@ -820,7 +820,7 @@ export class AppStore {
              oldProject.workflow.modules.find( m => m.moduleId == this.rootComponentId) )){
 
             if(!updatesDone.modulesView)
-                this.appBuildViewObservables.modulesViewUpdated$.next(this.getActiveModulesView())
+                {this.appBuildViewObservables.modulesViewUpdated$.next(this.getActiveModulesView())}
             this.appObservables.descriptionsBoxesUpdated$.next(this.project.builderRendering.descriptionsBoxes)
             this.appObservables.activeLayerUpdated$.next({fromLayerId:undefined, toLayerId:this.activeGroupId})
             updatesDone.activeLayer = true
@@ -846,7 +846,7 @@ export class AppStore {
     undo(){
 
         if(this.indexHistory==0)
-            return
+            {return}
         this.debugSingleton.debugOn &&
         this.debugSingleton.logWorkflowBuilder( {
             level : LogLevel.Info,
@@ -859,7 +859,7 @@ export class AppStore {
     redo(){
 
         if(this.indexHistory==this.history.length - 1)
-            return
+            {return}
         this.debugSingleton.debugOn &&
         this.debugSingleton.logWorkflowBuilder( {
                 level : LogLevel.Info,
@@ -871,7 +871,7 @@ export class AppStore {
 
     updateProject(newProject:Project, asNewState = true){
         if(!newProject)
-            return
+            {return}
         let oldIndex = this.indexHistory
         if(!asNewState){
             this.history = this.history.slice(0,-1)

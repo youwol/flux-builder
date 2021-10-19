@@ -14,18 +14,18 @@ function drawPlugin(plugin :PluginFlux<any>, containerGroup, appStore: AppStore 
 
     let a = containerGroup.querySelector("#"+plugin.moduleId)
     if(a)
-        a.remove()
+        {a.remove()}
     pluginGroup.id=plugin.moduleId
     pluginGroup.classList.add("module","plugin")
     let dyModule = 0
     let dyPlugin = 50
     
     if(containerGroup.getBBox) 
-        dyModule = containerGroup.getBBox().height - containerGroup.querySelector(".content").getBBox().height /2 
+        {dyModule = containerGroup.getBBox().height - containerGroup.querySelector(".content").getBBox().height /2} 
     // we need to actually append the group of the plugin to get its bounding box
     containerGroup.appendChild(pluginGroup)
     if( pluginGroup.getBBox)
-        dyPlugin =  pluginGroup.getBBox().height/2
+        {dyPlugin =  pluginGroup.getBBox().height/2}
         
     let dy = dyModule + dyPlugin
     pluginGroup.setAttribute("x",  containerGroup.getAttribute("x"))
