@@ -59,15 +59,15 @@ test('instantiate plugins', () => {
   )
   const plugins =  instantiateProjectPlugins(pluginsData,modules,factory2, environment)
   
-  expect(plugins.length).toEqual(1)
+  expect(plugins.length).toBe(1)
   
   const plugin = plugins[0]
-  expect(plugin.inputSlots.length).toEqual(1)
-  expect(plugin.Factory.uid).toEqual("SimplePlugin@flux-test")
-  expect(plugin.inputSlots[0].moduleId).toEqual("unique-id-1")
-  expect(plugin.inputSlots[0].slotId).toEqual("input0-plugin")
-  expect(plugin.outputSlots.length).toEqual(0)
-  expect(plugin.configuration.title).toEqual("title plugin id 1")
+  expect(plugin.inputSlots.length).toBe(1)
+  expect(plugin.Factory.uid).toBe("SimplePlugin@flux-test")
+  expect(plugin.inputSlots[0].moduleId).toBe("unique-id-1")
+  expect(plugin.inputSlots[0].slotId).toBe("input0-plugin")
+  expect(plugin.outputSlots.length).toBe(0)
+  expect(plugin.configuration.title).toBe("title plugin id 1")
   expect(plugin.configuration.data.property0).toEqual(-1)
   expect(plugin.parentModule).toEqual(modules[0])
 })
@@ -98,21 +98,21 @@ test('add module with plugin', () => {
   appStore.addPlugin(SimplePlugin, mdle)
 
   const plugins = getPlugins(mdle.moduleId, appStore.project)
-  expect(plugins.length).toEqual(1)
-  expect(appStore.project.workflow.plugins.length).toEqual(1)
+  expect(plugins.length).toBe(1)
+  expect(appStore.project.workflow.plugins.length).toBe(1)
   const plugin = appStore.project.workflow.plugins[0]
-  expect(plugin.Factory.uid).toEqual("SimplePlugin@flux-test")
-  expect(plugin.inputSlots.length).toEqual(1)
-  expect(plugin.inputSlots[0].slotId).toEqual("input0-plugin")
-  expect(plugin.outputSlots.length).toEqual(0)
+  expect(plugin.Factory.uid).toBe("SimplePlugin@flux-test")
+  expect(plugin.inputSlots.length).toBe(1)
+  expect(plugin.inputSlots[0].slotId).toBe("input0-plugin")
+  expect(plugin.outputSlots.length).toBe(0)
 
   appStore.undo()
   const plugins2 = getPlugins(mdle.moduleId, appStore.project)
-  expect(plugins2.length).toEqual(0)
-  expect(appStore.project.workflow.plugins.length).toEqual(0)
+  expect(plugins2.length).toBe(0)
+  expect(appStore.project.workflow.plugins.length).toBe(0)
 
   appStore.redo()
-  expect(appStore.project.workflow.plugins.length).toEqual(1)
+  expect(appStore.project.workflow.plugins.length).toBe(1)
   expect(appStore.project.workflow.plugins[0]).toEqual(plugin)    
   appStore.updateProjectToIndexHistory(0, appStore.indexHistory)
 
@@ -123,20 +123,20 @@ test('add module with plugin + module update', () => {
   
   let [appStore, mdle] = setupProject({modulesCount:1})
   let plugin = appStore.addPlugin(SimplePlugin, mdle )
-  expect(plugin.configuration.data.property0).toEqual(0)
-  expect(plugin.configuration.title).toEqual("SimplePlugin")
+  expect(plugin.configuration.data.property0).toBe(0)
+  expect(plugin.configuration.title).toBe("SimplePlugin")
   appStore.updateModule(plugin, new ModuleConfiguration( {title:"new title",description:"", data:{property0:1} } ))
 
   plugin = appStore.getModule(plugin.moduleId)
-  expect(plugin.configuration.data.property0).toEqual(1)  
-  expect(plugin.configuration.title).toEqual("new title")
+  expect(plugin.configuration.data.property0).toBe(1)  
+  expect(plugin.configuration.title).toBe("new title")
 
   appStore.updateModule(mdle, new ModuleConfiguration( {title:"new title",description:"", data:{property0:2} } ))
 
   mdle = appStore.getModule(mdle.moduleId)
-  expect(mdle.configuration.data.property0).toEqual(2)
+  expect(mdle.configuration.data.property0).toBe(2)
 
   plugin = appStore.getModule(plugin.moduleId)
-  expect(plugin.configuration.data.property0).toEqual(1)
-  expect(plugin.configuration.title).toEqual("new title")
+  expect(plugin.configuration.data.property0).toBe(1)
+  expect(plugin.configuration.title).toBe("new title")
 })

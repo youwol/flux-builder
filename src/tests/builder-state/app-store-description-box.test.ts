@@ -31,17 +31,17 @@ test('add 2 module and connections + description box ', () => {
     const descriptionBox = new DescriptionBox("descriptionBoxId","title",[mdle0.moduleId,mdle1.moduleId],"",properties)
     appStore.addDescriptionBox(descriptionBox)
 
-    expect(appStore.project.builderRendering.descriptionsBoxes.length).toEqual(1)
+    expect(appStore.project.builderRendering.descriptionsBoxes.length).toBe(1)
     expect(appStore.project.builderRendering.descriptionsBoxes[0]).toEqual(descriptionBox)
 
     appStore.undo()
-    expect(appStore.project.builderRendering.descriptionsBoxes.length).toEqual(0)
+    expect(appStore.project.builderRendering.descriptionsBoxes.length).toBe(0)
     appStore.redo()
-    expect(appStore.project.builderRendering.descriptionsBoxes.length).toEqual(1)
+    expect(appStore.project.builderRendering.descriptionsBoxes.length).toBe(1)
     expect(appStore.project.builderRendering.descriptionsBoxes[0]).toEqual(descriptionBox)
 
     appStore.deleteModule(mdle0)
-    expect(appStore.project.builderRendering.descriptionsBoxes.length).toEqual(1)
+    expect(appStore.project.builderRendering.descriptionsBoxes.length).toBe(1)
     
     appStore.undo()
     expect(appStore.project.builderRendering.descriptionsBoxes[0]).toEqual(descriptionBox)
@@ -60,16 +60,16 @@ test('add 2 module and connections + description box + delete', () => {
     const descriptionBox = new DescriptionBox("descriptionBoxId","title",[mdle0.moduleId,mdle1.moduleId],"",properties)
     appStore.addDescriptionBox(descriptionBox)
 
-    expect(appStore.project.builderRendering.descriptionsBoxes.length).toEqual(1)
+    expect(appStore.project.builderRendering.descriptionsBoxes.length).toBe(1)
     expect(appStore.project.builderRendering.descriptionsBoxes[0]).toEqual(descriptionBox)
 
     appStore.deleteDescriptionBox(descriptionBox)
-    expect(appStore.project.builderRendering.descriptionsBoxes.length).toEqual(0)
+    expect(appStore.project.builderRendering.descriptionsBoxes.length).toBe(0)
     appStore.undo()
-    expect(appStore.project.builderRendering.descriptionsBoxes.length).toEqual(1)
+    expect(appStore.project.builderRendering.descriptionsBoxes.length).toBe(1)
     expect(appStore.project.builderRendering.descriptionsBoxes[0]).toEqual(descriptionBox)
     appStore.redo()
-    expect(appStore.project.builderRendering.descriptionsBoxes.length).toEqual(0)
+    expect(appStore.project.builderRendering.descriptionsBoxes.length).toBe(0)
 
     appStore.updateProjectToIndexHistory(0, appStore.indexHistory)
   })
@@ -87,16 +87,16 @@ test('add 2 module and connections + description box + delete', () => {
     const descriptionBox = new DescriptionBox("descriptionBoxId","title",[mdle0.moduleId,mdle1.moduleId],"",properties)
     appStore.addDescriptionBox(descriptionBox)
 
-    expect(appStore.project.builderRendering.descriptionsBoxes.length).toEqual(1)
+    expect(appStore.project.builderRendering.descriptionsBoxes.length).toBe(1)
     expect(appStore.project.builderRendering.descriptionsBoxes[0]).toEqual(descriptionBox)
 
     const propertiesNew = new DescriptionBoxProperties("red")
     const descriptionBoxNew = new DescriptionBox("descriptionBoxId","title2",[mdle0.moduleId],"",propertiesNew)
     appStore.updateDescriptionBox(descriptionBoxNew)
 
-    expect(appStore.project.builderRendering.descriptionsBoxes.length).toEqual(1)
+    expect(appStore.project.builderRendering.descriptionsBoxes.length).toBe(1)
     const dBox = appStore.project.builderRendering.descriptionsBoxes[0]
-    expect(dBox.title).toEqual("title2")
+    expect(dBox.title).toBe("title2")
     expect(dBox.modulesId).toEqual([mdle0.moduleId])
     expect(dBox.properties).toEqual(propertiesNew)
     appStore.undo()

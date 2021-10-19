@@ -39,17 +39,17 @@ test('group modules module creation & BuilderView', done => {
             .find(mdle => mdle.moduleId != appStore.rootComponentId) as GroupModules.Module
 
         const connections = groupModule.getConnections(appStore.project.workflow)
-        expect(connections.implicits.inputs.length).toEqual(1)
-        expect(connections.implicits.outputs.length).toEqual(2)
+        expect(connections.implicits.inputs.length).toBe(1)
+        expect(connections.implicits.outputs.length).toBe(2)
         const renderer = new Factory.BuilderView(FluxEntitiesPlot)
 
         const plot = renderer.render(groupModule)
 
         const svgInputsElement = plot.querySelectorAll(".slot.input")
-        expect(svgInputsElement.length).toEqual(1)
+        expect(svgInputsElement.length).toBe(1)
         // there is only one because it is actually the same input that is referenced 
         const svgOutputsElement = plot.querySelectorAll(".slot.output")
-        expect(svgOutputsElement.length).toEqual(1)
+        expect(svgOutputsElement.length).toBe(1)
 
         appStore.addConnection(new Connection(
             new SlotRef("output0", "module1"),
@@ -73,17 +73,17 @@ test('group modules module creation & BuilderView', done => {
             .find(mdle => mdle.moduleId.includes("GroupModules_")) as GroupModules.Module
 
         const connections = groupModule.getConnections(appStore.project.workflow)
-        expect(connections.implicits.inputs.length).toEqual(1)
-        expect(connections.implicits.outputs.length).toEqual(3)
+        expect(connections.implicits.inputs.length).toBe(1)
+        expect(connections.implicits.outputs.length).toBe(3)
         const renderer = new Factory.BuilderView(FluxEntitiesPlot)
 
         const plot = renderer.render(groupModule)
 
         const svgInputsElement = plot.querySelectorAll(".slot.input")
-        expect(svgInputsElement.length).toEqual(1)
+        expect(svgInputsElement.length).toBe(1)
         // there is only one because it is actually the same input that is referenced 
         const svgOutputsElement = plot.querySelectorAll(".slot.output")
-        expect(svgOutputsElement.length).toEqual(1)
+        expect(svgOutputsElement.length).toBe(1)
 
         done()
     })

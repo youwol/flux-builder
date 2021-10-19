@@ -68,7 +68,7 @@ test('test app observables logs', () => {
   const app$ = AppObservables.getInstance()
   app$.ready$.next(true)
 
-  expect(messages.length).toEqual(1) 
+  expect(messages.length).toBe(1) 
   })
 
 
@@ -87,6 +87,6 @@ test('test plotters observables logs', () => {
   const app$ = AppBuildViewObservables.getInstance()
   app$.modulesDrawn$.next(true)
 
-  expect(messages.length).toEqual(1)
+  expect(messages.length).toBe(1)
   })
 

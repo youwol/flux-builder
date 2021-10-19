@@ -48,15 +48,15 @@ test('load simple project', (done) => {
         
         const groupElem = svgElements["GroupModules_child-layer"]
         expect(groupElem).toBeDefined()
-        expect(groupElem.id ).toEqual("expanded_GroupModules_child-layer")
+        expect(groupElem.id ).toBe("expanded_GroupModules_child-layer")
         const elemInDocument =  document.getElementById("expanded_GroupModules_child-layer")
 
         expect(elemInDocument).toBeDefined()
         const x= elemInDocument.getAttribute("x"), y = elemInDocument.getAttribute("y")
-        expect(x).toEqual("60")
-        expect(y).toEqual("50")
+        expect(x).toBe("60")
+        expect(y).toBe("50")
         const titleSvg = elemInDocument.querySelector(".title")
-        expect(titleSvg.innerHTML).toEqual("group")
+        expect(titleSvg.innerHTML).toBe("group")
 
         const layerSvg =  document.querySelector(".active-layer-box")
         expect(layerSvg).toBeDefined()

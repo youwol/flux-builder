@@ -24,17 +24,17 @@ test('set rendering layout', () => {
     
     let outerHtml = appStore.getRootComponent().getOuterHTML()
     expect(outerHtml.id).toEqual(appStore.getRootComponent().moduleId)
-    expect(outerHtml.innerHTML).toEqual('<div> test rendering layout </div>')
+    expect(outerHtml.innerHTML).toBe('<div> test rendering layout </div>')
 
     appStore.undo()
     outerHtml = appStore.getRootComponent().getOuterHTML()
     expect(outerHtml.id).toEqual(appStore.getRootComponent().moduleId)
-    expect(outerHtml.innerHTML).toEqual('')
+    expect(outerHtml.innerHTML).toBe('')
 
     appStore.redo()
     outerHtml = appStore.getRootComponent().getOuterHTML()
     expect(outerHtml.id).toEqual(appStore.getRootComponent().moduleId)
-    expect(outerHtml.innerHTML).toEqual('<div> test rendering layout </div>')
+    expect(outerHtml.innerHTML).toBe('<div> test rendering layout </div>')
 
     appStore.updateProjectToIndexHistory(0, appStore.indexHistory)
 })
@@ -55,7 +55,7 @@ test('set rendering style', () => {
     appStore.setRenderingStyle(".test{background-color:'black'}")
     // .test is not used in the project => it has not been set
     let outerStyle = appStore.getRootComponent().getOuterCSS() as string
-    expect(outerStyle.trim()).toEqual("")
+    expect(outerStyle.trim()).toBe("")
 
     const style = `#${appStore.rootComponentId}{ background-color: black }`
     appStore.setRenderingStyle(style)
@@ -64,7 +64,7 @@ test('set rendering style', () => {
 
     appStore.undo()
     outerStyle = appStore.getRootComponent().getOuterCSS() as string
-    expect(outerStyle.trim()).toEqual("")
+    expect(outerStyle.trim()).toBe("")
     appStore.redo()
     outerStyle = appStore.getRootComponent().getOuterCSS() as string
     expect(outerStyle.trim()).toEqual(style)

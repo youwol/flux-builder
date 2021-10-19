@@ -30,15 +30,15 @@ test('add 2 module and connections', () => {
 
     appStore.addConnection(new Connection(mdle0.outputSlots[0], mdle1.inputSlots[0]))
 
-    expect(appStore.project.workflow.connections.length).toEqual(1)
+    expect(appStore.project.workflow.connections.length).toBe(1)
     const connection = appStore.project.workflow.connections[0]
     expect(appStore.allSubscriptions.has(connection)).toBeTruthy()
     appStore.undo()
-    expect(appStore.allSubscriptions.size).toEqual(0)
-    expect(appStore.project.workflow.connections.length).toEqual(0)
+    expect(appStore.allSubscriptions.size).toBe(0)
+    expect(appStore.project.workflow.connections.length).toBe(0)
     appStore.redo()
 
-    expect(appStore.project.workflow.connections.length).toEqual(1)
+    expect(appStore.project.workflow.connections.length).toBe(1)
     const connectionNew = appStore.project.workflow.connections[0]
     expect(appStore.allSubscriptions.has(connectionNew)).toBeTruthy()
 
@@ -53,15 +53,15 @@ test('add 2 module and connections', () => {
 
     appStore.addConnection(new Connection(mdle0.outputSlots[0], mdle1.inputSlots[0]))
 
-    expect(appStore.project.workflow.connections.length).toEqual(1)
+    expect(appStore.project.workflow.connections.length).toBe(1)
     const connection = appStore.project.workflow.connections[0]
     expect(appStore.allSubscriptions.has(connection)).toBeTruthy()
     appStore.undo()
-    expect(appStore.allSubscriptions.size).toEqual(0)
-    expect(appStore.project.workflow.connections.length).toEqual(0)
+    expect(appStore.allSubscriptions.size).toBe(0)
+    expect(appStore.project.workflow.connections.length).toBe(0)
     appStore.redo()
 
-    expect(appStore.project.workflow.connections.length).toEqual(1)
+    expect(appStore.project.workflow.connections.length).toBe(1)
     const connectionNew = appStore.project.workflow.connections[0]
     expect(appStore.allSubscriptions.has(connectionNew)).toBeTruthy()
 
@@ -75,22 +75,22 @@ test('delete connection', () => {
 
     appStore.addConnection(new Connection(mdle0.outputSlots[0], mdle1.inputSlots[0]))
 
-    expect(appStore.project.workflow.connections.length).toEqual(1)
+    expect(appStore.project.workflow.connections.length).toBe(1)
     const connection = appStore.project.workflow.connections[0]
 
     appStore.deleteConnection(connection)
 
-    expect(appStore.project.workflow.connections.length).toEqual(0)
-    expect(appStore.allSubscriptions.size).toEqual(0)
+    expect(appStore.project.workflow.connections.length).toBe(0)
+    expect(appStore.allSubscriptions.size).toBe(0)
 
     appStore.undo()
-    expect(appStore.project.workflow.connections.length).toEqual(1)
+    expect(appStore.project.workflow.connections.length).toBe(1)
     expect(appStore.project.workflow.connections[0]).toEqual(connection)
     expect(appStore.allSubscriptions.has(connection)).toBeTruthy()
 
     appStore.redo()
-    expect(appStore.project.workflow.connections.length).toEqual(0)
-    expect(appStore.allSubscriptions.size).toEqual(0)
+    expect(appStore.project.workflow.connections.length).toBe(0)
+    expect(appStore.allSubscriptions.size).toBe(0)
 
     appStore.updateProjectToIndexHistory(0, appStore.indexHistory)
 })
@@ -132,7 +132,7 @@ test('instantiate connections', () => {
     ]
     const connections = instantiateProjectConnections(appStore.allSubscriptions, connectionsData, appStore.project.workflow.modules)
 
-    expect(connections.filter(c => c != undefined).length).toEqual(2)
+    expect(connections.filter(c => c != undefined).length).toBe(2)
 
     appStore.updateProjectToIndexHistory(0, appStore.indexHistory)
 })
@@ -148,49 +148,49 @@ test('create connections + module deletion', () => {
     appStore.addConnection(new Connection(mdle2.outputSlots[0], mdle1.inputSlots[0]))
     appStore.addConnection(new Connection(mdle3.outputSlots[0], mdle2.inputSlots[0]))
 
-    expect(appStore.project.workflow.connections.length).toEqual(3)
+    expect(appStore.project.workflow.connections.length).toBe(3)
     const c0 = appStore.project.workflow.connections[0]
     const c1 = appStore.project.workflow.connections[1]
     const c2 = appStore.project.workflow.connections[2]
-    expect(appStore.allSubscriptions.size).toEqual(3)
+    expect(appStore.allSubscriptions.size).toBe(3)
     expect(appStore.allSubscriptions.has(c0)).toBeTruthy()
     expect(appStore.allSubscriptions.has(c1)).toBeTruthy()
     expect(appStore.allSubscriptions.has(c2)).toBeTruthy()
     appStore.deleteModule(mdle0)
-    expect(appStore.project.workflow.connections.length).toEqual(2)
-    expect(appStore.allSubscriptions.size).toEqual(2)
-    expect(appStore.allSubscriptions.get(c0)).toEqual(undefined)
+    expect(appStore.project.workflow.connections.length).toBe(2)
+    expect(appStore.allSubscriptions.size).toBe(2)
+    expect(appStore.allSubscriptions.get(c0)).toBeUndefined()
     expect(appStore.allSubscriptions.has(c1)).toBeTruthy()
     expect(appStore.allSubscriptions.has(c2)).toBeTruthy()
     appStore.deleteModule(mdle1)
-    expect(appStore.project.workflow.connections.length).toEqual(1)
-    expect(appStore.allSubscriptions.size).toEqual(1)
-    expect(appStore.allSubscriptions.get(c0)).toEqual(undefined)
-    expect(appStore.allSubscriptions.get(c1)).toEqual(undefined)
+    expect(appStore.project.workflow.connections.length).toBe(1)
+    expect(appStore.allSubscriptions.size).toBe(1)
+    expect(appStore.allSubscriptions.get(c0)).toBeUndefined()
+    expect(appStore.allSubscriptions.get(c1)).toBeUndefined()
     expect(appStore.allSubscriptions.has(c2)).toBeTruthy()
     appStore.undo()
-    expect(appStore.project.workflow.connections.length).toEqual(2)
-    expect(appStore.allSubscriptions.size).toEqual(2)
-    expect(appStore.allSubscriptions.get(c0)).toEqual(undefined)
+    expect(appStore.project.workflow.connections.length).toBe(2)
+    expect(appStore.allSubscriptions.size).toBe(2)
+    expect(appStore.allSubscriptions.get(c0)).toBeUndefined()
     expect(appStore.allSubscriptions.has(c1)).toBeTruthy()
     expect(appStore.allSubscriptions.has(c2)).toBeTruthy()
     appStore.undo()
-    expect(appStore.project.workflow.connections.length).toEqual(3)
-    expect(appStore.allSubscriptions.size).toEqual(3)
+    expect(appStore.project.workflow.connections.length).toBe(3)
+    expect(appStore.allSubscriptions.size).toBe(3)
     expect(appStore.allSubscriptions.has(c0)).toBeTruthy()
     expect(appStore.allSubscriptions.has(c1)).toBeTruthy()
     expect(appStore.allSubscriptions.has(c2)).toBeTruthy()
     appStore.redo()
-    expect(appStore.project.workflow.connections.length).toEqual(2)
-    expect(appStore.allSubscriptions.size).toEqual(2)
-    expect(appStore.allSubscriptions.get(c0)).toEqual(undefined)
+    expect(appStore.project.workflow.connections.length).toBe(2)
+    expect(appStore.allSubscriptions.size).toBe(2)
+    expect(appStore.allSubscriptions.get(c0)).toBeUndefined()
     expect(appStore.allSubscriptions.has(c1)).toBeTruthy()
     expect(appStore.allSubscriptions.has(c2)).toBeTruthy()
     appStore.redo()
-    expect(appStore.project.workflow.connections.length).toEqual(1)
-    expect(appStore.allSubscriptions.size).toEqual(1)
-    expect(appStore.allSubscriptions.get(c0)).toEqual(undefined)
-    expect(appStore.allSubscriptions.get(c1)).toEqual(undefined)
+    expect(appStore.project.workflow.connections.length).toBe(1)
+    expect(appStore.allSubscriptions.size).toBe(1)
+    expect(appStore.allSubscriptions.get(c0)).toBeUndefined()
+    expect(appStore.allSubscriptions.get(c1)).toBeUndefined()
     expect(appStore.allSubscriptions.has(c2)).toBeTruthy()
     appStore.updateProjectToIndexHistory(0, appStore.indexHistory)
 })
@@ -212,14 +212,14 @@ test('create connections + module update', () => {
     const c1 = appStore.project.workflow.connections[1]
     const c2 = appStore.project.workflow.connections[2]
 
-    expect(appStore.allSubscriptions.size).toEqual(3)
+    expect(appStore.allSubscriptions.size).toBe(3)
     expect(appStore.allSubscriptions.has(c0)).toBeTruthy()
     expect(appStore.allSubscriptions.has(c1)).toBeTruthy()
     expect(appStore.allSubscriptions.has(c2)).toBeTruthy()
 
     appStore.undo()
 
-    expect(appStore.allSubscriptions.size).toEqual(3)
+    expect(appStore.allSubscriptions.size).toBe(3)
     expect(appStore.allSubscriptions.has(c0))
     expect(appStore.allSubscriptions.has(c1))
     expect(appStore.allSubscriptions.has(c2))
@@ -228,8 +228,8 @@ test('create connections + module update', () => {
     const c0New = appStore.project.workflow.connections[0]
     const c1New = appStore.project.workflow.connections[1]
     const c2New = appStore.project.workflow.connections[2]
-    expect(c0 == c0New).toEqual(true)
-    expect(c1 == c1New).toEqual(true)
-    expect(c2 == c2New).toEqual(true)
+    expect(c0 == c0New).toBe(true)
+    expect(c1 == c1New).toBe(true)
+    expect(c2 == c2New).toBe(true)
     appStore.updateProjectToIndexHistory(0, appStore.indexHistory)
 })

@@ -39,20 +39,20 @@ test('load simple project and test connections plot', (done) => {
     plottersObservables.modulesDrawn$.pipe(skip(1),take(1)).subscribe( ()=>{
 
       const modules = document.querySelectorAll("g.module.entity")
-      expect(modules.length).toEqual(4)
-      expect(modules[0].id).toEqual("module0")
-      expect(modules[1].id).toEqual("module2")
-      expect(modules[2].id).toEqual("module3")
-      expect(modules[3].id).toEqual("GroupModules_child-layer")
+      expect(modules.length).toBe(4)
+      expect(modules[0].id).toBe("module0")
+      expect(modules[1].id).toBe("module2")
+      expect(modules[2].id).toBe("module3")
+      expect(modules[3].id).toBe("GroupModules_child-layer")
     })
 
     plottersObservables.connectionsDrawn$.pipe(take(1)).subscribe( ()=>{
 
       const connections = document.querySelectorAll("g.connection.entity")
-      expect(connections.length).toEqual(4)
-      expect(connections[0].id).toEqual("output0@module1-input0@module0")
-      expect(connections[1].id).toEqual("output0@module1-input0-plugin@plugin0")
-      expect(connections[2].id).toEqual("output0@module2-input0@module0")
+      expect(connections.length).toBe(4)
+      expect(connections[0].id).toBe("output0@module1-input0@module0")
+      expect(connections[1].id).toBe("output0@module1-input0-plugin@plugin0")
+      expect(connections[2].id).toBe("output0@module2-input0@module0")
 
       const slots = document.querySelectorAll(".slot")
       const slotsId = []
@@ -94,10 +94,10 @@ test('load simple project and test connections plot', (done) => {
         const y1 = drawing_connection.getAttribute("y1")
         const x2 = drawing_connection.getAttribute("x2")
         const y2 = drawing_connection.getAttribute("y2")
-        expect(x1).toEqual("-40")
-        expect(y1).toEqual("50")
-        expect(x2).toEqual("-1")
-        expect(y2).toEqual("-1")
+        expect(x1).toBe("-40")
+        expect(y1).toBe("50")
+        expect(x2).toBe("-1")
+        expect(y2).toBe("-1")
 
         const slot =  document.getElementById("output-slot_output0_module3")
         slot.onclick = (event)=>{
@@ -114,7 +114,7 @@ test('load simple project and test connections plot', (done) => {
     plottersObservables.plugOutputClicked$.pipe(take(1)).subscribe( () =>{
         
       const connections = document.querySelectorAll("g.connection.entity")
-      expect(connections.length).toEqual(5) 
+      expect(connections.length).toBe(5) 
       const newConnection = document.getElementById("output0@module3-input0@module0")
       const event = new MouseEvent('click',{button:0})
       newConnection.dispatchEvent(event)

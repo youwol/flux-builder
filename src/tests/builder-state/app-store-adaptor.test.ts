@@ -19,7 +19,7 @@ test('add 2 module + connection + adaptator', () => {
     appStore.addModule(SimpleModule)
 
     const workflow = appStore.project.workflow
-    expect(appStore.project.workflow.modules.length).toEqual(3)
+    expect(appStore.project.workflow.modules.length).toBe(3)
     const mdle0 = workflow.modules[0]
     const mdle1 = workflow.modules[1]
 
@@ -36,35 +36,35 @@ test('add 2 module + connection + adaptator', () => {
     appStore.addAdaptor(adaptor, connection)
     const connectionAdapted = appStore.project.workflow.connections[0]
     expect(connectionAdapted.adaptor.toString()).toEqual(code)
-    expect(appStore.allSubscriptions.size).toEqual(1)
+    expect(appStore.allSubscriptions.size).toBe(1)
     expect(appStore.allSubscriptions.has(connectionAdapted)).toBeTruthy()
 
     appStore.undo()
     expect(appStore.project.workflow.connections[0]).toEqual(connection)
-    expect(appStore.allSubscriptions.size).toEqual(1)
+    expect(appStore.allSubscriptions.size).toBe(1)
 
     appStore.redo()
     expect(appStore.project.workflow.connections[0]).toEqual(connectionAdapted)
-    expect(appStore.allSubscriptions.size).toEqual(1)
+    expect(appStore.allSubscriptions.size).toBe(1)
     expect(appStore.allSubscriptions.has(connectionAdapted)).toBeTruthy()
 
     appStore.deleteAdaptor(connectionAdapted)
     expect(appStore.project.workflow.connections[0]).toEqual(connection)
-    expect(appStore.allSubscriptions.size).toEqual(1)
+    expect(appStore.allSubscriptions.size).toBe(1)
     // deleting adaptor create new connection
-    expect(appStore.allSubscriptions.has(connection)).toEqual(false)
-    expect(appStore.allSubscriptions.has(connectionAdapted)).toEqual(false)
+    expect(appStore.allSubscriptions.has(connection)).toBe(false)
+    expect(appStore.allSubscriptions.has(connectionAdapted)).toBe(false)
 
     appStore.undo()
     expect(appStore.project.workflow.connections[0]).toEqual(connectionAdapted)
-    expect(appStore.allSubscriptions.size).toEqual(1)
+    expect(appStore.allSubscriptions.size).toBe(1)
     expect(appStore.allSubscriptions.has(connectionAdapted)).toBeTruthy()
 
     appStore.deleteConnection(connectionAdapted)
-    expect(appStore.project.workflow.connections.length).toEqual(0)
+    expect(appStore.project.workflow.connections.length).toBe(0)
 
     appStore.undo()
-    expect(appStore.project.workflow.connections.length).toEqual(1)
+    expect(appStore.project.workflow.connections.length).toBe(1)
     expect(appStore.project.workflow.connections[0]).toEqual(connectionAdapted)
     appStore.updateProjectToIndexHistory(0, appStore.indexHistory)
 })
@@ -82,7 +82,7 @@ test('add 2 module + connection + adaptator + update', () => {
     appStore.addModule(SimpleModule)
 
     const workflow = appStore.project.workflow
-    expect(appStore.project.workflow.modules.length).toEqual(3)
+    expect(appStore.project.workflow.modules.length).toBe(3)
     const mdle0 = workflow.modules[0]
     const mdle1 = workflow.modules[1]
 
@@ -113,17 +113,17 @@ test('add 2 module + connection + adaptator + update', () => {
     appStore.updateAdaptor(connectionAdapted, newCode)
     const connectionAdaptedNew = appStore.project.workflow.connections[0]
     expect(connectionAdaptedNew.adaptor.toString()).toEqual(newCode)
-    expect(appStore.allSubscriptions.size).toEqual(1)
+    expect(appStore.allSubscriptions.size).toBe(1)
     expect(appStore.allSubscriptions.has(connectionAdaptedNew)).toBeTruthy()
 
     appStore.undo()
     expect(appStore.project.workflow.connections[0]).toEqual(connectionAdapted)
-    expect(appStore.allSubscriptions.size).toEqual(1)
+    expect(appStore.allSubscriptions.size).toBe(1)
     expect(appStore.allSubscriptions.has(connectionAdapted)).toBeTruthy()
 
     appStore.redo()
     expect(appStore.project.workflow.connections[0]).toEqual(connectionAdaptedNew)
-    expect(appStore.allSubscriptions.size).toEqual(1)
+    expect(appStore.allSubscriptions.size).toBe(1)
     expect(appStore.allSubscriptions.has(connectionAdaptedNew)).toBeTruthy()
 
     appStore.updateProjectToIndexHistory(0, appStore.indexHistory)

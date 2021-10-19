@@ -42,20 +42,20 @@ test('load simple project', (done) => {
     plottersObservables.modulesDrawn$.pipe(take(1)).subscribe(() => {
 
         const modules = document.querySelectorAll("g.module.entity")
-        expect(modules.length).toEqual(2)
+        expect(modules.length).toBe(2)
 
         const module0 = document.getElementById("module0")
         expect(module0).toBeDefined()
-        expect(module0.getAttribute("transform")).toEqual("translate(50,50)")
+        expect(module0.getAttribute("transform")).toBe("translate(50,50)")
         const groupMdle = document.getElementById("GroupModules_child-layer")
-        expect(groupMdle.getAttribute("transform")).toEqual("translate(60,50)")
-        expect(document.getElementById("module1")).toEqual(null)
+        expect(groupMdle.getAttribute("transform")).toBe("translate(60,50)")
+        expect(document.getElementById("module1")).toBeNull()
 
         //let plugins = document.querySelectorAll("g.plugin")
         //expect(plugins.length).toEqual(1)
         const pluginDom = document.getElementById("plugin0")
         expect(pluginDom).toBeDefined()
-        expect(pluginDom.parentElement.id).toEqual("module0")
+        expect(pluginDom.parentElement.id).toBe("module0")
 
         const module = document.getElementById("module0")
         const event = new MouseEvent('click', { button: 0 })
@@ -69,13 +69,13 @@ test('load simple project', (done) => {
 
         const modulesView = appStore.getActiveModulesView()
 
-        expect(modulesView.length).toEqual(2)
-        expect(modulesView[0].moduleId).toEqual("module0")
-        expect(modulesView[0].xWorld).toEqual(0)
-        expect(modulesView[0].yWorld).toEqual(0)
-        expect(modulesView[1].moduleId).toEqual("GroupModules_child-layer")
-        expect(modulesView[1].xWorld).toEqual(10)
-        expect(modulesView[1].yWorld).toEqual(0)
+        expect(modulesView.length).toBe(2)
+        expect(modulesView[0].moduleId).toBe("module0")
+        expect(modulesView[0].xWorld).toBe(0)
+        expect(modulesView[0].yWorld).toBe(0)
+        expect(modulesView[1].moduleId).toBe("GroupModules_child-layer")
+        expect(modulesView[1].xWorld).toBe(10)
+        expect(modulesView[1].yWorld).toBe(0)
 
         appStore.selectModule("module0")
         plotter.dragSelection({ dx: 2, dy: 0 }, false)
@@ -88,22 +88,22 @@ test('load simple project', (done) => {
         () => {
             const module0 = document.getElementById("module0")
             expect(module0).toBeDefined()
-            expect(module0.getAttribute("transform")).toEqual("translate(53,51)")
+            expect(module0.getAttribute("transform")).toBe("translate(53,51)")
 
             appStore.selectActiveGroup("GroupModules_child-layer")
             const modulesView = appStore.getActiveModulesView()
             // there is module 0 from root-component and module1 from child_layer
-            expect(modulesView.length).toEqual(2) // plugin not here, should it be?
+            expect(modulesView.length).toBe(2) // plugin not here, should it be?
             const mdleView1 = modulesView.find(m => m.moduleId === "module1")
             expect(mdleView1).toBeDefined()
-            expect(mdleView1.xWorld).toEqual(10)
-            expect(mdleView1.yWorld).toEqual(0)
+            expect(mdleView1.xWorld).toBe(10)
+            expect(mdleView1.yWorld).toBe(0)
 
             appStore.selectModule("module0")
             const selected = appStore.getModuleSelected()
-            expect(selected.moduleId).toEqual("module0")
+            expect(selected.moduleId).toBe("module0")
             const newPos = plotter.dragSelection({ dx: 10, dy: 10 }, true)
-            expect(newPos.length).toEqual(0)
+            expect(newPos.length).toBe(0)
 
             expect(document.getElementById("module0")).toBeDefined()
 
@@ -125,7 +125,7 @@ test('load simple project', (done) => {
             expect(module0).toBeTruthy()
 
             const modulesView = appStore.getActiveModulesView()
-            expect(modulesView.length).toEqual(1)
+            expect(modulesView.length).toBe(1)
             const module1 = document.getElementById("module1")
             expect(module1).toBeNull()
             const grpMdleExpanded = document.getElementById("expanded_GroupModules_child-layer")
@@ -134,7 +134,7 @@ test('load simple project', (done) => {
             module0 = document.getElementById("module0")
             expect(module0).toBeTruthy()
             const transfrom = module0.getAttribute("transform")
-            expect(transfrom).toEqual("translate(50,50)")
+            expect(transfrom).toBe("translate(50,50)")
             appStore.selectActiveGroup("Component_root-component")
         })
     plottersObservables.modulesDrawn$.pipe(skip(3), take(1)).subscribe(
@@ -144,7 +144,7 @@ test('load simple project', (done) => {
             expect(module0).toBeTruthy()
 
             const modulesView = appStore.getActiveModulesView()
-            expect(modulesView.length).toEqual(2)
+            expect(modulesView.length).toBe(2)
             const module1 = document.getElementById("module1")
             expect(module1).toBeNull()
             const grpMdleExpanded = document.getElementById("expanded_GroupModules_child-layer")

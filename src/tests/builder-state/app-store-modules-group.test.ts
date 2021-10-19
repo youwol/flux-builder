@@ -17,13 +17,13 @@ test('test from project loading', (done) => {
   appObservables.ready$.pipe(
       filter(d=>d)
   ).subscribe((_)=>{
-      expect(appStore.getActiveGroup().moduleId).toEqual("Component_root-component")
+      expect(appStore.getActiveGroup().moduleId).toBe("Component_root-component")
       const mdleGroup = appStore.getModule("GroupModules_child-layer") as GroupModules.Module
       mdleGroup.Factory.BuilderView.notifier$.next({type:'groupFocused', data: mdleGroup.moduleId}) 
   })
   appObservables.activeLayerUpdated$.pipe(skip(1)).subscribe( d =>{
       const layerId = appStore.getActiveGroup().moduleId
-      expect(layerId).toEqual("GroupModules_child-layer") 
+      expect(layerId).toBe("GroupModules_child-layer") 
       done()
     })
 
