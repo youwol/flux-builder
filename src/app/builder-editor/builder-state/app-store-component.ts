@@ -6,7 +6,7 @@ import { clonePluginsForNewParents } from './app-store-modules';
 
 
 const toHtml = (content: string) => {
-    let template = document.createElement('div');
+    const template = document.createElement('div');
     template.innerHTML = (content as any).trim();
     return template as HTMLDivElement
 }

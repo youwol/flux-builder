@@ -2,7 +2,7 @@ import { replaceTemplateElements } from "./flux-rendering-components";
 
 
 export function buildCodeEditor(editor, type) {
-    let codeEditor = editor.CodeManager.getViewer('CodeMirror').clone();
+    const codeEditor = editor.CodeManager.getViewer('CodeMirror').clone();
     codeEditor.set({
       codeName: type === 'html' ? 'htmlmixed' : 'css',
       readOnly: false,
