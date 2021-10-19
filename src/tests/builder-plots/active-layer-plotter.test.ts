@@ -1,12 +1,11 @@
 
-import '../common/dependencies'
+import { environment } from '../common/dependencies'
 import { createDrawingArea } from '@youwol/flux-svg-plots'
 import { AppObservables, AppDebugEnvironment, AppStore, 
     AppBuildViewObservables }  from '../../app/builder-editor/builder-state/index'
     
 import { take, skip, filter } from 'rxjs/operators'
 import { ModulesPlotter } from '../../app/builder-editor/builder-plots/index'
-import { environment } from '../common/dependencies'
 import {packCore} from '@youwol/flux-core'
 
 test('load simple project', (done) => {

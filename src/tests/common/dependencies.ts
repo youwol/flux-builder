@@ -4,7 +4,6 @@ class FakeBroadcastChannel{ constructor(a){}}
 window["BroadcastChannel"] = FakeBroadcastChannel as any
 
 import { KeyLoadingGraphStore, LoadingGraphSchema, MockEnvironment } from '@youwol/flux-core'
-import './simple-module'
 import { testPack, } from './simple-module'
 import { projects } from './projects-data'
 
