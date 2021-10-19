@@ -64,7 +64,7 @@ export namespace JournalsView{
                 return 
             }
 
-            let journalSelected$ = new BehaviorSubject<string>(this.state.module.journals[0].title)
+            const journalSelected$ = new BehaviorSubject<string>(this.state.module.journals[0].title)
             this.children = [
                 this.selectJournalView(journalSelected$),
                 child$(
@@ -86,10 +86,10 @@ export namespace JournalsView{
 
         selectJournalView(journalSelected$ : BehaviorSubject<string>) : VirtualDOM {
 
-            let items = this.state.module.journals.map( (journal: Journal) => {
+            const items = this.state.module.journals.map( (journal: Journal) => {
                 return new Select.ItemData(journal.title, journal.title)
             })
-            let state = new Select.State(items, journalSelected$)
+            const state = new Select.State(items, journalSelected$)
             return {
                 class:'d-flex align-items-center py-2',
                 children: [
@@ -102,7 +102,7 @@ export namespace JournalsView{
 
         journalView( journal: Journal ) : VirtualDOM {
 
-            let state = new ContextView.State(
+            const state = new ContextView.State(
                 {   context: journal.entryPoint, 
                     expandedNodes: [journal.entryPoint.id]
                 }
@@ -139,8 +139,8 @@ export namespace JournalsView{
         module: ModuleFlux
     }){
 
-        let state = new State({module})
-        let view = new View({state})
+        const state = new State({module})
+        const view = new View({state})
         
         ModalView.popup({
             view,

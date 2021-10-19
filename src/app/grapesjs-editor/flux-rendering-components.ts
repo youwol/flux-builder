@@ -7,11 +7,11 @@ import * as grapesjs from 'grapesjs'
 
 export function removeTemplateElements(modules: Array<ModuleFlux>, editor) {
 
-    let allGjs = getAllComponentsRec(editor)
-    let modulesToRemove = modules
+    const allGjs = getAllComponentsRec(editor)
+    const modulesToRemove = modules
         .filter((m: ModuleFlux) => m.Factory.RenderView)
 
-    let debugSingleton = AppDebugEnvironment.getInstance()
+    const debugSingleton = AppDebugEnvironment.getInstance()
     debugSingleton.debugOn &&
         debugSingleton.logRenderTopic({
             level: LogLevel.Info,
@@ -30,7 +30,7 @@ export function replaceTemplateElements(
     editor: grapesjs.Editor, 
     appStore: AppStore): Array<ModuleFlux> {
 
-    let debugSingleton = AppDebugEnvironment.getInstance()
+    const debugSingleton = AppDebugEnvironment.getInstance()
     if(moduleIds.length==0)
         {return}
 
@@ -40,9 +40,9 @@ export function replaceTemplateElements(
         message: "replaceTemplateElements",
         object: { moduleIds, appStore }
     })
-    let body = editor.Canvas.getDocument().body.querySelector('div')
+    const body = editor.Canvas.getDocument().body.querySelector('div')
     
-    let mdles = moduleIds
+    const mdles = moduleIds
         .map((mid) => appStore.getModule(mid))
         .filter(mdle => mdle.Factory.RenderView)
 
@@ -55,7 +55,7 @@ export function replaceTemplateElements(
             mdle["renderedElementDisplayed$"].next(renderedDiv)
         })
 
-    let allGjsComponents = getAllComponentsRec(editor)
+    const allGjsComponents = getAllComponentsRec(editor)
     mdles
     .filter(mdle => allGjsComponents[mdle.moduleId] != undefined)
     .forEach(mdle => {
@@ -77,9 +77,9 @@ export function updateElementsInLayout(
     editor: grapesjs.Editor, 
     appStore: AppStore) {
 
-    let removedIds = diff.removedElements.map(m => m.moduleId)
+    const removedIds = diff.removedElements.map(m => m.moduleId)
 
-    let toReplaceIds = diff.createdElements
+    const toReplaceIds = diff.createdElements
         .filter((mdle: ModuleFlux) => mdle.Factory.RenderView)
         .filter((mdle: ModuleFlux) => removedIds.includes(mdle.moduleId))
         .map(mdle => mdle.moduleId)
@@ -97,17 +97,17 @@ export function autoAddElementInLayout(
     editor: grapesjs.Editor, 
     appStore: AppStore) {
     
-    let allGjsComponents = getAllComponentsRec(editor)
+    const allGjsComponents = getAllComponentsRec(editor)
 
-    let removedIds = diff.removedElements.map(m => m.moduleId)
+    const removedIds = diff.removedElements.map(m => m.moduleId)
 
-    let newIds = diff.createdElements
+    const newIds = diff.createdElements
         .filter((mdle: ModuleFlux) => mdle.Factory.RenderView)
         .filter((mdle: ModuleFlux) => !removedIds.includes(mdle.moduleId))
         .filter((mdle: ModuleFlux) => appStore.getRootComponent().getModuleIds().includes(mdle.moduleId))
         .filter((mdle: ModuleFlux) => !(mdle instanceof Component.Module))
         .map((mdle: ModuleFlux) => {
-            let htmlContent = getFluxBlockContent(mdle, editor, appStore.project.workflow)
+            const htmlContent = getFluxBlockContent(mdle, editor, appStore.project.workflow)
             console.log(allGjsComponents[appStore.rootComponentId])
             allGjsComponents[appStore.rootComponentId].append(htmlContent, { at: 0 })
             return mdle.moduleId
@@ -125,9 +125,9 @@ export function autoRemoveElementInLayout(
     editor: any, 
     appStore: AppStore) {
     
-    let removedIds = diff.removedElements.map(m => m.moduleId)
+    const removedIds = diff.removedElements.map(m => m.moduleId)
 
-    let toRemove = diff.createdElements
+    const toRemove = diff.createdElements
         .filter((mdle: ModuleFlux) => mdle instanceof Component.Module)
         .filter((mdle: ModuleFlux) => !removedIds.includes(mdle.moduleId))
         .map( (mdle:Component.Module) => mdle.getDirectChildren(appStore.project.workflow))

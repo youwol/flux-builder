@@ -8,11 +8,11 @@ import { environment } from '../common/dependencies'
 
 test('load simple project', (done) => {
     
-    let div = document.createElement("div")
+    const div = document.createElement("div")
     div.id = "wf-builder-view"
     document.body.appendChild(div)
   
-    let drawingArea = createDrawingArea(
+    const drawingArea = createDrawingArea(
       {  containerDivId : div.id,
           width : 100,
           height :100,
@@ -24,12 +24,12 @@ test('load simple project', (done) => {
           overflowDisplay:  {left:1e8,right:1e8,top:1e8,bottom:1e8}
     })  
 
-    let appObservables = AppObservables.getInstance()
-    let plottersObservables = AppBuildViewObservables.getInstance()
+    const appObservables = AppObservables.getInstance()
+    const plottersObservables = AppBuildViewObservables.getInstance()
     AppDebugEnvironment.getInstance().debugOn = false
   
-    let appStore : AppStore = AppStore.getInstance(environment)
-    let wfPlotter = new WorkflowPlotter(drawingArea,appObservables,plottersObservables,appStore)
+    const appStore : AppStore = AppStore.getInstance(environment)
+    const wfPlotter = new WorkflowPlotter(drawingArea,appObservables,plottersObservables,appStore)
     plottersObservables.modulesDrawn$
     .subscribe( (_)=> { 
         
@@ -38,8 +38,8 @@ test('load simple project', (done) => {
         expect(selectedModules.length).toEqual(1)
         expect(selectedModules[0].moduleId).toEqual("module0")
 
-        let drawingDiv = document.getElementById(div.id+"-drawing-area")        
-        let eventClick = new MouseEvent('click',{button:0})
+        const drawingDiv = document.getElementById(div.id+"-drawing-area")        
+        const eventClick = new MouseEvent('click',{button:0})
         
         drawingDiv.dispatchEvent(eventClick)
 
@@ -47,12 +47,12 @@ test('load simple project', (done) => {
         expect(selectedModules.length).toEqual(0)
 
         // The issue herefafter is that offsetX/Y is undefined => no selection
-        let eventMouseDown= new MouseEvent('mousedown',{ctrlKey:true,clientX:0,clientY:0})
+        const eventMouseDown= new MouseEvent('mousedown',{ctrlKey:true,clientX:0,clientY:0})
         drawingDiv.dispatchEvent(eventMouseDown)
 
         expect(wfPlotter.boxSelectorPlotter.start).toBeDefined()
 
-        let eventMouseMove= new MouseEvent('mousemove',{ctrlKey:true,clientX:55,clientY:100})
+        const eventMouseMove= new MouseEvent('mousemove',{ctrlKey:true,clientX:55,clientY:100})
         drawingDiv.dispatchEvent(eventMouseMove)
         let highlighteds = document.querySelectorAll(".highlighted")
         expect(highlighteds.length).toEqual(1)
@@ -72,7 +72,7 @@ test('load simple project', (done) => {
         expect(selectedModules[0].moduleId).toEqual("module0")
         expect(selectedModules[1].moduleId).toEqual("GroupModules_child-layer")
 
-        let eventDelete= new KeyboardEvent('keydown',{key:"Delete"})
+        const eventDelete= new KeyboardEvent('keydown',{key:"Delete"})
         window.dispatchEvent(eventDelete)
         // root component remains
         expect(appStore.project.workflow.modules.length).toEqual(1)

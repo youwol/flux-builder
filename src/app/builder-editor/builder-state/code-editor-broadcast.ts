@@ -4,20 +4,20 @@ import { BehaviorSubject, interval } from 'rxjs'
 
 export namespace CodeEditor{
 
-    let senderFluxChannel   =  new BroadcastChannel("out=>code-editor@BroadcastDrive")
-    let recieverFluxChannel =  new BroadcastChannel("code-editor@BroadcastDrive=>out")
+    const senderFluxChannel   =  new BroadcastChannel("out=>code-editor@BroadcastDrive")
+    const recieverFluxChannel =  new BroadcastChannel("code-editor@BroadcastDrive=>out")
 
     export function mountBroadcastDrive( codeEditor, urlCodeEditor ) {
 
-        let ownerId = codeEditor.ownerId
-        let pingMessage = {
+        const ownerId = codeEditor.ownerId
+        const pingMessage = {
             action:"ping", 
             channelResp :"code-editor=>flux", 
             ownerId: ownerId
         }
         let isConnected = false
-        let communicationEstablished$ = new BehaviorSubject<boolean>(false)
-        let interval$ = interval(500).pipe( take(1))
+        const communicationEstablished$ = new BehaviorSubject<boolean>(false)
+        const interval$ = interval(500).pipe( take(1))
         let mountedDrive = undefined
 
         interval$.pipe( take(1) )
@@ -34,14 +34,14 @@ export namespace CodeEditor{
             filter( d => d == true ),
             mergeMap( () =>  codeEditor.mount$.pipe( map( d => codeEditor.drive(d) ), tap( d => mountedDrive = d)))
         ).subscribe( (drive:any) => {
-            let action =  { 
+            const action =  { 
                 action:"mount",  
                 ownerId: ownerId,
                 codeEditor: { drive: { name: drive.name, data: drive.data}, UI: codeEditor.UI }}
             senderFluxChannel.postMessage(action)
         })
 
-        let subs = codeEditor.unmount$.subscribe( () =>{
+        const subs = codeEditor.unmount$.subscribe( () =>{
             senderFluxChannel.postMessage({  action:"unmount",  ownerId: ownerId })
             subs.unsubscribe()
         })
@@ -53,7 +53,7 @@ export namespace CodeEditor{
                 communicationEstablished$.next(true)
             }
             if( data.action =="updateFile" && data.ownerId == ownerId  ){
-                let ack = () => senderFluxChannel.postMessage({ action:"updateFile-ack", actionId: data.actionId, ownerId: ownerId })
+                const ack = () => senderFluxChannel.postMessage({ action:"updateFile-ack", actionId: data.actionId, ownerId: ownerId })
                 mountedDrive.onFileUpdated( data.data, ack)
             }
         }

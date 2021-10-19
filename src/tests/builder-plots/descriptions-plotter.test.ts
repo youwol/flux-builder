@@ -11,11 +11,11 @@ import { projects } from '../common/projects-data'
 
 test('load simple project + test its unique description box rendering', (done) => {
     
-    let div = document.createElement("div")
+    const div = document.createElement("div")
     div.id = "plot-container"
     document.body.appendChild(div)
   
-    let drawingArea = createDrawingArea(
+    const drawingArea = createDrawingArea(
       {  containerDivId : "plot-container",
           width : 100,
           height :100,
@@ -28,15 +28,15 @@ test('load simple project + test its unique description box rendering', (done) =
     })     
   
     
-    let appObservables = AppObservables.getInstance()
-    let plottersObservables = AppBuildViewObservables.getInstance()
+    const appObservables = AppObservables.getInstance()
+    const plottersObservables = AppBuildViewObservables.getInstance()
     AppDebugEnvironment.getInstance().debugOn = false
   
-    let appStore : AppStore = AppStore.getInstance(environment)
-    let mdlesPlotter = new ModulesPlotter(drawingArea, plottersObservables,appObservables,appStore)
-    let descriptionsPlotter = new DescriptionsBoxesPlotter(drawingArea, plottersObservables,appObservables,appStore)
+    const appStore : AppStore = AppStore.getInstance(environment)
+    const mdlesPlotter = new ModulesPlotter(drawingArea, plottersObservables,appObservables,appStore)
+    const descriptionsPlotter = new DescriptionsBoxesPlotter(drawingArea, plottersObservables,appObservables,appStore)
     
-    let descriptionBoxSaved = projects.simpleProject.builderRendering.descriptionsBoxes[0]
+    const descriptionBoxSaved = projects.simpleProject.builderRendering.descriptionsBoxes[0]
     plottersObservables.descriptionsBoxesDrawn$.pipe(
         skip(0),
         take(1)
@@ -45,19 +45,19 @@ test('load simple project + test its unique description box rendering', (done) =
         expect(svgElements.length).toEqual(1)
         expect(svgElements[0].id ).toEqual(descriptionBoxSaved.descriptionBoxId)
 
-        let descriptionBox =  document.getElementById(svgElements[0].id)
+        const descriptionBox =  document.getElementById(svgElements[0].id)
 
         expect(descriptionBox).toBeDefined()
         // The next 2 tests are not working anymore
         // let x= descriptionBox.getAttribute("x"), y = descriptionBox.getAttribute("y")
         // expect(x).toEqual("50")
         // expect(y).toEqual("50")
-        let titleSvg = descriptionBox.querySelector(".title")
+        const titleSvg = descriptionBox.querySelector(".title")
         expect(titleSvg.innerHTML).toEqual(descriptionBoxSaved.title)
 
         expect( descriptionBox.classList.contains("selected")).toBeFalsy()
 
-        let event = new MouseEvent('click')
+        const event = new MouseEvent('click')
         descriptionBox.dispatchEvent(event)
 
     })
@@ -69,8 +69,8 @@ test('load simple project + test its unique description box rendering', (done) =
         take(1)
     ).subscribe( (d) =>
     {     
-        let descriptionBox =  document.getElementById(descriptionBoxSaved.descriptionBoxId)
-        let classes = descriptionBox.classList
+        const descriptionBox =  document.getElementById(descriptionBoxSaved.descriptionBoxId)
+        const classes = descriptionBox.classList
         
         expect(classes.contains("selected")).toBeTruthy()
         done()

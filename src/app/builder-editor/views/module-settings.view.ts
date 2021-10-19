@@ -14,7 +14,7 @@ function codeEditorView(
     value$: BehaviorSubject<string>, 
     description:AutoForm.ValueDescription
     ){
-        let editorConfiguration = description.metadata.editorConfiguration || {}
+        const editorConfiguration = description.metadata.editorConfiguration || {}
         return {
             class: `${faClass} fv-pointer fa-2x fv-hover-bg-background`,
             onclick: () => CodePropertyEditorView.popupModal({
@@ -26,7 +26,7 @@ function codeEditorView(
         }
 }
 
-let elementViewsFactory = (mdle: ModuleFlux) => [
+const elementViewsFactory = (mdle: ModuleFlux) => [
     {
         test: (value: AutoForm.ValueDescription) => {
             return value.metadata && value.metadata.type == "code" &&
@@ -74,10 +74,10 @@ export class ModuleSettingsState{
         public readonly appStore: AppStore
         ){
 
-        let schemaWithValue = flattenSchemaWithValue(mdle.configuration.data)
+        const schemaWithValue = flattenSchemaWithValue(mdle.configuration.data)
         Object.keys(schemaWithValue).forEach( k => schemaWithValue[k] = schemaWithValue[k][0])
 
-        let configurationIn$ = new BehaviorSubject<Object>(mdle.configuration.data)
+        const configurationIn$ = new BehaviorSubject<Object>(mdle.configuration.data)
         this.initialSettings$ = new BehaviorSubject(mdle.configuration.data)
 
         this.autoFormState = new AutoForm.State(
@@ -85,7 +85,7 @@ export class ModuleSettingsState{
             schemaWithValue as any,
             elementViewsFactory(mdle)
             )
-        let sub = this.autoFormState.currentValue$.pipe(
+        const sub = this.autoFormState.currentValue$.pipe(
             withLatestFrom( this.onTheFlyUpdates$),
             filter( ([_, onTheFly]) => onTheFly),
             filter( ([value]) => JSON.stringify(value) != JSON.stringify(this.initialSettings$.getValue()) )
@@ -100,10 +100,10 @@ export class ModuleSettingsState{
     }
 
     applySettings(title: string = undefined){
-        let values = this.autoFormState.currentValue$.getValue()
+        const values = this.autoFormState.currentValue$.getValue()
         
-        let persistentData = new this.mdle.Factory.PersistentData(values)
-        let conf = new ModuleConfiguration({
+        const persistentData = new this.mdle.Factory.PersistentData(values)
+        const conf = new ModuleConfiguration({
             title: title ? title : this.mdle.configuration.title,
             description: this.mdle.configuration.description,
             data: persistentData})

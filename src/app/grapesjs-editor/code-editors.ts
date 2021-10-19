@@ -23,7 +23,7 @@ function setupHtmlAutoUpdates(appStore, editor, htmlCodeEditor) {
       if (!htmlCode) {return;}
       editor.setComponents(htmlCode);
       replaceTemplateElements(appStore.project.workflow.modules.map(m => m.moduleId),editor,appStore)
-      let style = Object.values(editor.fluxCache).reduce( (acc, cache: any)=> acc+" "+cache.styles, "")
+      const style = Object.values(editor.fluxCache).reduce( (acc, cache: any)=> acc+" "+cache.styles, "")
       editor.getStyle().add(style)
     }
     var delay;

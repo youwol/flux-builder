@@ -50,14 +50,14 @@ export namespace AssetsExplorerView{
         toggleFavorite(node: ExplorerTreeNode){
 
             let favorites = getStoredFavorites()
-            let originalId = node instanceof FavoriteNode ? node.favorite.id : node.id
+            const originalId = node instanceof FavoriteNode ? node.favorite.id : node.id
             if(favorites.find( f => f.id == originalId)){
                 favorites = favorites.filter( favorite => favorite.id != originalId)
                 State.favorites$.next(favorites)
                 this.removeNode(node instanceof FavoriteNode ? node.id : "favorite_"+originalId)
                 return 
             }
-            let favorite =  new Favorite(originalId, node.name, node.type)
+            const favorite =  new Favorite(originalId, node.name, node.type)
             favorites = favorites.concat([favorite])
             State.favorites$.next(favorites)
             this.addChild('explorer', new FavoriteNode({favorite}))
@@ -82,7 +82,7 @@ export namespace AssetsExplorerView{
     function headerView(state: State, node: ExplorerTreeNode) {
 
         if( !(node instanceof ModuleItemNode)){
-            let favoriteClassBase = 'fas fa-star fa-xs fv-hover-opacity fv-pointer '
+            const favoriteClassBase = 'fas fa-star fa-xs fv-hover-opacity fv-pointer '
             return {
                 class: 'd-flex w-100 align-items-center fv-pointer',
                 children: [
@@ -174,13 +174,13 @@ export namespace AssetsExplorerView{
 
         addStatus({type, id} : {type:string, id?: string}){
             id = id || this.id
-            let newStatus = this.status$.getValue().concat({type,id})
+            const newStatus = this.status$.getValue().concat({type,id})
             this.status$.next(newStatus)
         }
 
         removeStatus({type, id} : {type:string, id?: string}){
             id = id || this.id
-            let newStatus = this.status$.getValue().filter( s => s.type!=type && s.id!=id)
+            const newStatus = this.status$.getValue().filter( s => s.type!=type && s.id!=id)
             this.status$.next(newStatus)
         }
 
@@ -188,7 +188,7 @@ export namespace AssetsExplorerView{
             if(!this.children || Array.isArray(this.children))
                 {return}
             
-            let uid = uuidv4()
+            const uid = uuidv4()
             this.addStatus( {type:'request-pending', id:uid })
             return super.resolveChildren().pipe(
                 tap(() => {
@@ -389,14 +389,14 @@ export namespace AssetsExplorerView{
 
     function getStoredFavorites(){
 
-        let favoritesStr = localStorage.getItem('flux-builder#favorites') 
-        let favorites = favoritesStr ? JSON.parse(favoritesStr) : []
+        const favoritesStr = localStorage.getItem('flux-builder#favorites') 
+        const favorites = favoritesStr ? JSON.parse(favoritesStr) : []
         return favorites as Array<Favorite>
     }
 
 
     function getRootChildren$() {
-        let favorites = getStoredFavorites()
+        const favorites = getStoredFavorites()
         return getGroupChildren$().pipe(
             map( children => [...children,...favorites.map( favorite => new FavoriteNode({favorite}))])
         )

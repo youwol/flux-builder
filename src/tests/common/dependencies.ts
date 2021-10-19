@@ -10,7 +10,7 @@ import { projects } from './projects-data'
 
 
 
-let loadingGraphResponses = [
+const loadingGraphResponses = [
     [
         {libraries: { 'flux-test':'0.0.0'}, using: {'flux-test':'0.0.0'}},
         { 
@@ -25,7 +25,7 @@ let loadingGraphResponses = [
     ]
 ] as Array<[KeyLoadingGraphStore,LoadingGraphSchema]>
 
-export let environment = new MockEnvironment({   
+export const environment = new MockEnvironment({   
     projectsDB: projects, 
     fluxPacks: [testPack], 
     loadingGraphResponses,

@@ -2,7 +2,7 @@ import { CdnEvent, LoadingGraphError, SourceLoadedEvent, SourceLoadingEvent, Sta
 
 
 export function loadingProjectView(loadingDiv: HTMLDivElement){
-    let divProjectLoading = document.createElement('div')
+    const divProjectLoading = document.createElement('div')
     divProjectLoading.style.setProperty("color", "lightgray") 
     divProjectLoading.innerText = `> project loading...` 
     loadingDiv.appendChild(divProjectLoading)
@@ -11,8 +11,8 @@ export function loadingProjectView(loadingDiv: HTMLDivElement){
 
 export function loadingLibView(event: CdnEvent, loadingDiv: HTMLDivElement){
     
-    let libraryName = event.targetName
-    let cssId = libraryName.replace("/","-").replace("@","")
+    const libraryName = event.targetName
+    const cssId = libraryName.replace("/","-").replace("@","")
     let divLib = document.querySelector(`#${cssId}`) as HTMLDivElement
     if(!divLib){
         divLib = document.createElement('div')
@@ -41,7 +41,7 @@ export function loadingLibView(event: CdnEvent, loadingDiv: HTMLDivElement){
 
 export function loadingErrorView(error: Error, loadingDiv: HTMLDivElement){
 
-    let divError = document.createElement('div')
+    const divError = document.createElement('div')
     if( error instanceof LoadingGraphError){
         divError.style.setProperty("color", "red") 
         loadingDiv.appendChild(divError) 

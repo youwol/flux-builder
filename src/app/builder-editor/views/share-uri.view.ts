@@ -18,7 +18,7 @@ export namespace ShareUriView{
         constructor({appStore}:{
             appStore: AppStore
         }) {
-            let selectItems = [
+            const selectItems = [
                 new Select.ItemData('youwol-url','YouWol Platform URL'),
                 new Select.ItemData('relative-url','Relative URL')
             ]
@@ -72,7 +72,7 @@ export namespace ShareUriView{
             this.class = this.class || View.defaultOptions.containerClass
             this.style = this.style || View.defaultOptions.containerStyle
 
-            let copyLinkBttn = new Button.View({
+            const copyLinkBttn = new Button.View({
                 state: new Button.State(),
                 contentView: () => ({ innerText: '' }),
                 class: "fv-btn fv-btn-primary fv-bg-focus fas fa-copy ml-2"
@@ -127,8 +127,8 @@ export namespace ShareUriView{
 
     export function popupModal(appStore: AppStore) {
 
-        let state = new State({appStore})
-        let view = new View({state})
+        const state = new State({appStore})
+        const view = new View({state})
         
         ModalView.popup({
             view,

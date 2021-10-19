@@ -3,7 +3,7 @@ import { AppStore, UiState } from "../../builder-editor/builder-state";
 
 export function renderView(appStore: AppStore) : VirtualDOM {
     
-    let sizes = {
+    const sizes = {
         'combined': 'h-50',
         'builder': 'd-none',
         'render': 'h-100'

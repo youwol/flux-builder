@@ -39,12 +39,12 @@ export class NewModulesNode extends ContextTreeNode{
         {event} : {event: MouseEvent}
         ){ 
 
-        let worldCoordinates = state.drawingArea.invert(event.clientX, event.clientY)  
+        const worldCoordinates = state.drawingArea.invert(event.clientX, event.clientY)  
         ImportModulesView.popupModal(
             state.appState,
             (nodes: Array<AssetsExplorerView.ModuleItemNode>) => {
-                let libraries = nodes.map( node => node.library )
-                let fluxPacks = nodes.flatMap( node => node.fluxPacks.map( fluxPack => fluxPack))
+                const libraries = nodes.map( node => node.library )
+                const fluxPacks = nodes.flatMap( node => node.fluxPacks.map( fluxPack => fluxPack))
                 state.appState.addLibraries$(libraries, fluxPacks).subscribe( () => {
                     nodes.forEach( node => state.appState.addModule(node.factory, worldCoordinates ) ) 
                 })
@@ -65,9 +65,9 @@ export class AddPluginsNode extends ContextTreeNode{
         ImportModulesView.popupModal(
             state.appState,
             (nodes: Array<AssetsExplorerView.ModuleItemNode>) => {
-                let parentModule = state.appState.getModuleSelected()
-                let libraries = nodes.map( node => node.library )
-                let fluxPacks = nodes.flatMap( node => node.fluxPacks.map( fluxPack => fluxPack))
+                const parentModule = state.appState.getModuleSelected()
+                const libraries = nodes.map( node => node.library )
+                const fluxPacks = nodes.flatMap( node => node.fluxPacks.map( fluxPack => fluxPack))
                 state.appState.addLibraries$(libraries, fluxPacks).subscribe( () => {
                     nodes.forEach( node =>  state.appState.addPlugin(node.factory, parentModule ))
                 })
@@ -82,7 +82,7 @@ export class JournalsNode extends ContextTreeNode{
     }
 
     execute(state: ContextMenuState){
-        let module = state.appState.getModuleSelected()
+        const module = state.appState.getModuleSelected()
         JournalsView.popupModal({module})
     }
 }
@@ -90,7 +90,7 @@ export class JournalsNode extends ContextTreeNode{
 export class DocumentationNode extends ContextTreeNode{
 
     static createChildren(appStore: AppStore){
-        let resources = appStore.getModuleSelected().Factory.resources
+        const resources = appStore.getModuleSelected().Factory.resources
         return Object.entries(resources).map(([name, url]) => {
             return new ResourceNode({name, url})
         })

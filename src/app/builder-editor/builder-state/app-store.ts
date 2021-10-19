@@ -127,7 +127,7 @@ export class AppStore {
         public appBuildViewObservables: AppBuildViewObservables,
         ){
             this.environment = environment
-            let html = `<div id='${this.rootComponentId}' class='flux-element flux-component'></div>`
+            const html = `<div id='${this.rootComponentId}' class='flux-element flux-component'></div>`
             this.project = new Project({
                 name:"new project",
                 schemaVersion:"1.0",
@@ -188,7 +188,7 @@ export class AppStore {
     loadProject(projectId: string, project: ProjectSchema, onEvent? : (CdnEvent) => void){
 
         this.projectId = projectId
-        let project$ = loadProjectDependencies$(project, this.environment, onEvent).pipe(
+        const project$ = loadProjectDependencies$(project, this.environment, onEvent).pipe(
             map( ({ project, packages }) => {
                 return createProject(project, packages,  this.workflow$, this.allSubscriptions, this.environment)
             })
@@ -201,14 +201,14 @@ export class AppStore {
 
         this.projectId = projectId
 
-        let project$ = loadProjectDatabase$(projectId, this.workflow$, this.allSubscriptions, this.environment)
+        const project$ = loadProjectDatabase$(projectId, this.workflow$, this.allSubscriptions, this.environment)
         this.initializeProject(project$)
     }
 
     loadProjectURI(projectURI: string){
 
         this.projectId = undefined
-        let project$ = loadProjectURI$(projectURI, this.workflow$, this.allSubscriptions, this.environment)
+        const project$ = loadProjectURI$(projectURI, this.workflow$, this.allSubscriptions, this.environment)
         this.initializeProject(project$)
     }
 
@@ -217,7 +217,7 @@ export class AppStore {
         project$.subscribe( ({project, packages}: {project:Project, packages: Array<any>}) => {
 
             this.appObservables.packagesUpdated$.next(packages);
-            let rootComponent = project.workflow.modules.find( mdle => mdle.moduleId == this.rootComponentId ) as Component.Module
+            const rootComponent = project.workflow.modules.find( mdle => mdle.moduleId == this.rootComponentId ) as Component.Module
             this.activeGroupId = rootComponent.moduleId
 
             this.debugSingleton.debugOn &&
@@ -234,8 +234,8 @@ export class AppStore {
             this.appObservables.packagesLoaded$.next();
             this.appObservables.uiStateUpdated$.next(this.uiState)
 
-            let layout = rootComponent.getFullHTML(project.workflow)
-            let style = rootComponent.getFullCSS(project.workflow, {asString: true})
+            const layout = rootComponent.getFullHTML(project.workflow)
+            const style = rootComponent.getFullCSS(project.workflow, {asString: true})
             this.appObservables.renderingLoaded$.next( {
                 style,
                 layout,
@@ -317,20 +317,20 @@ export class AppStore {
 
     addPlugin( Factory, parentModule ) : ModuleFlux {
 
-        let project = addPlugin(Factory, parentModule,this.project, this.appObservables.ready$, this.environment)
+        const project = addPlugin(Factory, parentModule,this.project, this.appObservables.ready$, this.environment)
         this.updateProject(project)
         return  project.workflow.plugins.slice(-1)[0]
     }
 
     addModule( moduleFactory, coors = [0,0] ) {
 
-        let project = addModule( moduleFactory, coors, this.project , this.activeGroupId,this.appObservables.ready$, this.environment)
+        const project = addModule( moduleFactory, coors, this.project , this.activeGroupId,this.appObservables.ready$, this.environment)
         this.updateProject(project)
     }
 
     updateModule(mdle:ModuleFlux, configuration: ModuleConfiguration, unselect = true) {
 
-        let project = updateModule(mdle,configuration, this.project,this.allSubscriptions,this.appObservables.ready$)
+        const project = updateModule(mdle,configuration, this.project,this.allSubscriptions,this.appObservables.ready$)
         if(unselect)
             {this.unselect()}
         this.updateProject(project)
@@ -338,26 +338,26 @@ export class AppStore {
 
     duplicateModules( modules : Array<ModuleFlux>) {
 
-        let project = duplicateModules(modules, this.project, this.appObservables.ready$ )
+        const project = duplicateModules(modules, this.project, this.appObservables.ready$ )
         this.updateProject(project)
     }
 
     alignH( modules : Array<ModuleFlux>) {
 
-        let project = alignH(modules.map(m=>m.moduleId), this.project, this.appObservables.ready$ )
+        const project = alignH(modules.map(m=>m.moduleId), this.project, this.appObservables.ready$ )
         this.updateProject(project)
     }
 
     alignV( modules : Array<ModuleFlux>) {
 
-        let project = alignV(modules.map(m=>m.moduleId), this.project, this.appObservables.ready$ )
+        const project = alignV(modules.map(m=>m.moduleId), this.project, this.appObservables.ready$ )
         this.updateProject(project)
     }
 
     moveModules( modulesPosition ){
 
         modulesPosition = modulesPosition.filter( m => this.getActiveGroup().getModuleIds().includes(m.moduleId) )
-        let project = moveModules(modulesPosition,this.project.builderRendering.modulesView, this.project,this.implicitModules)
+        const project = moveModules(modulesPosition,this.project.builderRendering.modulesView, this.project,this.implicitModules)
         this.updateProject(project)
     }
 
@@ -435,9 +435,9 @@ export class AppStore {
             }
         })
         this.appObservables.connectionSelected$.next(this.connectionSelected )
-        let moduleFrom = this.getModule(this.connectionSelected.start.moduleId)
-        let moduleTo = this.getModule(this.connectionSelected.end.moduleId)
-        let suggestions = this.adaptors.filter( a =>
+        const moduleFrom = this.getModule(this.connectionSelected.start.moduleId)
+        const moduleTo = this.getModule(this.connectionSelected.end.moduleId)
+        const suggestions = this.adaptors.filter( a =>
             a.fromModuleFactoryId === moduleFrom["factoryId"] &&
             a.toModuleFactoryId   === moduleTo["factoryId"] &&
             a.fromModuleSlotId === this.connectionSelected.start.slotId &&
@@ -455,8 +455,8 @@ export class AppStore {
 
     getModuleOrPlugin(moduleId:string):ModuleFlux{
 
-        let allModules= this.getModulesAndPlugins()
-        let m = allModules.find( m => m.moduleId === moduleId)
+        const allModules= this.getModulesAndPlugins()
+        const m = allModules.find( m => m.moduleId === moduleId)
         return m
     }
 
@@ -472,15 +472,15 @@ export class AppStore {
     deleteModules(modulesDeleted:Array<ModuleFlux>){
         
         this.unselect()
-        let project = deleteModules(modulesDeleted,this.project)
+        const project = deleteModules(modulesDeleted,this.project)
         if(!project)
             {return}
-        let rootComponent = project.workflow.modules
+        const rootComponent = project.workflow.modules
         .find( mdle => mdle.moduleId == this.rootComponentId) as Component.Module
 
         if(!getGroup(project.workflow, rootComponent, rootComponent, this.activeGroupId)){
             // if the group has been deleted => we focus on the root-component
-            let oldLayer = this.activeGroupId
+            const oldLayer = this.activeGroupId
             this.activeGroupId = this.rootComponentId
             this.updateProject(project)            
             this.appObservables.activeLayerUpdated$.next({fromLayerId:oldLayer, toLayerId: this.activeGroupId})
@@ -508,7 +508,7 @@ export class AppStore {
 
     getGroup(groupId: string) : GroupModules.Module{
 
-        let a =  getGroup(this.project.workflow, undefined, this.getModule(this.rootComponentId) as Component.Module, groupId)
+        const a =  getGroup(this.project.workflow, undefined, this.getModule(this.rootComponentId) as Component.Module, groupId)
         if(a==undefined){
             console.error("Can not find group ", groupId)
             return undefined
@@ -528,7 +528,7 @@ export class AppStore {
         })
         if(this.activeGroupId == moduleId)
             {return}
-        let oldLayerId = this.activeGroupId
+        const oldLayerId = this.activeGroupId
         this.activeGroupId = moduleId
         this.appBuildViewObservables.modulesViewUpdated$.next(this.getActiveModulesView()) 
         this.appObservables.descriptionsBoxesUpdated$.next(this.project.builderRendering.descriptionsBoxes)
@@ -547,7 +547,7 @@ export class AppStore {
 
     getDisplayedModulesView(){
 
-        let [activeGroup, parentGroup] = getGroup(this.project.workflow, undefined, this.getModule(this.rootComponentId) as Component.Module, this.activeGroupId)
+        const [activeGroup, parentGroup] = getGroup(this.project.workflow, undefined, this.getModule(this.rootComponentId) as Component.Module, this.activeGroupId)
         return getDisplayedModulesView(activeGroup,parentGroup,this,this.project)
     }
 
@@ -575,13 +575,13 @@ export class AppStore {
 
     getConnection(connectionId:string):Connection{
 
-        let c = this.project.workflow.connections.find( c => c.connectionId === connectionId)
+        const c = this.project.workflow.connections.find( c => c.connectionId === connectionId)
         return c
     }
 
     addConnection( connection: Connection ){
 
-        let project = addConnection(connection, this.project, this.allSubscriptions)
+        const project = addConnection(connection, this.project, this.allSubscriptions)
 
         this.updateProject(project)
         this.unselect()
@@ -590,7 +590,7 @@ export class AppStore {
 
     setConnectionView(connection: Connection, properties, unselect = true ){
 
-        let project = setConnectionView(connection, properties, this.project)
+        const project = setConnectionView(connection, properties, this.project)
         this.updateProject(project)
         if(unselect)
             {this.unselect()}
@@ -613,28 +613,28 @@ export class AppStore {
             this.connectionSelected = undefined
             this.appObservables.unselect$.next()
         }
-        let project = deleteConnection(connection,this.project, this.allSubscriptions)
+        const project = deleteConnection(connection,this.project, this.allSubscriptions)
         this.updateProject(project)
         this.appObservables.connectionsUpdated$.next(this.project.workflow.connections)
     }
 
     addAdaptor(adaptor, connection : Connection){
 
-        let project = addAdaptor(connection, adaptor, this.project, this.allSubscriptions)
+        const project = addAdaptor(connection, adaptor, this.project, this.allSubscriptions)
         this.updateProject(project)
         this.appObservables.connectionsUpdated$.next(this.project.workflow.connections)
     }
 
     deleteAdaptor(connection : Connection){
 
-        let project = deleteAdaptor(connection, this.project, this.allSubscriptions)
+        const project = deleteAdaptor(connection, this.project, this.allSubscriptions)
         this.updateProject(project)
         this.appObservables.connectionsUpdated$.next(this.project.workflow.connections)
     }
 
     updateAdaptor(connection : Connection, mappingFunction: string ){
 
-        let project = updateAdaptor(connection, mappingFunction, this.project, this.allSubscriptions)
+        const project = updateAdaptor(connection, mappingFunction, this.project, this.allSubscriptions)
         this.updateProject(project)
         this.appObservables.connectionsUpdated$.next(this.project.workflow.connections)
     }
@@ -681,18 +681,18 @@ export class AppStore {
 
     addGroup( moduleIds : Array<string> ){
 
-        let dBox = new DescriptionBox(uuidv4(),"grouped module",moduleIds,"",new DescriptionBoxProperties(undefined))
-        let config = new GroupModules["Configuration"]({title:dBox.title})
-        let {project} = createGroup(dBox.title,dBox.modulesId.map(mid=>this.getModule(mid)), this.project,
+        const dBox = new DescriptionBox(uuidv4(),"grouped module",moduleIds,"",new DescriptionBoxProperties(undefined))
+        const config = new GroupModules["Configuration"]({title:dBox.title})
+        const {project} = createGroup(dBox.title,dBox.modulesId.map(mid=>this.getModule(mid)), this.project,
             this.activeGroupId, GroupModules,config, this.workflow$, this.environment)
         this.updateProject(project)
     }
 
     addComponent( moduleIds : Array<string> ){
 
-        let dBox = new DescriptionBox(uuidv4(),"component",moduleIds,"",new DescriptionBoxProperties(undefined))
-        let config = new Component["Configuration"]({title:dBox.title})
-        let {project} = createGroup(dBox.title,dBox.modulesId.map(mid=>this.getModule(mid)),this.project,
+        const dBox = new DescriptionBox(uuidv4(),"component",moduleIds,"",new DescriptionBoxProperties(undefined))
+        const config = new Component["Configuration"]({title:dBox.title})
+        const {project} = createGroup(dBox.title,dBox.modulesId.map(mid=>this.getModule(mid)),this.project,
             this.activeGroupId, Component, config, this.workflow$, this.environment)
         this.updateProject(project)
 
@@ -700,22 +700,22 @@ export class AppStore {
 
     publishComponent(component: Component.Module){
 
-        let data = packageAssetComponent(component, this.project)
+        const data = packageAssetComponent(component, this.project)
         sessionStorage.setItem( component.moduleId, JSON.stringify(data))
         window.open("/ui/assets-publish-ui?kind=flux-component&related_id="+ component.moduleId, '_blank');
     }
 
     setRenderingLayout( layout, asNewState = true ){
 
-        let project = setRenderingLayout(layout, this.project)
+        const project = setRenderingLayout(layout, this.project)
         this.updateProject(project, asNewState)
     }
 
     setRenderingStyle(style, asNewState = true){
 
-        let rootComponent = this.getGroup(this.rootComponentId) as Component.Module
+        const rootComponent = this.getGroup(this.rootComponentId) as Component.Module
 
-        let project = setRenderingStyle(rootComponent, style, this.project)
+        const project = setRenderingStyle(rootComponent, style, this.project)
         if(project != this.project)
             {this.updateProject(project, asNewState)}
     }
@@ -723,7 +723,7 @@ export class AppStore {
 
     addDescriptionBox(descriptionBox : DescriptionBox){
 
-        let project = addDescriptionBox(descriptionBox,this.project)
+        const project = addDescriptionBox(descriptionBox,this.project)
         this.updateProject(project)
         this.appObservables.descriptionsBoxesUpdated$.next(this.project.builderRendering.descriptionsBoxes)
     }
@@ -739,7 +739,7 @@ export class AppStore {
 
     updateDescriptionBox(descriptionBox){
         this.unselect()
-        let project = updateDescriptionBox(descriptionBox,this.project)
+        const project = updateDescriptionBox(descriptionBox,this.project)
         this.updateProject(project)
         this.appObservables.descriptionsBoxesUpdated$.next(this.project.builderRendering.descriptionsBoxes)
     }
@@ -747,7 +747,7 @@ export class AppStore {
     deleteDescriptionBox(descriptionBox){
         if(descriptionBox==this.descriptionBoxSelected)
             {this.unselect()}
-        let project = deleteDescriptionBox(descriptionBox,this.project)
+        const project = deleteDescriptionBox(descriptionBox,this.project)
         this.updateProject(project)
 
         this.appObservables.descriptionsBoxesUpdated$.next(this.project.builderRendering.descriptionsBoxes)
@@ -755,7 +755,7 @@ export class AppStore {
 
     updateProjectToIndexHistory(indexHistory, oldIndex){
 
-        let updatesDone ={
+        const updatesDone ={
             modules: false,
             modulesView: false,
             connections: false,
@@ -764,9 +764,9 @@ export class AppStore {
         }
         this.indexHistory   = indexHistory
         this.project        = this.history[this.indexHistory]
-        let oldProject      = this.history[oldIndex]
+        const oldProject      = this.history[oldIndex]
 
-        let delta           = workflowDelta(oldProject.workflow,this.project.workflow )
+        const delta           = workflowDelta(oldProject.workflow,this.project.workflow )
 
         if( delta.modules.removedElements ){
             delta.modules.removedElements
@@ -803,8 +803,8 @@ export class AppStore {
             updatesDone.connections = true
         }
         if( !updatesDone.modulesView && (this.project.builderRendering.modulesView  !== oldProject.builderRendering.modulesView)){
-            let delta = getCollectionsDelta( oldProject.builderRendering.modulesView, this.project.builderRendering.modulesView)
-            let updates = [
+            const delta = getCollectionsDelta( oldProject.builderRendering.modulesView, this.project.builderRendering.modulesView)
+            const updates = [
                 ...delta.createdElements.filter( e => delta.removedElements.find( e2 => e2.moduleId == e.moduleId) == undefined ),
                 ...delta.createdElements.filter( e => delta.removedElements.find( e2 => e2.moduleId == e.moduleId) == undefined )
             ]
@@ -872,7 +872,7 @@ export class AppStore {
     updateProject(newProject:Project, asNewState = true){
         if(!newProject)
             {return}
-        let oldIndex = this.indexHistory
+        const oldIndex = this.indexHistory
         if(!asNewState){
             this.history = this.history.slice(0,-1)
             this.indexHistory--

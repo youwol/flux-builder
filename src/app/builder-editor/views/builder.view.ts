@@ -9,7 +9,7 @@ import {ProjectTreeView} from "../../views/project-tree.view";
 
 export function builderView(appStore: AppStore) : VirtualDOM {
 
-    let sizes = {
+    const sizes = {
         'combined': 'h-50 d-flex',
         'builder': 'h-100 d-flex',
         'render': 'd-none'
@@ -37,19 +37,19 @@ function svgCanvasView(){
 }
 
 function settingsView(appStore: AppStore){
-    let appObservables = appStore.appObservables
-    let settingsFactory = [
+    const appObservables = appStore.appObservables
+    const settingsFactory = [
         {
             when: (d) => d instanceof ModuleFlux,
             mapTo: (m: ModuleFlux) =>{
-                let state = new ModuleSettingsState(m, appStore)
+                const state = new ModuleSettingsState(m, appStore)
                 return new ModuleSettingsView(state)
             }
         },
         {
             when: (d) => d instanceof Connection,
             mapTo: (c: Connection) =>{
-                let state = new ConnectionSettingsState(c, appStore)
+                const state = new ConnectionSettingsState(c, appStore)
                 return new ConnectionSettingsView(state)
             }
         }
@@ -71,7 +71,7 @@ function settingsView(appStore: AppStore){
                     appObservables.connectionSelected$
                     ),
                 (selection) => {
-                    let factory = settingsFactory.find( f => f.when(selection))
+                    const factory = settingsFactory.find( f => f.when(selection))
                     if(!factory)
                         {return {}}
                     return factory.mapTo(selection)
@@ -82,8 +82,8 @@ function settingsView(appStore: AppStore){
 }
 
 function projectTreeView(appStore: AppStore) {
-    let panelId: string = "panel__left_builder"
-    let state = ProjectTreeView.State.stateForAppStoreAndUniq(appStore, panelId)
+    const panelId: string = "panel__left_builder"
+    const state = ProjectTreeView.State.stateForAppStoreAndUniq(appStore, panelId)
    return {
         id:panelId,
         class: "d-flex flex-column grapes-bg-color fv-color-primary p-1 border border-dark text-left fv-text-primary",

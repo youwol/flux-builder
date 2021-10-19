@@ -27,14 +27,14 @@ function focusAction(
     toggledClass: string,
     duration: number = 5000 ) {
      
-    let root = appStore.getRootComponent()
-    let layer = appStore.project.workflow.modules
+    const root = appStore.getRootComponent()
+    const layer = appStore.project.workflow.modules
     .find((mdle) => mdle instanceof GroupModules.Module && mdle.getModuleIds().includes(mdle.moduleId) )
     appStore.selectActiveGroup(layer.moduleId)
     
     setTimeout( () => {
-        let g = document.getElementById(mdle.moduleId)
-        let bBox = g.getBoundingClientRect()
+        const g = document.getElementById(mdle.moduleId)
+        const bBox = g.getBoundingClientRect()
         workflowPlotter.drawingArea.lookAt( 0.5*(bBox.left + bBox.right),  0.5*(bBox.top + bBox.bottom))
         g.classList.toggle(toggledClass)
         setTimeout( () => g.classList.toggle(toggledClass), duration )
@@ -72,15 +72,15 @@ export function plugNotifications(
     )
     appStore.environment.processes$.subscribe( (p: Process)=> {
         
-        let classesIcon = {
+        const classesIcon = {
             [ProcessMessageKind.Scheduled]: "fas fa-clock px-2",
             [ProcessMessageKind.Started]: "fas fa-cog fa-spin px-2",
             [ProcessMessageKind.Succeeded]: "fas fa-check fv-text-success px-2",
             [ProcessMessageKind.Failed]: "fas fa-times fv-text-error px-2",
             [ProcessMessageKind.Log]: "fas fa-cog fa-spin px-2",
         }
-        let doneMessages = [ProcessMessageKind.Succeeded, ProcessMessageKind.Failed]
-        let actions = p.context 
+        const doneMessages = [ProcessMessageKind.Succeeded, ProcessMessageKind.Failed]
+        const actions = p.context 
             ? [{
                 name: 'report',
                 exe: () => ContextView.reportContext(p.context)
@@ -190,7 +190,7 @@ export class Notifier{
         timeout?: Observable<any>
     }){
 
-        let view : VirtualDOM = {
+        const view : VirtualDOM = {
             class:"m-2 p-2 my-1 bg-white rounded " + classBorder,
             style: {border:'solid'},
             children:[
@@ -223,7 +223,7 @@ export class Notifier{
                 timeout && timeout.subscribe( () => elem.remove())
             }
         }
-        let div = render(view)
+        const div = render(view)
         document.getElementById("notifications-container").appendChild(div)
     }
 }

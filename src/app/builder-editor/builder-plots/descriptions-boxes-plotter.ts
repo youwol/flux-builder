@@ -14,12 +14,12 @@ function drawBoxes(
     drawingArea : DrawingArea, 
     appStore : AppStore ){
     
-    let plotData = descriptionsBoxes.map( box => { 
+    const plotData = descriptionsBoxes.map( box => { 
 
-        let rect = getBoundingBox(box.modulesId,10,drawingArea)
-        let x = drawingArea.hScale.invert( rect.x  + rect.width/2)
-        let y = drawingArea.vScale.invert( rect.y + rect.height/2)
-        let selected = appStore.descriptionBoxSelected && 
+        const rect = getBoundingBox(box.modulesId,10,drawingArea)
+        const x = drawingArea.hScale.invert( rect.x  + rect.width/2)
+        const y = drawingArea.vScale.invert( rect.y + rect.height/2)
+        const selected = appStore.descriptionBoxSelected && 
                        appStore.descriptionBoxSelected.descriptionBoxId == box.descriptionBoxId
         return {
             x: x, 
@@ -30,7 +30,7 @@ function drawBoxes(
             data:{descriptionBox:box,
                   boundingBox:rect }
     }})
-    let plotter = new CrossPlot({ plotId:"descriptionsBoxPlotter",
+    const plotter = new CrossPlot({ plotId:"descriptionsBoxPlotter",
                                   plotClasses:[],
                                   drawingArea: drawingArea,
                                   entities:plotData})
@@ -40,10 +40,10 @@ function drawBoxes(
 
         const g = document.createElementNS("http://www.w3.org/2000/svg", "g")
 
-        let headerHeight = 25;
-        let padding = 25;
-        let width = d.data.boundingBox.width
-        let height = d.data.boundingBox.height
+        const headerHeight = 25;
+        const padding = 25;
+        const width = d.data.boundingBox.width
+        const height = d.data.boundingBox.height
         g.innerHTML = `
        <rect height="${height}" width="${width}" 
         class="description-box content"  x="${-width/2}" y="${-height/2}"
@@ -57,8 +57,8 @@ function drawBoxes(
         `
         return g
     }
-    let drawnElements = plotter.draw(plotData)
-    let format        = (d) => d.filter(g=>g).reduce( (acc,e)=>acc.concat(e),[]) 
+    const drawnElements = plotter.draw(plotData)
+    const format        = (d) => d.filter(g=>g).reduce( (acc,e)=>acc.concat(e),[]) 
 
     return drawnElements.entered._groups.concat(drawnElements.updated._groups).map( format ).reduce( (acc,e)=>acc.concat(e),[]) 
 }
@@ -89,7 +89,7 @@ export class DescriptionsBoxesPlotter{
 
         this.appObservables.descriptionsBoxesUpdated$
         .subscribe( descriptionsBoxes=>{
-            let svgElements = drawBoxes(descriptionsBoxes, this.drawingArea, this.appStore)
+            const svgElements = drawBoxes(descriptionsBoxes, this.drawingArea, this.appStore)
             this.connectUserInteractions(svgElements)
             this.plottersObservables.descriptionsBoxesDrawn$.next(svgElements)
         })

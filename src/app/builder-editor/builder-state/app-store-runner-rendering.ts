@@ -5,7 +5,7 @@ import { applyHtmlCss, applyHtmlLayout } from './app-store-component'
 
 export function setRenderingLayout( layout: string, project:Project ) : Project {
 
-    let debugSingleton = AppDebugEnvironment.getInstance()
+    const debugSingleton = AppDebugEnvironment.getInstance()
 
     debugSingleton.debugOn && 
     debugSingleton.logWorkflowBuilder( {  
@@ -14,8 +14,8 @@ export function setRenderingLayout( layout: string, project:Project ) : Project 
         object:{    layout: layout
         }
     })
-    let workflow = applyHtmlLayout(project.workflow, layout)
-    let projectNew = new Project({
+    const workflow = applyHtmlLayout(project.workflow, layout)
+    const projectNew = new Project({
         ...project,
         ...{
             workflow: workflow
@@ -27,7 +27,7 @@ export function setRenderingLayout( layout: string, project:Project ) : Project 
 
 export function setRenderingStyle(rootComponent: Component.Module, style, project: Project):Project{
 
-    let debugSingleton = AppDebugEnvironment.getInstance()
+    const debugSingleton = AppDebugEnvironment.getInstance()
 
     debugSingleton.debugOn && 
     debugSingleton.logWorkflowBuilder( {  
@@ -36,11 +36,11 @@ export function setRenderingStyle(rootComponent: Component.Module, style, projec
         object:{    style: style
         }
     })
-    let workflow = applyHtmlCss(rootComponent, project.workflow, style)
+    const workflow = applyHtmlCss(rootComponent, project.workflow, style)
     if(workflow==project.workflow)
         {return project}
         
-    let projectNew = new Project({
+    const projectNew = new Project({
         ...project,
         ...{
             workflow

@@ -5,7 +5,7 @@ export function applyPatches(editor:any){
     /**
      * This patch is to switch between old fontawesome icons to corresponding new ones
      */
-    let toolbarDiv = document.getElementById("gjs-tools").querySelector(".gjs-toolbar") as HTMLDivElement
+    const toolbarDiv = document.getElementById("gjs-tools").querySelector(".gjs-toolbar") as HTMLDivElement
     const callback = function(mutationsList:any, observer:any) {
         if(toolbarDiv.children.length>0){
             toolbarDiv.querySelector(".fa-arrows").classList.add("fas","fa-arrows-alt")   
@@ -19,7 +19,7 @@ export function applyPatches(editor:any){
      * the dedicated 'move' icon is used. Mixing dragging inside the component w/ layout change + internal
      * component behavior was causing problem
      */
-    let defaultMove = editor.Commands.get('tlb-move')
+    const defaultMove = editor.Commands.get('tlb-move')
     editor.Commands.add('tlb-move', {
     run(ed :any, sender:any, opts :any = {}) {
         /* If the dedicated icon is used => opts["event"].target is not defined */
@@ -43,9 +43,9 @@ export function applyPatches(editor:any){
 
     /* ---
     ---*/
-    let buttons_container2 = document.getElementById("panel__layout-devices-actions").children[0]
+    const buttons_container2 = document.getElementById("panel__layout-devices-actions").children[0]
     buttons_container2.classList.add("d-flex","flex-wrap")
-    let buttons_container3 = document.getElementById("panel__render-panels-actions").children[0]
+    const buttons_container3 = document.getElementById("panel__render-panels-actions").children[0]
     buttons_container3.classList.add("d-flex","flex-wrap")
 
 }

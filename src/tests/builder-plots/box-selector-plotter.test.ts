@@ -12,11 +12,11 @@ import { environment } from '../common/dependencies'
 
 test('load simple project', (done) => {
     
-    let div = document.createElement("div")
+    const div = document.createElement("div")
     div.id = "plot-container"
     document.body.appendChild(div)
   
-    let drawingArea = createDrawingArea(
+    const drawingArea = createDrawingArea(
       {  containerDivId : "plot-container",
           width : 100,
           height :100,
@@ -29,22 +29,22 @@ test('load simple project', (done) => {
     })     
   
     
-    let appObservables = AppObservables.getInstance()
-    let plottersObservables = AppBuildViewObservables.getInstance()
+    const appObservables = AppObservables.getInstance()
+    const plottersObservables = AppBuildViewObservables.getInstance()
     AppDebugEnvironment.getInstance().debugOn = false
   
-    let appStore : AppStore = AppStore.getInstance(environment)
-    let mdlesPlotter = new ModulesPlotter(drawingArea, plottersObservables,appObservables,appStore)
+    const appStore : AppStore = AppStore.getInstance(environment)
+    const mdlesPlotter = new ModulesPlotter(drawingArea, plottersObservables,appObservables,appStore)
 
     plottersObservables.modulesDrawn$.pipe(
         skip(0),
         take(1)
     ).subscribe( (d) =>
     {     
-        let selectorPlotter = new BoxSelectorPlotter(drawingArea,plottersObservables,appObservables,appStore,mdlesPlotter)
+        const selectorPlotter = new BoxSelectorPlotter(drawingArea,plottersObservables,appObservables,appStore,mdlesPlotter)
         selectorPlotter.startSelection([0,0])
 
-        let rectSelectorSvg = document.querySelectorAll("rect.rectangle-selector")
+        const rectSelectorSvg = document.querySelectorAll("rect.rectangle-selector")
         expect(rectSelectorSvg.length).toEqual(1)
         let highlighteds = document.querySelectorAll(".highlighted")
         expect(highlighteds.length).toEqual(0)
@@ -62,7 +62,7 @@ test('load simple project', (done) => {
         highlighteds = document.querySelectorAll(".highlighted")
         expect(highlighteds.length).toEqual(0)
 
-        let selecteds = appStore.getModulesSelected()
+        const selecteds = appStore.getModulesSelected()
         expect(selecteds.length).toEqual(2)
         expect(selecteds[0].moduleId).toEqual("module0")
         expect(selecteds[1].moduleId).toEqual("GroupModules_child-layer")

@@ -18,7 +18,7 @@ export async function createLayoutEditor(): grapesjs.Editor {
     localStorage.setItem("gjs-css", "")
     localStorage.setItem("gjs-styles", "")
 
-    let debugSingleton = AppDebugEnvironment.getInstance()
+    const debugSingleton = AppDebugEnvironment.getInstance()
     debugSingleton.debugOn &&
         debugSingleton.logRenderTopic({
             level: LogLevel.Info,
@@ -26,9 +26,9 @@ export async function createLayoutEditor(): grapesjs.Editor {
             object: {}
         })
 
-    let editor$ = new Subject<any>()
+    const editor$ = new Subject<any>()
 
-    let editor = grapesjs.init({
+    const editor = grapesjs.init({
         autorender: false,
         container: '#gjs',
         canvas: {
@@ -66,19 +66,19 @@ export async function createLayoutEditor(): grapesjs.Editor {
     editor.dynamicModulesId = []
     editor.fluxCache = {}
 
-    let bootstrapCss = document.getElementById("bootstrap-css")
+    const bootstrapCss = document.getElementById("bootstrap-css")
     if (!bootstrapCss)
         {console.error("Bootstrap css needs to be included in host application with id 'bootstrap-css' ")}
-    let fontawesomeCss = document.getElementById("fontawesome-css")
+    const fontawesomeCss = document.getElementById("fontawesome-css")
     if (!fontawesomeCss)
         {console.error("Fontawesome css needs to be included in host application with id 'fontawesome-css' ")}
-    let youwolCss = document.getElementById("youwol-css")
+    const youwolCss = document.getElementById("youwol-css")
     if (!youwolCss)
         {console.error("Fontawesome css needs to be included in host application with id 'fontawesome-css' ")}
 
     editor.on('load', function () {
-        let document = editor.Canvas.getDocument() as HTMLDocument
-        let headElement = document.head as HTMLHeadElement
+        const document = editor.Canvas.getDocument() as HTMLDocument
+        const headElement = document.head as HTMLHeadElement
         headElement.appendChild(bootstrapCss.cloneNode())
         headElement.appendChild(fontawesomeCss.cloneNode())
         headElement.appendChild(youwolCss.cloneNode())
@@ -108,7 +108,7 @@ export function initLayoutEditor(
     appStore: AppStore
 ) {
 
-    let debugSingleton = AppDebugEnvironment.getInstance()
+    const debugSingleton = AppDebugEnvironment.getInstance()
 
     debugSingleton.debugOn &&
         debugSingleton.logRenderTopic({

@@ -11,6 +11,7 @@
 
 # Un-ignored
 !/src/app/builder-editor/builder-plots/index.ts
+!/src/app/builder-editor/builder-plots/workflow-plotter.ts
 
 # Allow un-ignoring some contents of /src/app/builder-editor/builder-state
 !/src/app/builder-editor/builder-state
@@ -18,6 +19,8 @@
 
 # Un-ignored
 !/src/app/builder-editor/builder-state/app-extensions-observables.service.ts
+!/src/app/builder-editor/builder-state/app-store-description-box.ts
+!/src/app/builder-editor/builder-state/app-store-runner-rendering.ts
 !/src/app/builder-editor/builder-state/extension.ts
 !/src/app/builder-editor/builder-state/factory-utils.ts
 !/src/app/builder-editor/builder-state/index.ts
@@ -39,6 +42,7 @@
 
 # Un-ignored
 !/src/app/builder-editor/views/index.ts
+!/src/app/builder-editor/views/info.view.ts
 
 # Allow un-ignoring some contents of /src/app/grapesjs-editor
 !/src/app/grapesjs-editor/
@@ -47,7 +51,20 @@
 # Un-ignored
 !/src/app/grapesjs-editor/index.ts
 !/src/app/grapesjs-editor/panels.ts
+!/src/app/grapesjs-editor/resources-initialisation.ts
 !/src/app/grapesjs-editor/style-manager.ts
+
+
+# Allow un-ignoring some contents of /src/app/grapesjs-editor
+!/src/app/grapesjs-editor/views
+/src/app/grapesjs-editor/views/*
+
+# Un-ignored
+!/src/app/grapesjs-editor/views/render.view.ts
+
+# Un-ignored
+!/src/app/loading.views.ts
+!/src/app/main.ts
 
 # Allow un-ignoring some contents of /src/app/views
 !/src/app/views/
@@ -71,7 +88,9 @@
 /src/tests/common/*
 
 # Un-ignored
+!/src/tests/common/factory.ts
 !/src/tests/common/mockito.ts
+!/src/tests/common/projects-data.ts
 
 # Un-ignored
 !/src/tests/views/

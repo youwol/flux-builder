@@ -14,8 +14,8 @@ interface Action {
 }
 export function topBanner(appStore: AppStore): VirtualDOM {
 
-    let actions = getActions(appStore)
-    let view = {
+    const actions = getActions(appStore)
+    const view = {
         class: 'd-flex grapes-bg-color py-1  fv-color-primary justify-content-around',
         children: [
             groupActionsView(actions.main, appStore),
@@ -29,7 +29,7 @@ export function topBanner(appStore: AppStore): VirtualDOM {
 
 function getActions(appStore: AppStore) {
 
-    let observables = appStore.appObservables
+    const observables = appStore.appObservables
     return {
         main: [
             {
@@ -107,7 +107,7 @@ function getActions(appStore: AppStore) {
                     map(selected => selected instanceof ModuleFlux)
                 ),
                 onTriggered: () => {
-                    let mdles = appStore.getModulesSelected()
+                    const mdles = appStore.getModulesSelected()
                     appStore.duplicateModules(mdles)
                 }
             },
@@ -119,7 +119,7 @@ function getActions(appStore: AppStore) {
                     map(selected => selected instanceof ModuleFlux)
                 ),
                 onTriggered: () => {
-                    let mdles = appStore.getModulesSelected()
+                    const mdles = appStore.getModulesSelected()
                     appStore.alignH(mdles)
                 }
             },
@@ -131,7 +131,7 @@ function getActions(appStore: AppStore) {
                     map(selected => selected instanceof ModuleFlux)
                 ),
                 onTriggered: () => {
-                    let mdles = appStore.getModulesSelected()
+                    const mdles = appStore.getModulesSelected()
                     appStore.alignV(mdles)
                 }
             }/*
@@ -173,10 +173,10 @@ function getActions(appStore: AppStore) {
 
 function actionView(action: Action): VirtualDOM {
 
-    let visible$ = action.visible instanceof Observable
+    const visible$ = action.visible instanceof Observable
         ? action.visible
         : of(action.visible)
-    let enabled$ = action.enabled instanceof Observable
+    const enabled$ = action.enabled instanceof Observable
         ? action.enabled
         : of(action.enabled)
 

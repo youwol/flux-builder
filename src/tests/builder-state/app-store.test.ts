@@ -11,8 +11,8 @@ test('load empty project', (done) => {
 
   AppDebugEnvironment.getInstance().debugOn = false
 
-  let appObservables = new AppObservables()
-  let appStore : AppStore =new AppStore(environment, appObservables, new AppBuildViewObservables()) 
+  const appObservables = new AppObservables()
+  const appStore : AppStore =new AppStore(environment, appObservables, new AppBuildViewObservables()) 
   appStore.loadProjectId("emptyProject")
 
   appObservables.ready$.pipe(
@@ -33,10 +33,10 @@ test('load simple project', done => {
 
   AppDebugEnvironment.getInstance().debugOn = false
 
-  let appObservables = new AppObservables()
-  let appStore : AppStore =new AppStore(environment, appObservables, new AppBuildViewObservables()) 
+  const appObservables = new AppObservables()
+  const appStore : AppStore =new AppStore(environment, appObservables, new AppBuildViewObservables()) 
   appStore.loadProjectId("simpleProject")
-  let projectData = projects.simpleProject
+  const projectData = projects.simpleProject
 
   appObservables.ready$.pipe(
     filter( d=> d)
@@ -55,7 +55,7 @@ test('load simple project', done => {
     //expect(appStore.adaptors.length).toEqual(1)
     //expect(appStore.adaptors[0].adaptorId).toEqual("fake-adaptor")
 
-    let plugins = appStore.getPlugins("module0")
+    const plugins = appStore.getPlugins("module0")
     expect(plugins.length).toEqual(1)
     expect(plugins[0].moduleId).toEqual("plugin0")
 
@@ -68,8 +68,8 @@ test('test UiState', done => {
 
   AppDebugEnvironment.getInstance().debugOn = false
 
-  let appObservables = new AppObservables()
-  let appStore : AppStore =new AppStore(environment, appObservables, new AppBuildViewObservables()) 
+  const appObservables = new AppObservables()
+  const appStore : AppStore =new AppStore(environment, appObservables, new AppBuildViewObservables()) 
 
   appObservables.uiStateUpdated$
   .subscribe( (d)=>{
@@ -85,16 +85,16 @@ test('test UiState', done => {
 test('save project 0', done => {
 
     AppDebugEnvironment.getInstance().debugOn = false
-    let appObservables = AppObservables.getInstance()
+    const appObservables = AppObservables.getInstance()
 
-    let appStore : AppStore =new AppStore(environment, appObservables, AppBuildViewObservables.getInstance()) 
+    const appStore : AppStore =new AppStore(environment, appObservables, AppBuildViewObservables.getInstance()) 
     
     appObservables.modulesUpdated$.subscribe( ()=>{    
       appStore.saveProject()
-      let saved = environment.savedProjects[appStore.projectId]
+      const saved = environment.savedProjects[appStore.projectId]
       expect(saved.requirements).toEqual(projects.simpleProject.requirements)
       expect(saved.builderRendering).toEqual(projects.simpleProject.builderRendering)
-      let tutu = projects.simpleProject.workflow
+      const tutu = projects.simpleProject.workflow
       expect(saved.workflow).toEqual(projects.simpleProject.workflow)
       done()
     })
@@ -106,13 +106,13 @@ test('save project 0', done => {
 test('save project 1', done => {
 
   AppDebugEnvironment.getInstance().debugOn = false
-  let appObservables = AppObservables.getInstance()
+  const appObservables = AppObservables.getInstance()
 
-  let appStore : AppStore =new AppStore(environment, appObservables, AppBuildViewObservables.getInstance()) 
+  const appStore : AppStore =new AppStore(environment, appObservables, AppBuildViewObservables.getInstance()) 
   
   appObservables.modulesUpdated$.subscribe( ()=>{    
     appStore.saveProject()
-    let saved = environment.savedProjects[appStore.projectId]
+    const saved = environment.savedProjects[appStore.projectId]
     expect(saved.requirements).toEqual(projects.simpleProjectConnection.requirements)
     expect(saved.builderRendering).toEqual(projects.simpleProjectConnection.builderRendering)
     expect(saved.workflow).toEqual(projects.simpleProjectConnection.workflow)
@@ -124,9 +124,9 @@ test('save project 1', done => {
 
 test('selection', (done) => {
 
-  let appObservables = new AppObservables()
+  const appObservables = new AppObservables()
   
-  let appStore : AppStore =new AppStore(environment, appObservables, AppBuildViewObservables.getInstance()) 
+  const appStore : AppStore =new AppStore(environment, appObservables, AppBuildViewObservables.getInstance()) 
   appObservables.ready$.pipe(
     filter( d=> d)
   ).subscribe( (d)=>{
@@ -162,19 +162,19 @@ test('selection', (done) => {
     expect(appStore.isSelected("module1")).toEqual(true)
     expect(appStore.isSelected("module0")).toEqual(true)
 
-    let module0 = appStore.getModule("module0")
+    const module0 = appStore.getModule("module0")
     expect( module0.moduleId ).toEqual("module0")
-    let plugin0 = appStore.getModuleOrPlugin("plugin0")
+    const plugin0 = appStore.getModuleOrPlugin("plugin0")
     expect( plugin0.moduleId ).toEqual("plugin0")
 
-    let groupModule = appStore.getModule("GroupModules_child-layer")
+    const groupModule = appStore.getModule("GroupModules_child-layer")
 
     expect( groupModule ).toBeTruthy()
     
     appStore.selectActiveGroup("GroupModules_child-layer")
-    let activeGroup = appStore.getActiveGroup()
+    const activeGroup = appStore.getActiveGroup()
     expect( activeGroup.moduleId ).toEqual("GroupModules_child-layer")
-    let activeModules = appStore.getActiveModulesId()
+    const activeModules = appStore.getActiveModulesId()
     expect( activeModules ).toEqual(["module1"])
 
     appStore.selectDescriptionBox("descriptionBoxId")

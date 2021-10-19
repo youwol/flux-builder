@@ -118,7 +118,7 @@ export namespace DataTreeView{
 
         getChildrenNodes(object:Object){
             
-            let attributes = []
+            const attributes = []
             for (var key in object) {
                 attributes.push(nodeFactory(key, object[key], this.nestedIndex+1) )
             }

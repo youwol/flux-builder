@@ -81,7 +81,7 @@ export namespace ImportModulesView{
 
         bufferColumnView(){
             
-            let okBttnView = new Button.View({
+            const okBttnView = new Button.View({
                 state: new Button.State(this.state.ok$),
                 contentView: ()=> ({innerText:'Import'}),
                 class:"fv-btn fv-btn-primary fv-bg-focus"
@@ -132,7 +132,7 @@ export namespace ImportModulesView{
 
         explorerView(){
 
-            let view = new AssetsExplorerView.View( {
+            const view = new AssetsExplorerView.View( {
                 state: this.state.explorerState,
                 class: 'h-100'
             }as any)
@@ -150,11 +150,11 @@ export namespace ImportModulesView{
         appStore: AppStore,
         onImport: (Factory)=> void 
         ) {
-        let import$ = new Subject<MouseEvent>()
-        let state = new State({
+        const import$ = new Subject<MouseEvent>()
+        const state = new State({
             ok$:import$
         })
-        let view =  new View({state:state})
+        const view =  new View({state:state})
 
         ModalView.popup({
             view,

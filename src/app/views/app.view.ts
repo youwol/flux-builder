@@ -16,7 +16,7 @@ function notificationsView(appStore: AppStore) : VirtualDOM {
 
 export function mainView(appStore: AppStore): VirtualDOM {
 
-    let view = {
+    const view = {
         id: 'main-container',
         class: "h-100 w-100 d-flex flex-column",
         children: [

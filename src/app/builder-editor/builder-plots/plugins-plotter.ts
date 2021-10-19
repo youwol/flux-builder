@@ -8,11 +8,11 @@ import { AppObservables,AppBuildViewObservables, AppDebugEnvironment, LogLevel,
 
 function drawPlugin(plugin :PluginFlux<any>, containerGroup, appStore: AppStore ) {
 
-    let display = new plugin.Factory.BuilderView()
-    let pluginGroup = display.render(plugin)
+    const display = new plugin.Factory.BuilderView()
+    const pluginGroup = display.render(plugin)
     pluginGroup.onclick = (e) =>{  e.stopPropagation() ; appStore.selectModule(plugin.moduleId) }
 
-    let a = containerGroup.querySelector("#"+plugin.moduleId)
+    const a = containerGroup.querySelector("#"+plugin.moduleId)
     if(a)
         {a.remove()}
     pluginGroup.id=plugin.moduleId
@@ -27,7 +27,7 @@ function drawPlugin(plugin :PluginFlux<any>, containerGroup, appStore: AppStore 
     if( pluginGroup.getBBox)
         {dyPlugin =  pluginGroup.getBBox().height/2}
         
-    let dy = dyModule + dyPlugin
+    const dy = dyModule + dyPlugin
     pluginGroup.setAttribute("x",  containerGroup.getAttribute("x"))
     pluginGroup.setAttribute("y",  Number(containerGroup.getAttribute("y"))+dy)
     pluginGroup.setAttribute("transform",  "translate(0," + dy + ")")
@@ -55,7 +55,7 @@ export class PluginsPlotter {
 
     draw(modulesDrawn){
         Object.values(this.groups).forEach( (g:any) => g.remove())
-        let plugInsToPlot = this.appStore.project.workflow.plugins
+        const plugInsToPlot = this.appStore.project.workflow.plugins
         .filter( p => modulesDrawn[p.parentModule.moduleId])
         .map( p => [p,modulesDrawn[p.parentModule.moduleId]])
         this.debugSingleton.debugOn &&

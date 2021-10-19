@@ -37,7 +37,7 @@ export namespace AutoForm {
         }
     }
 
-    export let viewFactory = [
+    export const viewFactory = [
         {
             test: (value: ValueDescription) => value.type == "Boolean",
             view: (value$: BehaviorSubject<boolean>) => {
@@ -59,7 +59,7 @@ export namespace AutoForm {
         {
             test: (value: ValueDescription) => value.metadata.enum,
             view: (value$: BehaviorSubject<string>, description: ValueDescription) => {
-                let items = description.metadata.enum.map( text => new Select.ItemData(text, text))
+                const items = description.metadata.enum.map( text => new Select.ItemData(text, text))
                 return new Select.View({
                     state: new Select.State(items, value$),
                     class: 'w-100 ',
@@ -83,8 +83,8 @@ export namespace AutoForm {
                 return value.type == "Number" && value.metadata.min != undefined && value.metadata.max != undefined
             },
             view: (value$: BehaviorSubject<number>, description: ValueDescription) =>{
-                let hovered$ = new BehaviorSubject(false)
-                let state = new Slider.State({min: description.metadata.min, max: description.metadata.max, value:value$, count:1000 })
+                const hovered$ = new BehaviorSubject(false)
+                const state = new Slider.State({min: description.metadata.min, max: description.metadata.max, value:value$, count:1000 })
                 return {
                     class:'d-flex',
                     children:[
@@ -139,11 +139,11 @@ export namespace AutoForm {
                     {
                         sideEffects: (_, elem: HTMLElement$) => {
                             
-                            let sub = combineLatest( this.state.outputValues$ ).subscribe( entries => {
-                                let base = cloneDeep(state.inputValues$.getValue())
+                            const sub = combineLatest( this.state.outputValues$ ).subscribe( entries => {
+                                const base = cloneDeep(state.inputValues$.getValue())
                                 entries.forEach( ({path, value}) => {
-                                    let lastPart = path.slice(-1)[0]
-                                    let parentParts = path.slice(0,-1)
+                                    const lastPart = path.slice(-1)[0]
+                                    const parentParts = path.slice(0,-1)
                                     parentParts.reduce( (acc,e) => acc[e], base )[lastPart] = value
                                 })
                                 state.currentValue$.next(base)
@@ -164,7 +164,7 @@ export namespace AutoForm {
         //observables: Array<Observable<{path:Array<string>,value:ValueType}>> 
         ) : VirtualDOM{
         
-        let order = Object.keys(basePath.reduce((acc, e) => acc[e], configurationBase))
+        const order = Object.keys(basePath.reduce((acc, e) => acc[e], configurationBase))
         
         items= items.sort( (lhs, rhs) => order.indexOf(lhs[0]) - order.indexOf(rhs[0]))
         if (items.length == 0) 
@@ -199,13 +199,13 @@ export namespace AutoForm {
         //observables: Array<Observable<{path:Array<string>,value:ValueType}>>
         ): VirtualDOM {
 
-        let value0 = path.reduce((acc, e) => acc[e], configuration)
-        let factory = state.elementsViewFactory.find(element => element.test(valueMeta))
+        const value0 = path.reduce((acc, e) => acc[e], configuration)
+        const factory = state.elementsViewFactory.find(element => element.test(valueMeta))
         if(! factory)
             {return { id:'unkwnown-element-'+ valueMeta.name+'-'+valueMeta.type}}
-        let value$ = new BehaviorSubject(value0)
-        let view = factory.view(value$, valueMeta);
-        let obs = ( value$ as Observable<any>).pipe(map(value => ({ path, value })))
+        const value$ = new BehaviorSubject(value0)
+        const view = factory.view(value$, valueMeta);
+        const obs = ( value$ as Observable<any>).pipe(map(value => ({ path, value })))
         state.outputValues$.push(obs)
         return view
     }
@@ -218,13 +218,13 @@ export namespace AutoForm {
             state: State
             ): VirtualDOM {
 
-        let currentItems = items.filter(([k, v]: [string, ValueDescription]) => !k.includes(".") && isLeaf(v))
+        const currentItems = items.filter(([k, v]: [string, ValueDescription]) => !k.includes(".") && isLeaf(v))
 
-        let children = items
+        const children = items
             .filter(item => item[0].includes("."))
             .map(([key, val]) => {
-                let prefix = key.split(".")[0]
-                let suffix = key.split(".").slice(1).join('.')
+                const prefix = key.split(".")[0]
+                const suffix = key.split(".").slice(1).join('.')
                 return [prefix, [suffix, val], basePath.concat(prefix)]
             })
             .reduce((acc: any, [prefix, val, basePath]: any) => {
@@ -234,14 +234,14 @@ export namespace AutoForm {
                 return acc
             }, {})
         
-        let r = Object.entries(children)
+        const r = Object.entries(children)
             .map(([prefix, { values, basePath }]: any) => [prefix, groupItems(values, configurationBase, basePath, state)])
             .reduce((acc, [k, v]) => Object.assign({}, acc, { [k]: v }), {})
         
-        let itemsView = createAttributesGrid(currentItems, basePath, configurationBase, state)
+        const itemsView = createAttributesGrid(currentItems, basePath, configurationBase, state)
         
-        let tabsData = Object.entries(r).map( ([key, val]) => {
-            let tabData =  new Tabs.TabData(key,key)
+        const tabsData = Object.entries(r).map( ([key, val]) => {
+            const tabData =  new Tabs.TabData(key,key)
             tabData['view'] = val
             return tabData
         }) 
@@ -250,13 +250,13 @@ export namespace AutoForm {
                 'class': 'p-2',
                 'children': [itemsView]
             }}
-        let tabState = new Tabs.State(tabsData)
-        let tabView = new Tabs.View({
+        const tabState = new Tabs.State(tabsData)
+        const tabView = new Tabs.View({
             state: tabState,
             contentView: (_,tabData) => tabData['view'],
             headerView: (_,tabData) => ({innerText: tabData.name, class:'px-2'})
         })
-        let data = {
+        const data = {
             'class': 'p-2',
             'children': [
                 itemsView,

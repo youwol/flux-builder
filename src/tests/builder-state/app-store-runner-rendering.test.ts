@@ -6,7 +6,7 @@ import { environment } from '../common/dependencies'
 
 function setupProject(): AppStore {
 
-  let appStore: AppStore = new AppStore(
+  const appStore: AppStore = new AppStore(
       environment,
       AppObservables.getInstance(),
       AppBuildViewObservables.getInstance()
@@ -18,8 +18,8 @@ function setupProject(): AppStore {
 
 test('set rendering layout', () => {
 
-    let appStore : AppStore = setupProject()
-    let html = `<div id='${appStore.rootComponentId}' class='flux-element flux-component'><div> test rendering layout </div></div>`
+    const appStore : AppStore = setupProject()
+    const html = `<div id='${appStore.rootComponentId}' class='flux-element flux-component'><div> test rendering layout </div></div>`
     appStore.setRenderingLayout(html)
     
     let outerHtml = appStore.getRootComponent().getOuterHTML()
@@ -50,14 +50,14 @@ class MockCSSStyleSheet{
 test('set rendering style', () => {
 
     AppDebugEnvironment.getInstance().debugOn = false
-    let appStore : AppStore = AppStore.getInstance(environment)
+    const appStore : AppStore = AppStore.getInstance(environment)
 
     appStore.setRenderingStyle(".test{background-color:'black'}")
     // .test is not used in the project => it has not been set
     let outerStyle = appStore.getRootComponent().getOuterCSS() as string
     expect(outerStyle.trim()).toEqual("")
 
-    let style = `#${appStore.rootComponentId}{ background-color: black }`
+    const style = `#${appStore.rootComponentId}{ background-color: black }`
     appStore.setRenderingStyle(style)
     outerStyle = appStore.getRootComponent().getOuterCSS() as string
     expect(outerStyle.trim()).toEqual(style)

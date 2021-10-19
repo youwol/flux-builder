@@ -45,7 +45,7 @@ export namespace InputStatusView{
             this.tabState = new Tabs.State([new DataTab(), new ConfigTab()],selectedTabId$)
 
             this.configStatus = mergeConfiguration( mdle.configuration.data, adaptedInput.configuration)
-            let context = new Context("",{})
+            const context = new Context("",{})
             this.dataStatus = contract.resolve(adaptedInput.data, context)
         }
     }
@@ -86,14 +86,14 @@ export namespace InputStatusView{
             this.style = this.options.containerStyle 
 
             
-            let expandedNodesExpectation$ =  new BehaviorSubject<Array<string>>(['optional', 'required'])
+            const expandedNodesExpectation$ =  new BehaviorSubject<Array<string>>(['optional', 'required'])
                     
-            let tabView = new Tabs.View({
+            const tabView = new Tabs.View({
                 state: this.state.tabState,
                 contentView: (state, data) => { 
                     if(data instanceof DataTab){
         
-                        let state = new ExpectationView.State({
+                        const state = new ExpectationView.State({
                             status: this.state.dataStatus,
                             expandedNodes$: expandedNodesExpectation$
                         })
@@ -102,7 +102,7 @@ export namespace InputStatusView{
         
                     if(data instanceof ConfigTab){
         
-                        let state = new ConfigurationStatusView.State({
+                        const state = new ConfigurationStatusView.State({
                             status: this.state.configStatus
                         })
                         return new ConfigurationStatusView.View({state})

@@ -20,8 +20,8 @@ export function getConnections$(connectionsUpdated$ ){
 }
 export function convert(bbox,matrix,drawingArea) {
     var offset = document.getElementById(drawingArea.svgCanvas.attr("id")).getBoundingClientRect();
-    let transform = drawingArea.overallTranform
-    let a = {
+    const transform = drawingArea.overallTranform
+    const a = {
       xmin: ((matrix.a * bbox.x) + (matrix.c * bbox.y) + matrix.e - offset.left 
       - transform.translateX)/transform.scale,
       ymin: ((matrix.b * bbox.x) + (matrix.d * bbox.y) + matrix.f - offset.top
@@ -36,7 +36,7 @@ export function convert(bbox,matrix,drawingArea) {
 
 export function getBoundingBox(modulesId:Array<String>,margin:number,drawingArea ){
         
-    let bbox= modulesId
+    const bbox= modulesId
     .map( (mid: string) => document.getElementById(mid))
     .filter(e => e)
     .map( (e:any) => convert(e.getBBox(),e.getScreenCTM(),drawingArea) )

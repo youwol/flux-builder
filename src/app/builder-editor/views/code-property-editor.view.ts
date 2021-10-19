@@ -21,7 +21,7 @@ export namespace CodePropertyEditorView{
             initialCode: string
         }){
             this.mdle = mdle 
-            let content$ = new BehaviorSubject<string>(initialCode)
+            const content$ = new BehaviorSubject<string>(initialCode)
             this.codeEditorState = new CodeEditorView.State({content$})
         }
     }
@@ -94,8 +94,8 @@ export namespace CodePropertyEditorView{
         onUpdate: (string) => void
     }){
 
-        let state = new State({mdle, initialCode})
-        let view = new View({
+        const state = new State({mdle, initialCode})
+        const view = new View({
             state: state, 
             editorConfiguration,
             options:{

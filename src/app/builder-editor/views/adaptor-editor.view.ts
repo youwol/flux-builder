@@ -21,13 +21,13 @@ export namespace AdaptorEditoView{
     
         try{
             let lines = stack.split('\n')
-            let message = lines[0]
+            const message = lines[0]
             lines = lines.filter( line => line.includes('eval') && line.split(',').length==2)
             if(lines.length==0){
                 return new ExecutionError(message, undefined, undefined)
             }
-            let p = lines[0].split(',')[1].split('<anonymous>:')[1].split(')')[0]
-            let [row,col] = [ Number(p.split(':')[0]) - 2, Number(p.split(':')[1]) ]
+            const p = lines[0].split(',')[1].split('<anonymous>:')[1].split(')')[0]
+            const [row,col] = [ Number(p.split(':')[0]) - 2, Number(p.split(':')[1]) ]
             return new ExecutionError(message, row, col)
         }
         catch(e){
@@ -77,7 +77,7 @@ export namespace AdaptorEditoView{
         }){
             this.appStore = appStore
             this.connection = connection
-            let codeContent$ = new BehaviorSubject<string>(initialCode)
+            const codeContent$ = new BehaviorSubject<string>(initialCode)
             this.codeEditorState = new CodeEditorView.State({
                 content$:codeContent$
             })
@@ -93,7 +93,7 @@ export namespace AdaptorEditoView{
             ]).pipe(
                 map( ([content, data]) => { 
                     try{
-                        let result = new Function(content)()(data, this.mdleEnd.helpers)
+                        const result = new Function(content)()(data, this.mdleEnd.helpers)
                         result.configuration = _.merge({}, this.mdleEnd.getPersistentData(), result.configuration)
                         return result
                     }
@@ -190,7 +190,7 @@ export namespace AdaptorEditoView{
 
         statusView() : VirtualDOM{
                         
-            let info = "Presented here is a blind test of the input that is reaching the module's implementation "+
+            const info = "Presented here is a blind test of the input that is reaching the module's implementation "+
             "with respect to its internal validation rules. \n Make sure the trigger turn green before updating the adaptor."
             
             return { 
@@ -205,7 +205,7 @@ export namespace AdaptorEditoView{
                             if (input instanceof ExecutionError || !input.data)
                                 {return invalidParsingView(input)}
 
-                            let state = new InputStatusView.State({
+                            const state = new InputStatusView.State({
                                 mdle: this.state.mdleEnd,
                                 adaptedInput: input,
                                 contract: this.state.contract
@@ -227,7 +227,7 @@ export namespace AdaptorEditoView{
         
         rawInputView() : VirtualDOM{
 
-            let info = "Presented here is the latest input that have reached the adaptor, before any transformation. "+
+            const info = "Presented here is the latest input that have reached the adaptor, before any transformation. "+
                        "The input that is actually reaching the module's implementation is presented below."
 
             return {   
@@ -250,7 +250,7 @@ export namespace AdaptorEditoView{
 
         adaptedInputView() : VirtualDOM{
 
-            let info = "Presented here is the input that is actually reaching the module's implementation. "+
+            const info = "Presented here is the input that is actually reaching the module's implementation. "+
             "Here, the configuration part of the input is merging the default one (defined in module's settings) "+
             "with the one returned by the adaptor (as presented in the previous tab)."
             
@@ -288,13 +288,13 @@ export namespace AdaptorEditoView{
                             if(!result)
                                 {return { 'innerText': 'code not valid', class:'p-3'}}
         
-                            let treeState = new DataTreeView.State({
+                            const treeState = new DataTreeView.State({
                                 title: rootNodeName,
                                 data: result,
                                 expandedNodes:expandedNodes
                             } as any)
         
-                            let treeView = new DataTreeView.View({
+                            const treeView = new DataTreeView.View({
                                 state: treeState,
                                 connectedCallback: (elem) => {
                                     elem.subscriptions.push(
@@ -323,8 +323,8 @@ export namespace AdaptorEditoView{
         appStore: AppStore,
         onUpdate: (string) => void
     }){
-        let state = new State({connection, initialCode, appStore})
-        let view = new View({
+        const state = new State({connection, initialCode, appStore})
+        const view = new View({
             state: state, 
             options:{
                 containerClass: 'p-3 d-flex flex-grow-1 w-100',

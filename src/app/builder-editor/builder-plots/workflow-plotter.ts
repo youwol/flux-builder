@@ -59,11 +59,11 @@ export class WorkflowPlotter{
                 ? drawingArea.svgCanvas.select(".workspace-background").attr("class", "workspace-background child-layer")
                 : drawingArea.svgCanvas.select(".workspace-background").attr("class", "workspace-background")
         })
-        let plotObservable = this.plottersObservables
-        let boxSelectorPlotter = this.boxSelectorPlotter
-        let background = document.querySelector("svg") as SVGElement
+        const plotObservable = this.plottersObservables
+        const boxSelectorPlotter = this.boxSelectorPlotter
+        const background = document.querySelector("svg") as SVGElement
 
-        let toPosition = (event: MouseEvent)=>
+        const toPosition = (event: MouseEvent)=>
             [event.offsetX || event.clientX, event.offsetY || event.clientY]
         
         background.onmousedown = (event) =>  { 

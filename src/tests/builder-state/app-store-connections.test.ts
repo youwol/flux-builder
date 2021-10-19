@@ -10,15 +10,15 @@ AppDebugEnvironment.getInstance().debugOn = false
 
 function setupProject({modulesCount}:{modulesCount:number}): any {
 
-    let appStore: AppStore = new AppStore(
+    const appStore: AppStore = new AppStore(
         environment,
         AppObservables.getInstance(),
         AppBuildViewObservables.getInstance()
     )
     new Array(modulesCount).fill(0).map( () => appStore.addModule(SimpleModule) )
-    let workflow = appStore.project.workflow
+    const workflow = appStore.project.workflow
     expect(appStore.project.workflow.modules.length).toEqual(modulesCount+1)
-    let mdles = workflow.modules.filter(mdle => mdle instanceof SimpleModule.Module) as SimpleModule.Module[]
+    const mdles = workflow.modules.filter(mdle => mdle instanceof SimpleModule.Module) as SimpleModule.Module[]
 
     return [appStore, ...mdles]
 }
@@ -26,12 +26,12 @@ function setupProject({modulesCount}:{modulesCount:number}): any {
 test('add 2 module and connections', () => {
     AppDebugEnvironment.getInstance().debugOn = false
 
-    let [appStore, mdle0, mdle1] = setupProject({modulesCount:2})
+    const [appStore, mdle0, mdle1] = setupProject({modulesCount:2})
 
     appStore.addConnection(new Connection(mdle0.outputSlots[0], mdle1.inputSlots[0]))
 
     expect(appStore.project.workflow.connections.length).toEqual(1)
-    let connection = appStore.project.workflow.connections[0]
+    const connection = appStore.project.workflow.connections[0]
     expect(appStore.allSubscriptions.has(connection)).toBeTruthy()
     appStore.undo()
     expect(appStore.allSubscriptions.size).toEqual(0)
@@ -39,7 +39,7 @@ test('add 2 module and connections', () => {
     appStore.redo()
 
     expect(appStore.project.workflow.connections.length).toEqual(1)
-    let connectionNew = appStore.project.workflow.connections[0]
+    const connectionNew = appStore.project.workflow.connections[0]
     expect(appStore.allSubscriptions.has(connectionNew)).toBeTruthy()
 
     appStore.updateProjectToIndexHistory(0, appStore.indexHistory)
@@ -49,12 +49,12 @@ test('add 2 module and connections', () => {
 
 test('add 2 module and connections', () => {
 
-    let [appStore, mdle0, mdle1] = setupProject({modulesCount:2})
+    const [appStore, mdle0, mdle1] = setupProject({modulesCount:2})
 
     appStore.addConnection(new Connection(mdle0.outputSlots[0], mdle1.inputSlots[0]))
 
     expect(appStore.project.workflow.connections.length).toEqual(1)
-    let connection = appStore.project.workflow.connections[0]
+    const connection = appStore.project.workflow.connections[0]
     expect(appStore.allSubscriptions.has(connection)).toBeTruthy()
     appStore.undo()
     expect(appStore.allSubscriptions.size).toEqual(0)
@@ -62,7 +62,7 @@ test('add 2 module and connections', () => {
     appStore.redo()
 
     expect(appStore.project.workflow.connections.length).toEqual(1)
-    let connectionNew = appStore.project.workflow.connections[0]
+    const connectionNew = appStore.project.workflow.connections[0]
     expect(appStore.allSubscriptions.has(connectionNew)).toBeTruthy()
 
     appStore.updateProjectToIndexHistory(0, appStore.indexHistory)
@@ -71,12 +71,12 @@ test('add 2 module and connections', () => {
 
 test('delete connection', () => {
 
-    let [appStore, mdle0, mdle1] = setupProject({modulesCount:2})
+    const [appStore, mdle0, mdle1] = setupProject({modulesCount:2})
 
     appStore.addConnection(new Connection(mdle0.outputSlots[0], mdle1.inputSlots[0]))
 
     expect(appStore.project.workflow.connections.length).toEqual(1)
-    let connection = appStore.project.workflow.connections[0]
+    const connection = appStore.project.workflow.connections[0]
 
     appStore.deleteConnection(connection)
 
@@ -97,9 +97,9 @@ test('delete connection', () => {
 
 test('instantiate connections', () => {
 
-    let [appStore, mdle0, mdle1] = setupProject({modulesCount:2})
+    const [appStore, mdle0, mdle1] = setupProject({modulesCount:2})
 
-    let connectionsData = [
+    const connectionsData = [
         {
             start: { moduleId: mdle0.moduleId, slotId: mdle0.outputSlots[0].slotId },
             end: { moduleId: mdle1.moduleId, slotId: mdle1.inputSlots[0].slotId }
@@ -130,7 +130,7 @@ test('instantiate connections', () => {
             adaptor: { adaptorId: "adaptor0", mappingFunction: "return (input) => input" }
         }
     ]
-    let connections = instantiateProjectConnections(appStore.allSubscriptions, connectionsData, appStore.project.workflow.modules)
+    const connections = instantiateProjectConnections(appStore.allSubscriptions, connectionsData, appStore.project.workflow.modules)
 
     expect(connections.filter(c => c != undefined).length).toEqual(2)
 
@@ -142,16 +142,16 @@ test('create connections + module deletion', () => {
 
     AppDebugEnvironment.getInstance().debugOn = false
 
-    let [appStore, mdle0, mdle1, mdle2, mdle3] = setupProject({modulesCount:4})
+    const [appStore, mdle0, mdle1, mdle2, mdle3] = setupProject({modulesCount:4})
 
     appStore.addConnection(new Connection(mdle1.outputSlots[0], mdle0.inputSlots[0]))
     appStore.addConnection(new Connection(mdle2.outputSlots[0], mdle1.inputSlots[0]))
     appStore.addConnection(new Connection(mdle3.outputSlots[0], mdle2.inputSlots[0]))
 
     expect(appStore.project.workflow.connections.length).toEqual(3)
-    let c0 = appStore.project.workflow.connections[0]
-    let c1 = appStore.project.workflow.connections[1]
-    let c2 = appStore.project.workflow.connections[2]
+    const c0 = appStore.project.workflow.connections[0]
+    const c1 = appStore.project.workflow.connections[1]
+    const c2 = appStore.project.workflow.connections[2]
     expect(appStore.allSubscriptions.size).toEqual(3)
     expect(appStore.allSubscriptions.has(c0)).toBeTruthy()
     expect(appStore.allSubscriptions.has(c1)).toBeTruthy()
@@ -200,7 +200,7 @@ test('create connections + module update', () => {
 
     AppDebugEnvironment.getInstance().debugOn = false
 
-    let [appStore, mdle0, mdle1, mdle2, mdle3] = setupProject({modulesCount:4})
+    const [appStore, mdle0, mdle1, mdle2, mdle3] = setupProject({modulesCount:4})
 
     appStore.addConnection(new Connection(mdle1.outputSlots[0], mdle0.inputSlots[0]))
     appStore.addConnection(new Connection(mdle2.outputSlots[0], mdle1.inputSlots[0]))
@@ -208,9 +208,9 @@ test('create connections + module update', () => {
 
     appStore.updateModule(mdle1, new SimpleModule['Configuration']("new title", "", { property0: 1 }))
 
-    let c0 = appStore.project.workflow.connections[0]
-    let c1 = appStore.project.workflow.connections[1]
-    let c2 = appStore.project.workflow.connections[2]
+    const c0 = appStore.project.workflow.connections[0]
+    const c1 = appStore.project.workflow.connections[1]
+    const c2 = appStore.project.workflow.connections[2]
 
     expect(appStore.allSubscriptions.size).toEqual(3)
     expect(appStore.allSubscriptions.has(c0)).toBeTruthy()
@@ -225,9 +225,9 @@ test('create connections + module update', () => {
     expect(appStore.allSubscriptions.has(c2))
 
 
-    let c0New = appStore.project.workflow.connections[0]
-    let c1New = appStore.project.workflow.connections[1]
-    let c2New = appStore.project.workflow.connections[2]
+    const c0New = appStore.project.workflow.connections[0]
+    const c1New = appStore.project.workflow.connections[1]
+    const c2New = appStore.project.workflow.connections[2]
     expect(c0 == c0New).toEqual(true)
     expect(c1 == c1New).toEqual(true)
     expect(c2 == c2New).toEqual(true)

@@ -7,13 +7,13 @@ import { includeYouWolLogoView, loadingErrorView, loadingLibView } from "./loadi
 // (index.html is handled by HtmlWebpackPlugin)
 export{}
 
-let cdn = window['@youwol/cdn-client']
+const cdn = window['@youwol/cdn-client']
 
 
-let loadingDiv = document.getElementById("content-loading-screen") as HTMLDivElement
+const loadingDiv = document.getElementById("content-loading-screen") as HTMLDivElement
 includeYouWolLogoView()
 
-let stylesFutures = cdn.fetchStyleSheets([
+const stylesFutures = cdn.fetchStyleSheets([
     "bootstrap#4.4.1~bootstrap.min.css",
     "fontawesome#5.12.1~css/all.min.css",
     "@youwol/fv-widgets#0.0.3~dist/assets/styles/style.youwol.css",
@@ -22,7 +22,7 @@ let stylesFutures = cdn.fetchStyleSheets([
     "codemirror#5.52.0~theme/blackboard.min.css",
 ])
 
-let bundlesFutures = cdn.fetchBundles(
+const bundlesFutures = cdn.fetchBundles(
     {
         'lodash': '4.17.15',
         "grapes": '0.17.26',
@@ -46,9 +46,9 @@ let bundlesFutures = cdn.fetchBundles(
     loadingErrorView(error, loadingDiv)
 })
 
-let [styles] = await Promise.all([stylesFutures, bundlesFutures])
+const [styles] = await Promise.all([stylesFutures, bundlesFutures])
 
-let [linkBA, linfFA, linkYW, _] = styles
+const [linkBA, linfFA, linkYW, _] = styles
 linkBA.id = "bootstrap-css"; linkYW.id = "youwol-css"; linfFA.id = "fontawesome-css"
 
 window['codemirror'] = {}  // code mirror will be fetched in due time (when opening the editor)

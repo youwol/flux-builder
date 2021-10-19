@@ -49,11 +49,11 @@ export namespace CodeEditorView{
             options?: TOptions
         }){
             Object.assign(this, rest)
-            let styling : TOptions = {...View.defaultOptions, ...(options ? options : {}) }
+            const styling : TOptions = {...View.defaultOptions, ...(options ? options : {}) }
             this.state = state
             this.class = styling.containerClass
             this.style = styling.containerStyle
-            let configuration = {
+            const configuration = {
                 ...{
                     value: state.content$.getValue(),
                     mode: 'javascript',
@@ -74,7 +74,7 @@ export namespace CodeEditorView{
                             id: 'code-mirror-editor',
                             class: 'w-100 h-100',
                             connectedCallback: (elem) => {
-                                let editor = window['CodeMirror'](elem, configuration)
+                                const editor = window['CodeMirror'](elem, configuration)
                                 editor.on("changes" , () => {
                                     state.content$.next(editor.getValue())
                                 })
@@ -87,9 +87,9 @@ export namespace CodeEditorView{
     }
 
     function fetchCodeMirror$(mode: string){
-        let cdn = window['@youwol/cdn-client']
+        const cdn = window['@youwol/cdn-client']
         
-        let urlsMode = {
+        const urlsMode = {
             "javascript": "codemirror#5.52.0~mode/javascript.min.js",
             "python": "codemirror#5.52.0~mode/python.min.js",
             "css":  "codemirror#5.52.0~mode/css.min.js",
@@ -99,9 +99,9 @@ export namespace CodeEditorView{
         return from(cdn.fetchBundles( {  codemirror: { version: '5.52.0' } },  window)
         ).pipe(
             mergeMap( () =>{
-                let urls = Array.isArray(urlsMode[mode]) ? urlsMode[mode] : [urlsMode[mode]]
+                const urls = Array.isArray(urlsMode[mode]) ? urlsMode[mode] : [urlsMode[mode]]
 
-                let promise = cdn.fetchJavascriptAddOn(
+                const promise = cdn.fetchJavascriptAddOn(
                     urls, 
                     window
                     )

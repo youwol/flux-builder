@@ -24,8 +24,8 @@ import { autoAddElementInLayout, autoRemoveElementInLayout, removeTemplateElemen
 import { setDynamicComponentsBlocks } from './grapesjs-editor/flux-blocks';
 import { mainView } from './views/app.view';
 
-let defaultLog      = false
-let debugSingleton  = AppDebugEnvironment.getInstance()
+const defaultLog      = false
+const debugSingleton  = AppDebugEnvironment.getInstance()
 
 debugSingleton.workflowUIEnabled       = defaultLog
 debugSingleton.observableEnabled       = defaultLog
@@ -34,13 +34,13 @@ debugSingleton.workflowViewEnabled     = defaultLog
 debugSingleton.WorkflowBuilderEnabled  = defaultLog
 debugSingleton.renderTopicEnabled      = defaultLog
 debugSingleton.workflowView$Enabled    = defaultLog
-let noConsole = {
+const noConsole = {
     log:(message?: any, ...optionalParams: any[])=> {},
     warn:(message?: any, ...optionalParams: any[])=> {},
     error:(message?: any, ...optionalParams: any[])=> {},
 }
 
-let environment = new Environment(
+const environment = new Environment(
     {   console/*: noConsole as Console*/,
         renderingWindow: undefined, // doc.defaultView,
         executingWindow: window
@@ -53,19 +53,19 @@ debugSingleton.logWorkflowBuilder( {
   object:{ environment }
 })
 
-let appStore = AppStore.getInstance( environment )
+const appStore = AppStore.getInstance( environment )
 
 initializeAppStoreAssets(appStore)
 
 createMainView(appStore)
 
-let layoutEditor = await createLayoutEditor() as any;
+const layoutEditor = await createLayoutEditor() as any;
 initializeGrapesAssets(layoutEditor);
 
-let workflowPlotter = createDrawingArea(appStore, appStore.appObservables)
+const workflowPlotter = createDrawingArea(appStore, appStore.appObservables)
 plugNotifications(appStore, workflowPlotter)
 
-let contextState = new ContextMenuState( appStore, workflowPlotter.drawingArea )
+const contextState = new ContextMenuState( appStore, workflowPlotter.drawingArea )
 new ContextMenu.View({state:contextState, class:"fv-bg-background"} as any)
 
 connectStreams(appStore, layoutEditor )
@@ -75,12 +75,12 @@ loadProject(appStore)
 
 function loadProject(appStore: AppStore){
 
-    let projectId = new URLSearchParams(window.location.search).get("id")
-    let uri = new URLSearchParams(window.location.search).get("uri")
+    const projectId = new URLSearchParams(window.location.search).get("id")
+    const uri = new URLSearchParams(window.location.search).get("uri")
     
     if(projectId){
-        let loadingDiv = document.getElementById("content-loading-screen") as HTMLDivElement
-        let divProjectLoading = loadingProjectView(loadingDiv)
+        const loadingDiv = document.getElementById("content-loading-screen") as HTMLDivElement
+        const divProjectLoading = loadingProjectView(loadingDiv)
         appStore.environment.getProject(projectId).subscribe( (project) => {
             divProjectLoading.innerText = `> project loaded` 
             divProjectLoading.style.setProperty("color", "green") 
@@ -95,7 +95,7 @@ function loadProject(appStore: AppStore){
 }
 
 function createMainView(appStore: AppStore){
-    let mainLayout : VirtualDOM = mainView(appStore)
+    const mainLayout : VirtualDOM = mainView(appStore)
     document.body.appendChild(render(mainLayout))    
 }
 
@@ -130,8 +130,8 @@ function initializeGrapesAssets(layoutEditor: any){
 
 function setUiState(state: UiState){   
 
-    let renderNode  = document.getElementById("render-component")
-    let builderNode = document.getElementById("builder-component")
+    const renderNode  = document.getElementById("render-component")
+    const builderNode = document.getElementById("builder-component")
 
     builderNode.classList.remove("combined","builder","render","none")
     renderNode.classList.remove("combined","builder","render","none")
@@ -142,7 +142,7 @@ function setUiState(state: UiState){
 export async function connectStreams(appStore:AppStore, layoutEditor: grapesjs.Editor ){
 
     let loading = true
-    let appObservables = appStore.appObservables
+    const appObservables = appStore.appObservables
     appObservables.packagesLoaded$.subscribe( ()=> document.getElementById("loading-screen").remove() )
     appObservables.uiStateUpdated$.subscribe( (state:UiState)=> setUiState(state) )
 
@@ -157,9 +157,9 @@ export async function connectStreams(appStore:AppStore, layoutEditor: grapesjs.E
     appObservables.modulesUpdated$
     .subscribe((diff: any) => { 
         
-        let createdIds = diff.createdElements.map( (m:ModuleFlux)=> m.moduleId)
+        const createdIds = diff.createdElements.map( (m:ModuleFlux)=> m.moduleId)
 
-        let notReplaced = diff.removedElements
+        const notReplaced = diff.removedElements
         .filter( mdle => !createdIds.includes(mdle.moduleId) )
 
         removeTemplateElements(notReplaced, layoutEditor)
@@ -197,11 +197,11 @@ export async function connectStreams(appStore:AppStore, layoutEditor: grapesjs.E
 
 export function createDrawingArea(appStore: AppStore, appObservables: AppObservables ){
 
-    let plottersObservables = AppBuildViewObservables.getInstance()
+    const plottersObservables = AppBuildViewObservables.getInstance()
     
-    let width = 1000
-    let height = 1000
-    let drawingArea = createDrawingAreaSvg(
+    const width = 1000
+    const height = 1000
+    const drawingArea = createDrawingAreaSvg(
       {
         containerDivId: "wf-builder-view",
         width: width,

@@ -1,5 +1,5 @@
 
-export let test_packages = {
+export const test_packages = {
     id:"flux-pack-test",
     css: [
         ['.some_class', 

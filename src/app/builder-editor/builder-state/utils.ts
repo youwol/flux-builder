@@ -82,7 +82,7 @@ export function uuidv4() {
 
   export function packageAssetProject(project: Project){
 
-    let publishRequest = {
+    const publishRequest = {
       asset:{
         name: project.name,
         description: project.description

@@ -11,11 +11,11 @@ export function getGroup(workflow: Workflow, parentGroup: GroupModules.Module, g
         {return [group,parentGroup]}
     
     let found = undefined
-    let groups = group.getDirectChildren(workflow)
+    const groups = group.getDirectChildren(workflow)
     .filter(mdle => mdle instanceof GroupModules.Module)
 
-    for(let mdle of groups){
-        let element =  getGroup(workflow, group, mdle as GroupModules.Module, id)
+    for(const mdle of groups){
+        const element =  getGroup(workflow, group, mdle as GroupModules.Module, id)
         if(element){
             found = element
             break
@@ -37,7 +37,7 @@ export function createGroup(
     environment: IEnvironment
     ):{project:Project}{
     
-    let debugSingleton = AppDebugEnvironment.getInstance()
+    const debugSingleton = AppDebugEnvironment.getInstance()
     debugSingleton.debugOn && 
     debugSingleton.logWorkflowBuilder( {  
        level : LogLevel.Info, 
@@ -48,9 +48,9 @@ export function createGroup(
         }
     })
     
-    let modulesId = modules.map( mdle=>mdle.moduleId)
+    const modulesId = modules.map( mdle=>mdle.moduleId)
     
-    let newGrpMdle = new Factory.Module({
+    const newGrpMdle = new Factory.Module({
         moduleId: Factory.id.replace("@","_")+"_" + uuidv4(), 
         configuration:new ModuleConfiguration({
             title,
@@ -61,11 +61,11 @@ export function createGroup(
         workflow$,
         environment
     })
-    let parentGroup = project.workflow.modules.find( mdle => mdle.moduleId == currentLayerId) as GroupModules.Module
-    let parentGroupUpdated = updateGroup(parentGroup, {
+    const parentGroup = project.workflow.modules.find( mdle => mdle.moduleId == currentLayerId) as GroupModules.Module
+    const parentGroupUpdated = updateGroup(parentGroup, {
         moduleIds:parentGroup.getModuleIds().filter( mId => !modulesId.includes(mId)).concat(newGrpMdle.moduleId)})
     
-    let workflow = new Workflow({
+    const workflow = new Workflow({
         modules: project.workflow.modules
         .filter(mdle => mdle.moduleId != parentGroup.moduleId)
         .concat(newGrpMdle, parentGroupUpdated),
@@ -73,15 +73,15 @@ export function createGroup(
         plugins:project.workflow.plugins
     })
 
-    let moduleViewsInGrp  = project.builderRendering.modulesView
+    const moduleViewsInGrp  = project.builderRendering.modulesView
     .filter( view => newGrpMdle.getModuleIds().includes(view.moduleId))
     
-    let xWorld       = moduleViewsInGrp.reduce((acc,e)=> acc+e.xWorld ,0) / moduleViewsInGrp.length
-    let yWorld       = moduleViewsInGrp.reduce((acc,e)=> acc+e.yWorld ,0) / moduleViewsInGrp.length    
-    let moduleView   = new ModuleView(newGrpMdle.moduleId,xWorld,yWorld,Factory)
-    let moduleViews  = [...project.builderRendering.modulesView,moduleView]
+    const xWorld       = moduleViewsInGrp.reduce((acc,e)=> acc+e.xWorld ,0) / moduleViewsInGrp.length
+    const yWorld       = moduleViewsInGrp.reduce((acc,e)=> acc+e.yWorld ,0) / moduleViewsInGrp.length    
+    const moduleView   = new ModuleView(newGrpMdle.moduleId,xWorld,yWorld,Factory)
+    const moduleViews  = [...project.builderRendering.modulesView,moduleView]
     
-    let projectNew = new Project({
+    const projectNew = new Project({
         ...project,
         ...{
             workflow,
@@ -95,12 +95,12 @@ export function createGroup(
 
 export function updateGroup( original: GroupModules.Module, persistentFields : any ) : GroupModules.Module {
 
-    let persistentData   = new original.Factory.PersistentData({
+    const persistentData   = new original.Factory.PersistentData({
         ...original.getPersistentData(),
         ...persistentFields
     })
-    let grpConfiguration = new ModuleConfiguration({...original.configuration, data: persistentData})
-    let groupModuleNew = new original.Factory.Module( Object.assign({}, original, { configuration:grpConfiguration })) 
+    const grpConfiguration = new ModuleConfiguration({...original.configuration, data: persistentData})
+    const groupModuleNew = new original.Factory.Module( Object.assign({}, original, { configuration:grpConfiguration })) 
     return groupModuleNew
 }
 
@@ -115,12 +115,12 @@ export function getDisplayedModulesView(
     appStore,
     project:Project) {
 
-    let modulesId = group.getModuleIds()
-    let unitModulesView = project.builderRendering.modulesView.filter(moduleView => modulesId.includes(moduleView.moduleId))
+    const modulesId = group.getModuleIds()
+    const unitModulesView = project.builderRendering.modulesView.filter(moduleView => modulesId.includes(moduleView.moduleId))
     let parentUnitModulesView = []
     if (parentGroup) {
         
-        let modulesId = parentGroup.getModuleIds()
+        const modulesId = parentGroup.getModuleIds()
         parentUnitModulesView = project.builderRendering.modulesView.filter(moduleView => modulesId.includes(moduleView.moduleId))       
     }
     return {
