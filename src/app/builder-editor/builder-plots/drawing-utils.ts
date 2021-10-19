@@ -29,7 +29,7 @@ export function convert(bbox, matrix, drawingArea) {
   return a
 }
 
-export function getBoundingBox(modulesId: Array<String>, margin: number, drawingArea) {
+export function getBoundingBox(modulesId: Array<string>, margin: number, drawingArea) {
 
   const bbox = modulesId
     .map((mid: string) => document.getElementById(mid))

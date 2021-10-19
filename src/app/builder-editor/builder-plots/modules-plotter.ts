@@ -236,7 +236,7 @@ export class ModulesPlotter{
         })       
     }
 
-    highlight(modulesId:Array<String>){
+    highlight(modulesId:Array<string>){
 
         const htmlElems= modulesId
         .map( (mid:string) => document.getElementById(mid))

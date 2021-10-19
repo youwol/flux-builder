@@ -66,7 +66,7 @@ export class BoxSelectorPlotter{
         this.modulesPlotter.highlight(highlighteds )
     }
     
-    static getSelectedModules(modulesView,drawingArea, rect) : Array<String> {
+    static getSelectedModules(modulesView,drawingArea, rect) : Array<string> {
         const coors = modulesView
         .map(m => [
             m.moduleId,

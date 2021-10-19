@@ -446,7 +446,7 @@ export class AppStore {
             {this.appObservables.suggestions$.next(suggestions)}
     }
 
-    select( {modulesId,connectionsId}: {modulesId:Array<String>, connectionsId:Array<Connection>}){
+    select( {modulesId,connectionsId}: {modulesId:Array<string>, connectionsId:Array<Connection>}){
 
         this.unselect()
         this.modulesSelected= this.project.workflow.modules.filter(m=>modulesId.includes(m.moduleId))
