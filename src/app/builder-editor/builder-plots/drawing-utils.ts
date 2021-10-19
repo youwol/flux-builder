@@ -8,13 +8,13 @@ import { GroupModules } from '@youwol/flux-core';
 
 export function uuidv4() {
   return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
-    var r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8);
+    let r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8);
     return v.toString(16);
   });
 }
 
 export function convert(bbox, matrix, drawingArea) {
-  var offset = document.getElementById(drawingArea.svgCanvas.attr("id")).getBoundingClientRect();
+  let offset = document.getElementById(drawingArea.svgCanvas.attr("id")).getBoundingClientRect();
   const transform = drawingArea.overallTranform
   const a = {
     xmin: ((matrix.a * bbox.x) + (matrix.c * bbox.y) + matrix.e - offset.left

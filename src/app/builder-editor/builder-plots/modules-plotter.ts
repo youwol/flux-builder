@@ -280,7 +280,7 @@ export class ModulesPlotter{
             if(g.classList.contains("active-layer-box"))
                 {return}
 
-            var drag = d3Drag();
+            let drag = d3Drag();
             drag
             .on("start",  (ev) => {
                 this.dragSelection( ev, false )})

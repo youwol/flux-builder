@@ -2,7 +2,7 @@ import { replaceTemplateElements } from "./flux-rendering-components";
 
 
 export function buildCodeEditor(editor, type) {
-    var codeEditor = editor.CodeManager.getViewer('CodeMirror').clone();
+    let codeEditor = editor.CodeManager.getViewer('CodeMirror').clone();
     codeEditor.set({
       codeName: type === 'html' ? 'htmlmixed' : 'css',
       readOnly: false,
@@ -26,7 +26,7 @@ function setupHtmlAutoUpdates(appStore, editor, htmlCodeEditor) {
       const style = Object.values(editor.fluxCache).reduce( (acc, cache: any)=> acc+" "+cache.styles, "")
       editor.getStyle().add(style)
     }
-    var delay;
+    let delay;
     htmlCodeEditor.editor.on('change', function() {
       clearTimeout(delay);
       delay = setTimeout(update, 300);
@@ -40,7 +40,7 @@ function setupHtmlAutoUpdates(appStore, editor, htmlCodeEditor) {
       if (!cssCode) {return;}
       editor.setStyle(cssCode);
     }
-    var delay;
+    let delay;
     cssCodeEditor.editor.on('change', function() {
       clearTimeout(delay);
       delay = setTimeout(update, 300);

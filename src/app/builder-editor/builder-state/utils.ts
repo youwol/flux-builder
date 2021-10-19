@@ -5,18 +5,18 @@ import { toProjectData } from './factory-utils';
 
 export function uuidv4() {
     return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
-      var r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8);
+      let r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8);
       return v.toString(16);
     });
   }
 
   function css(el, doc) {
-    var sheets = doc.styleSheets, ret = [];
+    let sheets = doc.styleSheets, ret = [];
     el.matches = el.matches || el.webkitMatchesSelector || el.mozMatchesSelector 
         || el.msMatchesSelector || el.oMatchesSelector;
-    for (var i in sheets) {
-        var rules = sheets[i].rules || sheets[i].cssRules;
-        for (var r in rules) {
+    for (let i in sheets) {
+        let rules = sheets[i].rules || sheets[i].cssRules;
+        for (let r in rules) {
             if (el.matches(rules[r]["selectorText"])) {
                 ret.push(rules[r].cssText);
             }

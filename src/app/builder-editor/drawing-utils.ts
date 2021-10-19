@@ -19,7 +19,7 @@ export function getConnections$(connectionsUpdated$ ){
     )*/
 }
 export function convert(bbox,matrix,drawingArea) {
-    var offset = document.getElementById(drawingArea.svgCanvas.attr("id")).getBoundingClientRect();
+    let offset = document.getElementById(drawingArea.svgCanvas.attr("id")).getBoundingClientRect();
     const transform = drawingArea.overallTranform
     const a = {
       xmin: ((matrix.a * bbox.x) + (matrix.c * bbox.y) + matrix.e - offset.left 
