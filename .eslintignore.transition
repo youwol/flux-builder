@@ -41,6 +41,7 @@
 /src/app/builder-editor/views/*
 
 # Un-ignored
+!/src/app/builder-editor/views/builder.view.ts
 !/src/app/builder-editor/views/index.ts
 !/src/app/builder-editor/views/info.view.ts
 

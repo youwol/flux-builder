@@ -25,7 +25,7 @@ function focusAction(
     appStore: AppStore, 
     workflowPlotter: WorkflowPlotter,
     toggledClass: string,
-    duration: number = 5000 ) {
+    duration = 5000 ) {
      
     const root = appStore.getRootComponent()
     const layer = appStore.project.workflow.modules

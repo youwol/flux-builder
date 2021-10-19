@@ -82,7 +82,7 @@ function settingsView(appStore: AppStore){
 }
 
 function projectTreeView(appStore: AppStore) {
-    const panelId: string = "panel__left_builder"
+    const panelId = "panel__left_builder"
     const state = ProjectTreeView.State.stateForAppStoreAndUniq(appStore, panelId)
    return {
         id:panelId,

@@ -198,7 +198,7 @@ export class ConnectionsPlotter{
     drawingConnection : DrawingConnection = undefined
     // we don't want to create connection just after on finished, this is the purpose of this 
     // there should be better way to do using rxjs
-    connectionCreationEnabled: boolean = true
+    connectionCreationEnabled = true
 
     constructor( public readonly drawingArea : DrawingArea,
                  public readonly plottersObservables: AppBuildViewObservables,

@@ -391,7 +391,7 @@ export class AppStore {
         return false
     }
 
-    selectModule(moduleId:string, focus: boolean = false){
+    selectModule(moduleId:string, focus = false){
 
         if(  this.modulesSelected.find(m => m.moduleId == moduleId) ||
             (this.moduleSelected && this.moduleSelected.moduleId == moduleId ) )
