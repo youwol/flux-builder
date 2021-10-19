@@ -223,7 +223,7 @@ export namespace ExpectationView{
             expandedNodes: ["incoming data_0"]
         })
 
-        const expectationState = new ExpectationView.State({
+        const expectationState = new State({
             status: data
         })
         
@@ -235,7 +235,7 @@ export namespace ExpectationView{
                     children: [
                         new DataTreeView.View({state: dataState}),
                         {class:'px-4'},
-                        new ExpectationView.View({ state: expectationState })
+                        new View({ state: expectationState })
                     ]
                 }
             ]

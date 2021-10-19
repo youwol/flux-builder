@@ -474,14 +474,13 @@ export namespace ProjectTreeView {
    * @category View
    *
    */
-  export class View extends ImmutableTree.View<ProjectTreeView.ModuleNode> {
+  export class View extends ImmutableTree.View<ModuleNode> {
     class = 'h-100 overflow-auto'
     disconnectedCallback: (elem) => void
 
     constructor({ state, ...others }: { state: State }) {
       super({ state: state, headerView: nodeHeaderView, ...others })
-      this.disconnectedCallback = () =>
-        (this.state as ProjectTreeView.State).unsubscribe()
+      this.disconnectedCallback = () => (this.state as State).unsubscribe()
     }
   }
 }

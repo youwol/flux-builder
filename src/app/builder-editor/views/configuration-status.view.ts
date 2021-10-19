@@ -100,7 +100,7 @@ export namespace ConfigurationStatusView{
             title: "merged configuration",
             data: data.result
         })
-        const configurationState = new ConfigurationStatusView.State({
+        const configurationState = new State({
             status:data
         })
 
@@ -112,7 +112,7 @@ export namespace ConfigurationStatusView{
                     children: [
                         new DataTreeView.View({state: dataState}),
                         {class:'px-4'},
-                        new ConfigurationStatusView.View({state:configurationState})
+                        new View({state:configurationState})
                     ]
                 }
             ]
