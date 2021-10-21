@@ -65,6 +65,7 @@
 
 # Un-ignored
 !/src/app/loading.views.ts
+!/src/app/logging/
 !/src/app/main.ts
 
 # Allow un-ignoring some contents of /src/app/views
