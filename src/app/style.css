@@ -41,7 +41,7 @@ Scroll Bar Definition
 ::-webkit-scrollbar {
     width: 5px;
   }
-  
+
 /* Track */
 ::-webkit-scrollbar-track {
 background: #f1f1f1;
@@ -80,7 +80,7 @@ background: #555;
     flex-direction: column;
     height:100%
   }
-  
+
 .gjs-cv-canvas {
     top: 0px !important;
     height: 100% !important;
@@ -92,3 +92,6 @@ background: #555;
 }
 
 
+.cm-module-widget-selected {
+    color: #ffbb00;
+}

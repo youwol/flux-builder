@@ -14,6 +14,7 @@
     "lint-prettier": "prettier --check src/ --require-pragma true && prettier --check '{./,!(src/*)}' --insert-pragma false",
     "lint-eslint": "eslint . --ignore-path .eslintignore.transition",
     "eslint-fix-rule-ts": "yarn eslint --no-eslintrc --fix --parser '@typescript-eslint/parser' --parser-options '{\"tsconfigRootDir\" : \"./\", \"project\" : [\"tsconfig.json\"]}' --plugin '[\"jest\", \"import\", \"unused-imports\", \"@typescript-eslint\"]' --no-ignore 'src/**/*.ts' --rule",
+    "eslint-check-rule-ts": "yarn eslint --no-eslintrc --parser '@typescript-eslint/parser' --parser-options '{\"tsconfigRootDir\" : \"./\", \"project\" : [\"tsconfig.json\"]}' --plugin '[\"jest\", \"import\", \"unused-imports\", \"@typescript-eslint\"]' --no-ignore 'src/**/*.ts' --rule",
     "lint": "yarn lint-prettier && yarn lint-eslint",
     "format": "yarn format-prettier && yarn format-eslint",
     "format-prettier": "prettier --write src/ --require-pragma true && prettier --write '{./,!(src/*)}' --insert-pragma false",
@@ -108,7 +109,7 @@
   },
   "prettier": {
     "printWidth": 80,
-    "tabWidth": 2,
+    "tabWidth": 4,
     "useTabs": false,
     "semi": false,
     "singleQuote": true,
