@@ -10,7 +10,7 @@ import {
 } from '@youwol/flux-core'
 import { VirtualDOM } from '@youwol/flux-view'
 import { ImmutableTree } from '@youwol/fv-tree'
-import { ReplaySubject, Subject, Subscription } from 'rxjs'
+import { Observable, Subscription } from 'rxjs'
 import { filter, map } from 'rxjs/operators'
 import { AppStore } from '../builder-editor/builder-state'
 
@@ -18,8 +18,8 @@ export namespace ProjectTreeView {
   export interface ProjectManager {
     name: () => string
     workflow: () => Workflow
-    projectUpdated$: ReplaySubject<WorkflowDelta>
-    moduleSelected$: Subject<ModuleFlux>
+    projectUpdated$: Observable<WorkflowDelta>
+    moduleSelected$: Observable<ModuleFlux>
     filterSelection: (moduleId: string) => boolean
     selectModule: (moduleId: string) => void
     filterNode?: (node: ModuleNode) => boolean

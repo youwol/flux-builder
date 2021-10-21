@@ -26,7 +26,7 @@ import {
   Workflow,
   WorkflowDelta,
 } from '@youwol/flux-core'
-import { ReplaySubject, Subject } from 'rxjs'
+import { Observable, ReplaySubject, Subject } from 'rxjs'
 import { anything, instance, mock, when } from 'ts-mockito'
 import {
   AppObservables,
@@ -430,8 +430,8 @@ export function getMockedAppStore(
 
 export interface FixtureProjectManager {
   name?: Either<string>
-  projectUpdated$?: ReplaySubject<WorkflowDelta>
-  moduleSelected$?: Subject<ModuleFlux>
+  projectUpdated$?: Observable<WorkflowDelta>
+  moduleSelected$?: Observable<ModuleFlux>
   workflow?: Either<FixtureWorkflow>
   filterSelection?: (moduleId: string) => boolean
   selectModule?: (moduleId: string) => void
