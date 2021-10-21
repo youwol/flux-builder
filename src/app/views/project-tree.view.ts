@@ -16,12 +16,43 @@ import { AppStore } from '../builder-editor/builder-state'
 
 export namespace ProjectTreeView {
   export interface ProjectManager {
+    /**
+     * Function returning the name of the project
+     *
+     */
     name: () => string
+    /**
+     * Function returning the workflow of the project
+     *
+     */
     workflow: () => Workflow
+    /**
+     * Will be subscribed to update the tree when project is updated
+     *
+     */
     projectUpdated$: Observable<WorkflowDelta>
+    /**
+     * Will be subscribed to select the corresponding node when a module is selected
+     *
+     */
     moduleSelected$: Observable<ModuleFlux>
+    /**
+     * Can prevent call to {@link selectModule} when a node is selected
+     *
+     * @param moduleId the moduleId of the module, from the selected node
+     */
     filterSelection: (moduleId: string) => boolean
+    /**
+     * Will be call on node selection, unless filtered by {@link filterSelection}
+     *
+     * @param moduleId the moduleId of the module, from the selected node
+     */
     selectModule: (moduleId: string) => void
+    /**
+     * Can prevent a node to be inserted into the final tree
+     *
+     * @param node the node to be inserted
+     */
     filterNode?: (node: ModuleNode) => boolean
   }
 
