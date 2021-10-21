@@ -147,6 +147,13 @@
       ],
       "curly": [
         "error"
+      ],
+      "no-irregular-whitespace": [
+        "error",
+        {
+          "skipComments": true,
+          "skipTemplates": true
+        }
       ]
     },
     "overrides": [
