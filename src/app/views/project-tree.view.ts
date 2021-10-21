@@ -482,7 +482,11 @@ export namespace ProjectTreeView {
     private updateTree(delta: WorkflowDelta) {
       // TODO : effectively use delta …
       this.reset(
-        rootFactory(this.projectManager.workflow(), this.nodeIdBuilder),
+        rootFactory(
+          this.projectManager.workflow(),
+          this.nodeIdBuilder,
+          this.projectManager.filterNode,
+        ),
       )
     }
   }
