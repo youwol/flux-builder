@@ -3,33 +3,32 @@
 import { ImmutableTree } from '@youwol/fv-tree'
 import { ReplaySubject } from 'rxjs'
 import {
-    ContractPresenterModuleHierarchy,
-    ContractPresenterModulePosition,
     equal,
     ignore,
     logFactory,
     missing,
     PositionInDoc,
+    PresenterPosition,
+    PresenterTreeNode,
 } from '../'
-import { v } from '../../../externals_evolutions/logging'
-import { Logger } from '../../../externals_evolutions/logging/logging'
-import { ContractModelModule, TypeDoc, TypeModule } from '../../model/'
+import { Logger, v } from '../../../externals_evolutions/logging'
+import { ModelModule, TypeDoc, TypeModule } from '../../model/'
+
+const log = logFactory().getChildFactory('Module')
 
 export function factoryHierarchy(
-    modelComponent: ContractModelModule,
+    modelComponent: ModelModule,
     isRoot = false,
-): PresenterModule {
+): ImplPresenterModule {
     const modelChildren = modelComponent.childrenContainingRendersView?.map(
         (model) => factoryHierarchy(model),
     )
-    return new PresenterModule(modelComponent, modelChildren, isRoot)
+    return new ImplPresenterModule(modelComponent, modelChildren, isRoot)
 }
 
-export class PresenterModule
+export class ImplPresenterModule
     extends ImmutableTree.Node
-    implements
-        ContractPresenterModuleHierarchy,
-        ContractPresenterModulePosition
+    implements PresenterTreeNode, PresenterPosition
 {
     readonly log: Logger
     readonly id: string
@@ -50,17 +49,15 @@ export class PresenterModule
     private isSelected = true
 
     constructor(
-        private readonly modelModule: ContractModelModule,
-        private readonly presentersChildren: PresenterModule[],
+        private readonly modelModule: ModelModule,
+        private readonly presentersChildren: ImplPresenterModule[],
         isRoot = false,
     ) {
         super({
             id: modelModule.id,
             children: presentersChildren,
         })
-        this.log = logFactory()
-            .getChildLogger('Module')
-            .getChildLogger(`[${modelModule.id}]`)
+        this.log = log.getChildLogger(`[${modelModule.id}]`)
 
         this.id = modelModule.id
         this.typeModule = isRoot ? 'root' : modelModule.type
@@ -88,7 +85,7 @@ export class PresenterModule
         }
     }
 
-    public onSelect(this: this): void {
+    public select(): void {
         this.modelModule.select()
     }
 
@@ -108,7 +105,7 @@ export class PresenterModule
         return this.currentPositionIn[typeDoc]
     }
 
-    public get descendantsHavingRenderView(): PresenterModule[] {
+    public get descendantsHavingRenderView(): ImplPresenterModule[] {
         this.log.debug('Returning children for {0}', v(this.id))
         return [
             ...(this.presentersChildren ?? []),

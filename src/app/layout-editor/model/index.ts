@@ -1,15 +1,11 @@
 /** @format */
 import { logFactory as parentLogFactory } from '../'
-//
-// export function logFactory() {
-//     return new Factory('/layout-editor').getChildFactory('Model')
-// }
 
 export function logFactory() {
-    return parentLogFactory.getChildFactory('Model')
+    return parentLogFactory().getChildFactory('Model')
 }
 
-export * from './model'
+export * from './model-app'
 export * from './model-component'
 export * from './model-module'
 export { factoryModel } from './impl/factory'

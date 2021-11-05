@@ -170,7 +170,10 @@ function factoryModuleNavigation<T extends ModuleFlux>(
     if (!mdle) {
         throw new Error('mdle undefined')
     }
-    const _log = log.getChildLogger('ModuleNavigation')
+    const moduleId = mdle.moduleId
+    const _log = log
+        .getChildLogger('ModuleNavigation')
+        .getChildLogger(`[${moduleId}]`)
     return {
         toChildren(): ModuleNavigation<ModuleFlux>[] {
             _log.debug('toChildren')

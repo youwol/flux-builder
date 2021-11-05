@@ -1,7 +1,7 @@
 /** @format */
-import { ContractModelModule } from './'
+import { ModelModule } from './'
 
-export interface ContractModelComponent extends ContractModelModule {
+export interface ModelComponent extends ModelModule {
     contentHtml: string
     contentCss: string
 }

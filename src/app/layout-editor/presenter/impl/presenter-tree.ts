@@ -3,22 +3,19 @@
 import { ImmutableTree } from '@youwol/fv-tree'
 import { Subscription } from 'rxjs'
 import { filter, map } from 'rxjs/operators'
+import { logFactory, PresenterTreeNode } from '../'
 import { selectNodeAndExpand } from '../../../externals_evolutions/fv-tree/immutable-tree'
-import { v } from '../../../externals_evolutions/logging'
-import { logFactory } from '../index'
-import { ContractPresenterModuleHierarchy } from '../presenter-module-hierarchy'
-import { Presenter } from './presenter'
-import { PresenterModule } from './presenter-module'
+import { Logger, v } from '../../../externals_evolutions/logging'
+import { ImplPresenterComponent } from './presenter-component'
+import { ImplPresenterModule } from './presenter-module'
 
-const log = logFactory().getChildFactory('PresenterTree')
-
-export class PresenterTree extends ImmutableTree.State<ContractPresenterModuleHierarchy> {
-    private readonly log
+export class PresenterTree extends ImmutableTree.State<PresenterTreeNode> {
+    private readonly log: Logger
     private rootId: string
     private readonly _subscriptions: Subscription[] = []
-    constructor(private readonly presenter: Presenter) {
+    constructor(private readonly presenter: ImplPresenterComponent) {
         super({
-            rootNode: new PresenterModule(
+            rootNode: new ImplPresenterModule(
                 {
                     id: '',
                     type: 'root',
@@ -34,8 +31,12 @@ export class PresenterTree extends ImmutableTree.State<ContractPresenterModuleHi
             ),
         })
         this.rootId = ''
-        this.log = log.getChildLogger('[]')
+        this.log = logFactory().getChildLogger('PresenterTree')
         this.log.debug('Constructor')
+        const logSelectedNode = this.log.getChildLogger('self.selectedNode$')
+        const logModuleIdSelected = this.log.getChildLogger(
+            'modelApp.moduleIdSelected$',
+        )
         this._subscriptions.push(
             this.selectedNode$
                 .pipe(
@@ -43,12 +44,13 @@ export class PresenterTree extends ImmutableTree.State<ContractPresenterModuleHi
                     map((node) => node.id),
                 )
                 .subscribe((id) => {
-                    this.log.debug('Node selected: {0}', v(id))
-                    this.presenter.selectedModuleId = id
+                    logSelectedNode.debug('Node selected: {0}', v(id))
+                    this.presenter.modelApp.moduleIdSelected = id
                 }),
-            this.presenter.model.moduleIdSelected$.subscribe((id) =>
-                this.maybeSelect(id),
-            ),
+            this.presenter.modelApp.moduleIdSelected$.subscribe((id) => {
+                logModuleIdSelected.debug('moduleId selected {0}', v(id))
+                this.maybeSelect(id)
+            }),
         )
     }
 
@@ -62,10 +64,10 @@ export class PresenterTree extends ImmutableTree.State<ContractPresenterModuleHi
         }
     }
 
-    public load(root: PresenterModule) {
+    public load(root: ImplPresenterModule) {
         this.rootId = root.id
         this.reset(root, true)
-        this.maybeSelect(this.presenter.selectedModuleId)
+        this.maybeSelect(this.presenter.modelApp.moduleIdSelected)
     }
 
     public unsubscribe() {

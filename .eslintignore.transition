@@ -46,6 +46,9 @@
 !/src/app/builder-editor/views/index.ts
 !/src/app/builder-editor/views/info.view.ts
 
+#Un-ignored
+!/src/app/externals_evolutions/
+
 # Allow un-ignoring some contents of /src/app/grapesjs-editor
 !/src/app/grapesjs-editor/
 /src/app/grapesjs-editor/*
@@ -55,6 +58,7 @@
 !/src/app/grapesjs-editor/panels.ts
 !/src/app/grapesjs-editor/resources-initialisation.ts
 !/src/app/grapesjs-editor/style-manager.ts
+!/src/app/grapesjs-editor/utils.ts
 
 
 # Allow un-ignoring some contents of /src/app/grapesjs-editor
@@ -65,9 +69,18 @@
 !/src/app/grapesjs-editor/views/render.view.ts
 
 # Un-ignored
+!/src/app/index.ts
+
+# Un-ignored
+!/src/app/layout-editor/
+
+# Un-ignored
 !/src/app/loading.views.ts
-!/src/app/logging/
 !/src/app/main.ts
+!/src/app/on-load.ts
+
+# Un-ignored
+!/src/app/page/
 
 # Allow un-ignoring some contents of /src/app/views
 !/src/app/views/

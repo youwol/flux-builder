@@ -3,23 +3,18 @@
 import { attr$, child$, VirtualDOM } from '@youwol/flux-view'
 import { ImmutableTree } from '@youwol/fv-tree'
 import { combineLatest } from 'rxjs'
-import { logFactory } from '../index'
-import {
-    ContractPresenterModuleHierarchy,
-    ContractPresenterTree,
-    PositionInDoc,
-} from '../presenter'
-import { TypeModuleView } from './type-module.view'
+import { PositionInDoc, PresenterTree, PresenterTreeNode } from '../presenter'
+import { logFactory } from './'
+import { IconForTypeModule } from './icon-for-type-module.view'
 
-const log = logFactory.getChildFactory('ViewTree')
+const log = logFactory().getChildLogger('ViewTree')
 
-export function factoryProjectTreeView(
-    presenter: ContractPresenterTree,
-): VirtualDOM {
+export function projectTreeView(presenter: PresenterTree): VirtualDOM {
     const panelId = 'panel__left_builder'
+    log.debug('factory')
     return {
         id: panelId,
-        class: 'd-flex flex-column grapes-bg-color fv-color-primary p-1 border border-dark text-left fv-text-primary',
+        class: 'd-flex grapes-bg-color fv-color-primary p-1 border border-dark text-left fv-text-primary',
         style: {
             width: '300px',
             minHeight: '0px',
@@ -38,27 +33,11 @@ export function factoryProjectTreeView(
  *
  */
 const nodeHeaderView = (
-    state: ContractPresenterTree,
-    node: ContractPresenterModuleHierarchy,
+    state: PresenterTree,
+    node: PresenterTreeNode,
 ): VirtualDOM => {
     // Classes for the vDOM
     const vDomClasses = 'project-tree-node d-flex fv-pointer align-items-center'
-
-    // // Root node is a special case («play» icon, bigger font, use project name)
-    // if (node.typeModule === 'root') {
-    //     return {
-    //         class: vDomClasses,
-    //         children: [
-    //             { class: 'p-0 mr-2 fas fa-play' },
-    //             child$(
-    //                 node.textualRepresentation$,
-    //                 (textualRepresentation) => ({
-    //                     innerText: textualRepresentation,
-    //                 }),
-    //             ),
-    //         ],
-    //     }
-    // }
 
     // fontAwesome icon for this node
     return {
@@ -66,10 +45,9 @@ const nodeHeaderView = (
         style: node.typeModule !== 'root' ? { fontSize: 'smaller' } : '',
         children: [
             {
-                class: attr$(node.positionIn.html$, () =>
-                    TypeModuleView[node.typeModule]
-                        ? `mr-1 fas ${TypeModuleView[node.typeModule]}`
-                        : 'mr-1',
+                class: attr$(
+                    node.positionIn.html$,
+                    () => `mr-1 ${IconForTypeModule[node.typeModule]}`,
                 ),
             },
             child$(node.textualRepresentation$, (textualRepresentation) => ({
@@ -123,11 +101,11 @@ const classesFromPosition =
  * @category View
  *
  */
-export class ProjectTreeView extends ImmutableTree.View<ContractPresenterModuleHierarchy> {
+export class ProjectTreeView extends ImmutableTree.View<PresenterTreeNode> {
     class = 'h-100'
     disconnectedCallback: (elem) => void
 
-    constructor({ state, ...others }: { state: ContractPresenterTree }) {
+    constructor({ state, ...others }: { state: PresenterTree }) {
         super({
             state: state,
             headerView: nodeHeaderView,

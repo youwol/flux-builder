@@ -15,7 +15,7 @@ export function runnerView(
     return {
         id: 'final-render-view',
         class: attr$(
-            presenter.getViewState('runner', 'd-flex').state$,
+            presenter.getPresenterViewState('runner', 'd-flex').state$,
             (viewState: ViewState) => viewState.classes,
         ),
 

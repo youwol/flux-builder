@@ -2,11 +2,11 @@
 
 export type TypeModule = 'root' | 'component' | 'group' | 'plugin' | 'module'
 
-export interface ContractModelModule {
+export interface ModelModule {
     readonly id: string
     readonly type: TypeModule
     readonly title: string
     readonly hasRenderView: boolean
-    readonly childrenContainingRendersView: ContractModelModule[]
+    readonly childrenContainingRendersView: ModelModule[]
     select(): void
 }

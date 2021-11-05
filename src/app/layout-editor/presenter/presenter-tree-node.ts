@@ -4,11 +4,9 @@ import { Observable } from 'rxjs'
 import { TypeModule } from '../model'
 import { PositionInDoc } from './'
 
-export type ContractPresenterModuleHierarchy = Readonly<
-    IContractModuleHierarchy & ImmutableTree.Node
->
+export type PresenterTreeNode = Readonly<ITreeNode & ImmutableTree.Node>
 
-export interface IContractModuleHierarchy extends ImmutableTree.Node {
+interface ITreeNode extends ImmutableTree.Node {
     textualRepresentation$: Observable<string>
     id: string
     typeModule: TypeModule

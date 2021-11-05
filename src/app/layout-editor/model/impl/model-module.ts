@@ -6,14 +6,16 @@ import {
     ModuleFlux,
     PluginFlux,
 } from '@youwol/flux-core'
-import { ContractModelModule, logFactory, TypeModule } from '../'
+import { logFactory, ModelModule, TypeModule } from '../'
 import { AppStore } from '../../../builder-editor/builder-state'
 import { navigate } from '../../../externals_evolutions/core/navigation'
-import { hasRenderView } from './component'
 
-const log = logFactory().getChildLogger('ModelModule')
+const log = logFactory().getChildLogger('Module')
 
-export class ModelModule implements ContractModelModule {
+const hasRenderView = (mdle: ModuleFlux): boolean =>
+    mdle.Factory.RenderView !== undefined
+
+export class ImplModelModule implements ModelModule {
     private readonly log
     hasRenderView: boolean
     id: string
@@ -31,7 +33,7 @@ export class ModelModule implements ContractModelModule {
         this.type = root ? 'root' : getModuleType(mdle)
     }
 
-    get title(): string {
+    public get title(): string {
         return this.id === Component.rootComponentId
             ? this.appStore.project.name
             : this.mdle.configuration.title
@@ -41,7 +43,7 @@ export class ModelModule implements ContractModelModule {
         this.appStore.selectModule(this.mdle.moduleId, true)
     }
 
-    public get childrenContainingRendersView(): ContractModelModule[] {
+    public get childrenContainingRendersView(): ModelModule[] {
         if (this.type === 'component') {
             this.log.debug('Not returning renders for component')
             return
@@ -69,7 +71,8 @@ export class ModelModule implements ContractModelModule {
         ]
         return children.length != 0
             ? children.map(
-                  (navChild) => new ModelModule(navChild.get(), this.appStore),
+                  (navChild) =>
+                      new ImplModelModule(navChild.get(), this.appStore),
               )
             : undefined
     }

@@ -1,5 +1,6 @@
 /** @format */
 
+import './dependencies'
 import { Component } from '@youwol/flux-core'
 import { filter } from 'rxjs/operators'
 import {
@@ -10,7 +11,6 @@ import {
 } from '../../app/builder-editor/builder-state'
 import { environment } from '../common/dependencies'
 import { projects } from '../common/projects-data'
-import './dependencies'
 
 test('load empty project', (done) => {
     AppDebugEnvironment.getInstance().debugOn = false
@@ -76,26 +76,6 @@ test('load simple project', (done) => {
 
         done()
     })
-})
-
-test('UiState', (done) => {
-    AppDebugEnvironment.getInstance().debugOn = false
-
-    const appObservables = new AppObservables()
-    const appStore: AppStore = new AppStore(
-        environment,
-        appObservables,
-        new AppBuildViewObservables(),
-    )
-
-    // appObservables.uiStateUpdated$
-    // .subscribe( (d)=>{
-    //   expect(d).toEqual(new UiState("Viewer",true,true))
-    //   done()
-    // })
-    //
-    // appStore.setUiState(new UiState("Viewer",true,true))
-    // expect(appStore.uiState).toEqual(new UiState("Viewer",true,true))
 })
 
 test('save project 0', (done) => {

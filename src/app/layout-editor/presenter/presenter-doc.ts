@@ -1,14 +1,14 @@
 /** @format */
 import CodeMirror from 'codemirror'
 import { Observable } from 'rxjs'
-import { ContractPresenterModulePosition } from './'
+import { PresenterPosition } from './'
 
-export type ContractPresenterDoc = Readonly<IContractDoc>
+export type PresenterDoc = Readonly<IDoc>
 
-export interface IContractDoc {
+interface IDoc {
     content$: Observable<string>
-    modulesPositions$: Observable<ContractPresenterModulePosition[]>
-    onChange(content: string): void
-    onSave(): void
-    onInsert(doc: CodeMirror.Doc): void
+    positions$: Observable<PresenterPosition[]>
+    change(content: string): void
+    save(): void
+    insert(doc: CodeMirror.Doc): void
 }

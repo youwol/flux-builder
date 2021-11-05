@@ -1,5 +1,9 @@
 /** @format */
 
-import { logFactory as parentLogFactory } from '../externals_evolutions/logging'
+import { logFactory as parentLogFactory } from '../'
 
-export const logFactory = parentLogFactory().getChildFactory('layout-editor')
+export function logFactory() {
+    return parentLogFactory().getChildFactory('layout-editor')
+}
+
+export { layoutEditorView } from './view'

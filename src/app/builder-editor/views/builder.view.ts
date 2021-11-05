@@ -21,7 +21,7 @@ export function builderView(
     return {
         id: 'builder-component',
         class: attr$(
-            presenter.getViewState('builder', 'd-flex').state$,
+            presenter.getPresenterViewState('builder', 'd-flex').state$,
             (viewState: ViewState) => viewState.classes,
         ),
 

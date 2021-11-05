@@ -407,8 +407,7 @@ export namespace ProjectTreeView {
          * @category Subscriptions
          *
          */
-        // eslint-disable-next-line unused-imports/no-unused-vars -- See comment above
-        private updateTree(delta: WorkflowDelta) {
+        private updateTree(_delta: WorkflowDelta) {
             this.reset(
                 rootFactory(
                     this.projectManager.workflow(),

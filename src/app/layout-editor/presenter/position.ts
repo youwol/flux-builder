@@ -3,9 +3,28 @@
 export type PositionInDoc = Readonly<
     IPositionInDocPresent | IPositionMissing | IPositionIgnore
 >
-export type PositionInDocPresent = Readonly<IPositionInDocPresent>
 
 export type TypeInDoc = 'missing' | 'present' | 'ignore'
+
+export type PositionInDocPresent = Readonly<IPositionInDocPresent>
+
+export interface IPositionInDoc {
+    typeInDoc: TypeInDoc
+}
+
+export interface IPositionIgnore extends IPositionInDoc {
+    typeInDoc: 'ignore'
+}
+
+export interface IPositionMissing extends IPositionInDoc {
+    typeInDoc: 'missing'
+}
+
+export interface IPositionInDocPresent extends IPositionInDoc {
+    typeInDoc: 'present'
+    indexStart: number
+    indexEnd: number
+}
 
 export const missing: PositionInDoc = { typeInDoc: 'missing' }
 
@@ -19,23 +38,6 @@ export function present(position: {
         typeInDoc: 'present',
         ...position,
     }
-}
-
-export interface IPositionIgnore extends IPositionInDoc {
-    typeInDoc: 'ignore'
-}
-export interface IPositionMissing extends IPositionInDoc {
-    typeInDoc: 'missing'
-}
-
-export interface IPositionInDoc {
-    typeInDoc: TypeInDoc
-}
-
-export interface IPositionInDocPresent extends IPositionInDoc {
-    typeInDoc: 'present'
-    indexStart: number
-    indexEnd: number
 }
 
 export function isPresent(

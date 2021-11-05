@@ -13,6 +13,7 @@ import { ContextMenu } from '@youwol/fv-context-menu'
 import * as grapesjs from 'grapesjs'
 import { merge } from 'rxjs'
 import { take } from 'rxjs/operators'
+import { logFactory } from './'
 import {
     AssetsExplorerView,
     ConfigurationStatusView,
@@ -29,7 +30,6 @@ import {
     LogLevel,
 } from './builder-editor/builder-state/'
 import { AssetsBrowserClient } from './clients/assets-browser.client'
-import { logFactory } from './externals_evolutions/logging'
 
 import { createLayoutEditor, initLayoutEditor } from './grapesjs-editor/'
 import { setDynamicComponentsBlocks } from './grapesjs-editor/flux-blocks'
@@ -43,7 +43,9 @@ import {
 import { loadingLibView, loadingProjectView } from './loading.views'
 
 import { plugNotifications } from './notification'
-import { features, getConf, mainView, PresenterUiState } from './page'
+import { factoryPresenterUiState, mainView, PresenterUiState } from './page'
+
+const log = logFactory().getChildLogger('on-load')
 
 const defaultLog = false
 const debugSingleton = AppDebugEnvironment.getInstance()
@@ -55,11 +57,6 @@ debugSingleton.workflowViewEnabled = defaultLog
 debugSingleton.WorkflowBuilderEnabled = defaultLog
 debugSingleton.renderTopicEnabled = defaultLog
 debugSingleton.workflowView$Enabled = defaultLog
-const noConsole = {
-    log: (message?: any, ...optionalParams: any[]) => {},
-    warn: (message?: any, ...optionalParams: any[]) => {},
-    error: (message?: any, ...optionalParams: any[]) => {},
-}
 
 const environment = new Environment({
     console /*: noConsole as Console*/,
@@ -74,15 +71,14 @@ debugSingleton.logWorkflowBuilder({
 })
 
 const appStore = AppStore.getInstance(environment)
-const log = logFactory()
 
 initializeAppStoreAssets(appStore)
-const presenterUiState = new PresenterUiState(getConf())
-createMainView(appStore, presenterUiState)
+const presenter = factoryPresenterUiState()
+createMainView(appStore, presenter)
 
 let layoutEditor
-if (features() === 'main') {
-    layoutEditor = (await createLayoutEditor()) as any
+if (presenter.features === 'main') {
+    layoutEditor = await createLayoutEditor()
     initializeGrapesAssets(layoutEditor)
 }
 
@@ -90,10 +86,14 @@ const workflowPlotter = createDrawingArea(appStore, appStore.appObservables)
 plugNotifications(appStore, workflowPlotter)
 
 const contextState = new ContextMenuState(appStore, workflowPlotter.drawingArea)
-new ContextMenu.View({ state: contextState, class: 'fv-bg-background' } as any)
+new ContextMenu.View({ state: contextState, class: 'fv-bg-background' } as {
+    state: ContextMenuState
+})
 
-if (features() === 'main') {
-    connectStreams(appStore, layoutEditor, presenterUiState)
+if (presenter.features === 'main') {
+    connectStreams(appStore, layoutEditor, presenter).then(() =>
+        log.debug('ConnectStreams resolved'),
+    )
 } else {
     appStore.appObservables.packagesLoaded$.subscribe(() =>
         document.getElementById('loading-screen').remove(),
@@ -152,9 +152,10 @@ function initializeAppStoreAssets(appStore: AppStore) {
     })
 }
 
-function initializeGrapesAssets(layoutEditor: any) {
-    ;(environment as any).renderingWindow =
-        layoutEditor.Canvas.getDocument().defaultView
+function initializeGrapesAssets(layoutEditor) {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any -- Why ??
+    const writableEnv = environment as any
+    writableEnv.renderingWindow = layoutEditor.Canvas.getDocument().defaultView
 }
 
 export async function connectStreams(
@@ -180,27 +181,32 @@ export async function connectStreams(
             )
         })
 
-    appObservables.modulesUpdated$.subscribe((diff: any) => {
-        const createdIds = diff.createdElements.map(
-            (m: ModuleFlux) => m.moduleId,
-        )
+    appObservables.modulesUpdated$.subscribe(
+        (diff: {
+            createdElements: ModuleFlux[]
+            removedElements: ModuleFlux[]
+        }) => {
+            const createdIds = diff.createdElements.map(
+                (m: ModuleFlux) => m.moduleId,
+            )
 
-        const notReplaced = diff.removedElements.filter(
-            (mdle) => !createdIds.includes(mdle.moduleId),
-        )
+            const notReplaced = diff.removedElements.filter(
+                (mdle) => !createdIds.includes(mdle.moduleId),
+            )
 
-        removeTemplateElements(notReplaced, layoutEditor)
-        if (loading) {
-            replaceTemplateElements(createdIds, layoutEditor, appStore)
-        }
-        if (!loading) {
-            autoAddElementInLayout(diff, layoutEditor, appStore)
-            updateElementsInLayout(diff, layoutEditor, appStore)
-            autoRemoveElementInLayout(diff, layoutEditor, appStore)
-        }
+            removeTemplateElements(notReplaced, layoutEditor)
+            if (loading) {
+                replaceTemplateElements(createdIds, layoutEditor, appStore)
+            }
+            if (!loading) {
+                autoAddElementInLayout(diff, layoutEditor, appStore)
+                updateElementsInLayout(diff, layoutEditor, appStore)
+                autoRemoveElementInLayout(diff, layoutEditor, appStore)
+            }
 
-        setDynamicComponentsBlocks(appStore, layoutEditor)
-    })
+            setDynamicComponentsBlocks(appStore, layoutEditor)
+        },
+    )
 
     appObservables.activeLayerUpdated$.subscribe(() => {
         setDynamicComponentsBlocks(appStore, layoutEditor)
@@ -217,7 +223,7 @@ export async function connectStreams(
         layoutEditor.Commands.run('show-attributes')
     })
 
-    presenterUiState.getViewState('grapejs').state$.subscribe(() => {
+    presenterUiState.getPresenterViewState('grapejs').state$.subscribe(() => {
         layoutEditor.refresh()
     })
     loading = false

@@ -4,12 +4,12 @@ import { VirtualDOM } from '@youwol/flux-view'
 import { Subscription } from 'rxjs'
 import { PresenterUiState } from '../../page/'
 import { TypeDoc } from '../model'
-import { ContractPresenterDoc } from '../presenter'
+import { PresenterDoc } from '../presenter'
 import { markDocument } from './text-marker.view'
 
-export function factoryCodeMirrorView<typeDoc extends TypeDoc>(
+export function codeMirrorView<typeDoc extends TypeDoc>(
     typeDoc: TypeDoc,
-    presenter: ContractPresenterDoc,
+    presenter: PresenterDoc,
     presenterUiState: PresenterUiState,
 ): VirtualDOM {
     const subscriptions: Subscription[] = []
@@ -24,25 +24,25 @@ export function factoryCodeMirrorView<typeDoc extends TypeDoc>(
                 lineWrapping: true,
                 extraKeys: {
                     'Ctrl-Enter': (_editor) => {
-                        presenter.onSave()
+                        presenter.save()
                     },
                     'Alt-Tab': (editor) => {
-                        presenter.onInsert(editor.getDoc())
+                        presenter.insert(editor.getDoc())
                     },
                 },
             })
             cmEditor.on('changes', (editor) =>
-                presenter.onChange(editor.getDoc().getValue()),
+                presenter.change(editor.getDoc().getValue()),
             )
             subscriptions.push(
                 presenter.content$.subscribe((content) => {
                     cmEditor.setValue(content)
                 }),
-                presenter.modulesPositions$.subscribe(
+                presenter.positions$.subscribe(
                     markDocument(typeDoc, cmEditor, marksSubscriptions),
                 ),
                 presenterUiState
-                    .getViewState('editor')
+                    .getPresenterViewState('editor')
                     .state$.subscribe(() => cmEditor.refresh()),
             )
         },

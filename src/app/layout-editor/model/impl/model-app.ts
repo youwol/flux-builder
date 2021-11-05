@@ -3,28 +3,26 @@
 import { Component } from '@youwol/flux-core'
 import { combineLatest, Observable } from 'rxjs'
 import { distinctUntilChanged, map, tap } from 'rxjs/operators'
-import { logFactory } from '../'
+import { logFactory, ModelApp, ModelComponent } from '../'
 import { AppStore } from '../../../builder-editor/builder-state'
 import { navigate } from '../../../externals_evolutions/core/navigation'
 import { v } from '../../../externals_evolutions/logging'
-import { ContractModel } from '../model'
-import { ContractModelComponent } from '../model-component'
-import { ModelComponent } from './component'
+import { ImplModelComponent } from './model-component'
 
-const log = logFactory().getChildLogger('')
+const log = logFactory().getChildLogger('App')
 
-export class Model implements ContractModel {
+export class ImplModelApp implements ModelApp {
     private readonly log
-    readonly activeComponent$: Observable<ContractModelComponent>
+    readonly activeComponent$: Observable<ModelComponent>
     readonly moduleIdSelected$: Observable<string>
 
-    public get selectedModuleId(): string {
+    public get moduleIdSelected(): string {
         const selectedModuleId = this.appStore.getModuleSelected()?.moduleId
         log.debug('Returning Selected ModuleId : {0}', v(selectedModuleId))
         return selectedModuleId
     }
 
-    public set selectedModuleId(moduleId: string) {
+    public set moduleIdSelected(moduleId: string) {
         this.log.debug('Check if {0} not already selected', v(moduleId))
         if (this.appStore.getModuleSelected()?.moduleId !== moduleId) {
             this.log.debug('Selecting {0}', v(moduleId))
@@ -33,7 +31,7 @@ export class Model implements ContractModel {
     }
 
     constructor(private readonly appStore: AppStore) {
-        this.log = log.getChildLogger('[]')
+        this.log = log
         this.log.debug('Constructor')
         this.activeComponent$ = this.getObservableActiveComponent$()
         this.moduleIdSelected$ = this.getObservableModuleIdSelected()
@@ -50,17 +48,12 @@ export class Model implements ContractModel {
             ),
             distinctUntilChanged(
                 (
-                    [xWorkUpdate, xlayerUpdated],
-                    [yWorkUpdate, ylayerUpdated],
+                    [xWorkflowUpdate, xLayerUpdate],
+                    [yWorkflowUpdate, yLayerUpdate],
                 ) => {
-                    const t = xWorkUpdate === yWorkUpdate
-                    console.log(
-                        'PipingAct' + (t ? 'y' : 'n'),
-                        xWorkUpdate,
-                        yWorkUpdate,
-                    )
+                    const t = xWorkflowUpdate === yWorkflowUpdate
                     return (
-                        t && xlayerUpdated.toLayerId === ylayerUpdated.toLayerId
+                        t && xLayerUpdate.toLayerId === yLayerUpdate.toLayerId
                     )
                 },
             ),
@@ -81,20 +74,25 @@ export class Model implements ContractModel {
             ),
             distinctUntilChanged(
                 (
-                    { workflowUpdate: xW, componentId: xC },
-                    { workflowUpdate: yW, componentId: yC },
+                    {
+                        workflowUpdate: xWorkflowUpdate,
+                        componentId: xComponentId,
+                    },
+                    {
+                        workflowUpdate: yWorkflowUpdate,
+                        componentId: yComponentId,
+                    },
                 ) => {
-                    const t = xW === yW
-                    console.log('PipingAct' + (t ? 'y' : 'n'), xW, yW)
-                    return t && xC === yC
+                    const t = xWorkflowUpdate === yWorkflowUpdate
+                    return t && xComponentId === yComponentId
                 },
             ),
             tap(({ componentId }) =>
-                _log.debug('updating component {0}', v(componentId)),
+                _log.debug('new component {0}', v(componentId)),
             ),
             map(
                 ({ componentId }) =>
-                    new ModelComponent(
+                    new ImplModelComponent(
                         navigate(this.appStore.project.workflow)
                             .fromComponent(componentId)
                             .get(),
@@ -112,9 +110,5 @@ export class Model implements ContractModel {
             distinctUntilChanged(),
             tap((moduleId) => _log.debug('new module Id {0}', v(moduleId))),
         )
-    }
-
-    private distintc() {
-        return distinctUntilChanged()
     }
 }

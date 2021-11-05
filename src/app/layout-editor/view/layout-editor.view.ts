@@ -6,8 +6,8 @@ import { mergeMap } from 'rxjs/operators'
 import { AppStore } from '../../builder-editor/builder-state'
 import { PresenterUiState, ViewState } from '../../page'
 import { factoryPresenter } from '../presenter'
-import { factoryCodeMirrorView } from './code-mirror.view'
-import { factoryProjectTreeView } from './project-tree.view'
+import { codeMirrorView } from './code-mirror.view'
+import { projectTreeView } from './project-tree.view'
 
 export function layoutEditorView(
     appStore: AppStore,
@@ -18,18 +18,27 @@ export function layoutEditorView(
     return {
         id: 'layout-editor-component',
         class: attr$(
-            presenterUiState.getViewState('editor', 'd-flex').state$,
+            presenterUiState.getPresenterViewState('editor', 'd-flex').state$,
             (viewState: ViewState) => viewState.classes,
         ),
 
         children: [
-            factoryProjectTreeView(presenter.presenterTree),
-            child$(codeMirror$, () =>
-                factoryCodeMirrorView('html', presenter.html, presenterUiState),
-            ),
-            child$(codeMirror$, () =>
-                factoryCodeMirrorView('css', presenter.css, presenterUiState),
-            ),
+            projectTreeView(presenter.presenterTree),
+            {
+                class: 'h-100 d-flex flex-grow-1',
+                children: [
+                    child$(codeMirror$, () =>
+                        codeMirrorView(
+                            'html',
+                            presenter.html,
+                            presenterUiState,
+                        ),
+                    ),
+                    child$(codeMirror$, () =>
+                        codeMirrorView('css', presenter.css, presenterUiState),
+                    ),
+                ],
+            },
         ],
         disconnectedCallback: (_) => {
             presenter.unsubscribe()

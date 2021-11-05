@@ -3,13 +3,13 @@ import { Observable } from 'rxjs'
 import { TypeDoc, TypeModule } from '../model/'
 import { PositionInDoc } from './'
 
-export type ContractPresenterModulePosition = Readonly<IContractModulePosition>
+export type PresenterPosition = Readonly<IPosition>
 
-export interface IContractModulePosition {
+interface IPosition {
     textualRepresentation$: Observable<string>
     id: string
     typeModule: TypeModule
     selected$: Observable<boolean>
     getPositionIn<typeDoc>(typeDoc: TypeDoc): PositionInDoc
-    onSelect(): void
+    select(): void
 }

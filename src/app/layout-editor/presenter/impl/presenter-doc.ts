@@ -4,41 +4,40 @@ import CodeMirror from 'codemirror'
 import js_beautify from 'js-beautify'
 import { ReplaySubject } from 'rxjs'
 import {
-    ContractPresenterDoc,
-    ContractPresenterModulePosition,
     ignore,
     logFactory,
     missing,
     PositionInDoc,
     present,
+    PresenterDoc,
+    PresenterPosition,
 } from '../'
 import { v } from '../../../externals_evolutions/logging'
-import { ContractModelComponent, TypeDoc } from '../../model'
+import { ModelComponent, TypeDoc } from '../../model'
+import { ImplPresenterComponent } from './presenter-component'
 
-import { Presenter } from './presenter'
-import { PresenterModule } from './presenter-module'
+import { ImplPresenterModule } from './presenter-module'
 
-export class PresenterDoc<typeDoc extends TypeDoc>
-    implements ContractPresenterDoc
-{
+const log = logFactory().getChildFactory('Doc')
+
+export class ImplPresenterDoc<typeDoc extends TypeDoc> implements PresenterDoc {
     private log
-    modelComponent: ContractModelComponent
+    modelComponent: ModelComponent
     currentContent: string
 
     content$: ReplaySubject<string> = new ReplaySubject(1)
-    modulesPositions$: ReplaySubject<ContractPresenterModulePosition[]> =
-        new ReplaySubject(1)
+    positions$: ReplaySubject<PresenterPosition[]> = new ReplaySubject(1)
 
     constructor(
         private readonly typeDoc: typeDoc,
-        private readonly presenter: Presenter,
+        private readonly presenter: ImplPresenterComponent,
     ) {
-        this.log = logFactory().getChildFactory('Doc_' + this.typeDoc)
+        this.log = log.getChildLogger(`${this.typeDoc}`)
     }
 
-    public onInsert(doc: CodeMirror.Doc): void {
+    public insert(doc: CodeMirror.Doc): void {
         const _log = this.log.getChildLogger('onInsert')
-        const selectedId = this.presenter.selectedModuleId
+        const selectedId = this.presenter.modelApp.moduleIdSelected
         _log.debug('considering selectedId {0} for insertion', v(selectedId))
         const id = this.presenter.modules.find(
             (mdle) =>
@@ -52,7 +51,8 @@ export class PresenterDoc<typeDoc extends TypeDoc>
             _log.debug('Not Inserting id {0}', v(selectedId))
         }
     }
-    public onSave(): void {
+
+    public save(): void {
         if (this.typeDoc === 'css') {
             this.modelComponent.contentCss = this.currentContent
         } else {
@@ -60,21 +60,14 @@ export class PresenterDoc<typeDoc extends TypeDoc>
         }
     }
 
-    public loadComponentContent(modelComponent: ContractModelComponent): void {
+    public loadComponentContent(modelComponent: ModelComponent): void {
         this.modelComponent = modelComponent
-        this.log = logFactory()
-            .getChildLogger('Doc_' + this.typeDoc)
-            .getChildLogger(`[${modelComponent.id}]`)
-        this.content$.next(
-            formatContent[this.typeDoc](
-                this.typeDoc === 'css'
-                    ? this.modelComponent.contentCss
-                    : this.modelComponent.contentHtml,
-            ),
-        )
+        this.log = log.getChildLogger(`[${this.typeDoc}][${modelComponent.id}]`)
+        this.currentContent = formatContent[this.typeDoc](this.modelComponent)
+        this.content$.next(this.currentContent)
     }
 
-    public onChange(content: string): void {
+    public change(content: string): void {
         const _log = this.log.getChildLogger('onChange')
         this.currentContent = content
         this.presenter.modules
@@ -84,14 +77,14 @@ export class PresenterDoc<typeDoc extends TypeDoc>
                 _log.debug('module {0} is not ignored', v(mdle.id))
                 mdle.setPosition(this.typeDoc, modulePosition)
             })
-        this.modulesPositions$.next(
+        this.positions$.next(
             this.presenter.modules.filter(
                 (mdle) => mdle.getPositionIn(this.typeDoc) !== ignore,
             ),
         )
     }
 
-    private findModulePosition(mdle: PresenterModule): PositionInDoc {
+    private findModulePosition(mdle: ImplPresenterModule): PositionInDoc {
         const searchString: string = searchStringForTypeDoc[this.typeDoc](
             mdle.id,
         )
@@ -106,12 +99,15 @@ export class PresenterDoc<typeDoc extends TypeDoc>
     }
 }
 
-const searchStringForTypeDoc = {
+const searchStringForTypeDoc: Record<TypeDoc, (content: string) => string> = {
     css: (id: string): string => `#${id}`,
     html: (id: string): string => `id="${id}"`,
 }
 
-const insertModuleId = {
+const insertModuleId: Record<
+    TypeDoc,
+    (moduleId: string, doc: CodeMirror.Doc) => void
+> = {
     css: (moduleId: string, doc: CodeMirror.Doc): void =>
         doc.replaceRange(`#${moduleId} {\n}`, doc.getCursor()),
     html: (moduleId: string, doc: CodeMirror.Doc): void =>
@@ -121,7 +117,12 @@ const insertModuleId = {
         ),
 }
 
-const formatContent = {
-    css: (content: string) => js_beautify.css_beautify(content),
-    html: (content: string) => js_beautify.html_beautify(content),
+const formatContent: Record<
+    TypeDoc,
+    (modelComponent: ModelComponent) => string
+> = {
+    css: (modelComponent) =>
+        js_beautify.css_beautify(modelComponent.contentCss),
+    html: (modelComponent) =>
+        js_beautify.html_beautify(modelComponent.contentHtml),
 }

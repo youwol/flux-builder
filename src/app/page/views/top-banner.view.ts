@@ -6,7 +6,7 @@ import { BehaviorSubject, merge, Observable, of } from 'rxjs'
 import { map } from 'rxjs/operators'
 import { AppStore } from '../../builder-editor/builder-state'
 import { ViewState } from '../model'
-import { features, PresenterUiState } from '../presenter'
+import { PresenterUiState } from '../presenter'
 
 interface Action {
     name: string
@@ -39,8 +39,8 @@ function getActions(appStore: AppStore, presenter: PresenterUiState) {
             {
                 name: 'main',
                 class: 'fas fa-palette',
-                visible: of(features() !== 'main'),
-                enabled: of(features() !== 'main'),
+                visible: of(presenter.features !== 'main'),
+                enabled: of(presenter.features !== 'main'),
                 onTriggered: () => {
                     if (
                         confirm(
@@ -58,8 +58,8 @@ function getActions(appStore: AppStore, presenter: PresenterUiState) {
             {
                 name: 'beta',
                 class: 'fas fa-code',
-                visible: of(features() !== 'beta'),
-                enabled: of(features() !== 'beta'),
+                visible: of(presenter.features !== 'beta'),
+                enabled: of(presenter.features !== 'beta'),
                 onTriggered: () => {
                     if (
                         confirm(
@@ -112,7 +112,7 @@ function getActions(appStore: AppStore, presenter: PresenterUiState) {
                 class: 'fas fa-project-diagram n-resize',
                 visible: of(true),
                 enabled: presenter
-                    .getViewState('builder')
+                    .getPresenterViewState('builder')
                     .state$.pipe(
                         map(
                             (viewState: ViewState) =>
@@ -125,9 +125,9 @@ function getActions(appStore: AppStore, presenter: PresenterUiState) {
             {
                 name: 'grapejs-view',
                 class: 'fas fa-palette n-resize',
-                visible: of(features() === 'main'),
+                visible: of(presenter.features === 'main'),
                 enabled: presenter
-                    .getViewState('grapejs')
+                    .getPresenterViewState('grapejs')
                     .state$.pipe(
                         map(
                             (viewState: ViewState) =>
@@ -140,9 +140,9 @@ function getActions(appStore: AppStore, presenter: PresenterUiState) {
             {
                 name: 'editor-view',
                 class: 'fas fa-code n-resize',
-                visible: of(features() === 'beta'),
+                visible: of(presenter.features === 'beta'),
                 enabled: presenter
-                    .getViewState('editor')
+                    .getPresenterViewState('editor')
                     .state$.pipe(
                         map(
                             (viewState: ViewState) =>
@@ -155,9 +155,9 @@ function getActions(appStore: AppStore, presenter: PresenterUiState) {
             {
                 name: 'runner-view',
                 class: 'fas fa-eye n-resize',
-                visible: of(features() === 'beta'),
+                visible: of(presenter.features === 'beta'),
                 enabled: presenter
-                    .getViewState('runner')
+                    .getPresenterViewState('runner')
                     .state$.pipe(
                         map(
                             (viewState: ViewState) =>
@@ -170,7 +170,7 @@ function getActions(appStore: AppStore, presenter: PresenterUiState) {
             {
                 name: 'builder-view',
                 class: 'fas fa-columns fa-rotate-90',
-                visible: presenter.splitted$,
+                visible: presenter.split$,
                 enabled: of(true),
                 onTriggered: () => presenter.toggleSplit(),
             },
@@ -179,7 +179,7 @@ function getActions(appStore: AppStore, presenter: PresenterUiState) {
                 class: 'fas fa-project-diagram s-resize',
                 visible: of(true),
                 enabled: presenter
-                    .getViewState('builder')
+                    .getPresenterViewState('builder')
                     .state$.pipe(
                         map(
                             (viewState: ViewState) =>
@@ -192,9 +192,9 @@ function getActions(appStore: AppStore, presenter: PresenterUiState) {
             {
                 name: 'grapejs-view',
                 class: 'fas fa-palette s-resize',
-                visible: of(features() === 'main'),
+                visible: of(presenter.features === 'main'),
                 enabled: presenter
-                    .getViewState('grapejs')
+                    .getPresenterViewState('grapejs')
                     .state$.pipe(
                         map(
                             (viewState: ViewState) =>
@@ -207,9 +207,9 @@ function getActions(appStore: AppStore, presenter: PresenterUiState) {
             {
                 name: 'editor-view',
                 class: 'fas fa-code s-resize',
-                visible: of(features() === 'beta'),
+                visible: of(presenter.features === 'beta'),
                 enabled: presenter
-                    .getViewState('editor')
+                    .getPresenterViewState('editor')
                     .state$.pipe(
                         map(
                             (viewState: ViewState) =>
@@ -222,9 +222,9 @@ function getActions(appStore: AppStore, presenter: PresenterUiState) {
             {
                 name: 'runner-view',
                 class: 'fas fa-eye s-resize',
-                visible: of(features() === 'beta'),
+                visible: of(presenter.features === 'beta'),
                 enabled: presenter
-                    .getViewState('runner')
+                    .getPresenterViewState('runner')
                     .state$.pipe(
                         map(
                             (viewState: ViewState) =>
@@ -252,8 +252,8 @@ function getActions(appStore: AppStore, presenter: PresenterUiState) {
                     observables.moduleSelected$,
                 ).pipe(map((selected) => selected instanceof ModuleFlux)),
                 onTriggered: () => {
-                    const mdles = appStore.getModulesSelected()
-                    appStore.duplicateModules(mdles)
+                    const modules = appStore.getModulesSelected()
+                    appStore.duplicateModules(modules)
                 },
             },
             {
@@ -265,8 +265,8 @@ function getActions(appStore: AppStore, presenter: PresenterUiState) {
                     observables.moduleSelected$,
                 ).pipe(map((selected) => selected instanceof ModuleFlux)),
                 onTriggered: () => {
-                    const mdles = appStore.getModulesSelected()
-                    appStore.alignH(mdles)
+                    const modules = appStore.getModulesSelected()
+                    appStore.alignH(modules)
                 },
             },
             {
@@ -278,8 +278,8 @@ function getActions(appStore: AppStore, presenter: PresenterUiState) {
                     observables.moduleSelected$,
                 ).pipe(map((selected) => selected instanceof ModuleFlux)),
                 onTriggered: () => {
-                    const mdles = appStore.getModulesSelected()
-                    appStore.alignV(mdles)
+                    const modules = appStore.getModulesSelected()
+                    appStore.alignV(modules)
                 },
             } /*
               {

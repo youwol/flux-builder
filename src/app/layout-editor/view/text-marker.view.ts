@@ -1,12 +1,12 @@
 /** @format */
 import CodeMirror, { TextMarker } from 'codemirror'
 import { Subscription } from 'rxjs'
-import { logFactory } from '../index'
 import { TypeDoc } from '../model'
-import { ContractPresenterModulePosition, isPresent } from '../presenter'
-import { TypeModuleView } from './type-module.view'
+import { isPresent, PresenterPosition } from '../presenter'
+import { logFactory } from './'
+import { IconForTypeModule } from './icon-for-type-module.view'
 
-const log = logFactory.getChildFactory('TextMarker')
+const log = logFactory().getChildFactory('TextMarker')
 
 export const markDocument =
     (
@@ -14,7 +14,7 @@ export const markDocument =
         cmEditor: CodeMirror.Editor,
         marksSubscriptions: Subscription[],
     ) =>
-    (modulesPositions: ContractPresenterModulePosition[]) => {
+    (modulesPositions: PresenterPosition[]) => {
         marksSubscriptions.forEach((subscription) => subscription.unsubscribe())
         cmEditor
             .getDoc()
@@ -48,22 +48,22 @@ export const markDocument =
     }
 
 const factoryTextMarker = (
-    presenterModule: ContractPresenterModulePosition,
+    presenterModule: PresenterPosition,
     subscriptions: Subscription[],
 ): HTMLSpanElement => {
     const element = document.createElement('span')
     const elementIcon = document.createElement('span')
     const elementText = document.createElement('span')
 
-    elementIcon.className = TypeModuleView[presenterModule.typeModule]
-        ? `mr-2 fas ${TypeModuleView[presenterModule.typeModule]}`
+    elementIcon.className = IconForTypeModule[presenterModule.typeModule]
+        ? `mr-2 fas ${IconForTypeModule[presenterModule.typeModule]}`
         : ''
 
     elementText.innerText = ''
     element.className = 'fv-pointer fv-text-primary'
     element.setAttribute('style', 'text-decoration: underline')
     element.append(elementIcon, elementText)
-    element.onclick = () => presenterModule.onSelect()
+    element.onclick = () => presenterModule.select()
 
     subscriptions.push(
         presenterModule.textualRepresentation$.subscribe(
@@ -93,7 +93,7 @@ const factoryTextMarker = (
     // })
 }
 
-export function focusElement(marker: TextMarker, cmEditor: CodeMirror.Editor) {
+export function focusElement(marker: TextMarker, _cmEditor: CodeMirror.Editor) {
     const _log = log.getChildLogger('focus')
     if (marker === undefined) {
         _log.debug('marker is undefined')

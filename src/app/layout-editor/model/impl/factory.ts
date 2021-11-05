@@ -1,8 +1,8 @@
 /** @format */
 
+import { ModelApp } from '../'
 import { AppStore } from '../../../builder-editor/builder-state'
-import { ContractModel } from '../model'
-import { Model } from './model'
+import { ImplModelApp } from './model-app'
 
-export const factoryModel = (appStore: AppStore): ContractModel =>
-    new Model(appStore)
+export const factoryModel = (appStore: AppStore): ModelApp =>
+    new ImplModelApp(appStore)

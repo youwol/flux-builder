@@ -1,9 +1,9 @@
 /** @format */
 
-import { ContractPresenter } from '../'
+import { PresenterComponent } from '../'
 import { AppStore } from '../../../builder-editor/builder-state'
 import { factoryModel } from '../../model'
-import { Presenter } from './presenter'
+import { ImplPresenterComponent } from './presenter-component'
 
-export const factoryPresenter = (appStore: AppStore): ContractPresenter =>
-    new Presenter(factoryModel(appStore))
+export const factoryPresenter = (appStore: AppStore): PresenterComponent =>
+    new ImplPresenterComponent(factoryModel(appStore))

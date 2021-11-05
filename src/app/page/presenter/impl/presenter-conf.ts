@@ -1,8 +1,8 @@
 /** @format */
 
-import { Features } from './presenter-ui-state'
+import { Features } from '../../model'
 
-export function features(): Features {
+export function getFeatures(): Features {
     if (document.documentURI.endsWith('&features=beta')) {
         return 'beta'
     } else {

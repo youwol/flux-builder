@@ -512,7 +512,7 @@ export function getMockedState(
 
 export function getMockedRootNode() {
     const rootNodeMocker = mock(ComponentNode)
-    when(rootNodeMocker.id).thenReturn(Component.rootComponentId)
+    when(rootNodeMocker.getModuleId()).thenReturn(Component.rootComponentId)
     const mockRootNode = instance(rootNodeMocker)
     Object.setPrototypeOf(mockRootNode, ComponentNode.prototype)
     return mockRootNode
