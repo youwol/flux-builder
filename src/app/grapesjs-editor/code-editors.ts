@@ -2,7 +2,7 @@ import { replaceTemplateElements } from "./flux-rendering-components";
 
 
 export function buildCodeEditor(editor, type) {
-    var codeEditor = editor.CodeManager.getViewer('CodeMirror').clone();
+    const codeEditor = editor.CodeManager.getViewer('CodeMirror').clone();
     codeEditor.set({
       codeName: type === 'html' ? 'htmlmixed' : 'css',
       readOnly: false,
@@ -20,13 +20,13 @@ export function buildCodeEditor(editor, type) {
 function setupHtmlAutoUpdates(appStore, editor, htmlCodeEditor) {
     function update() {
       const htmlCode = htmlCodeEditor.editor.getValue()
-      if (!htmlCode) return;
+      if (!htmlCode) {return;}
       editor.setComponents(htmlCode);
       replaceTemplateElements(appStore.project.workflow.modules.map(m => m.moduleId),editor,appStore)
-      let style = Object.values(editor.fluxCache).reduce( (acc, cache: any)=> acc+" "+cache.styles, "")
+      const style = Object.values(editor.fluxCache).reduce( (acc, cache: any)=> acc+" "+cache.styles, "")
       editor.getStyle().add(style)
     }
-    var delay;
+    let delay;
     htmlCodeEditor.editor.on('change', function() {
       clearTimeout(delay);
       delay = setTimeout(update, 300);
@@ -37,10 +37,10 @@ function setupHtmlAutoUpdates(appStore, editor, htmlCodeEditor) {
   function setupCssAutoUpdates(editor, cssCodeEditor) {
     function update() {
       const cssCode = cssCodeEditor.editor.getValue()
-      if (!cssCode) return;
+      if (!cssCode) {return;}
       editor.setStyle(cssCode);
     }
-    var delay;
+    let delay;
     cssCodeEditor.editor.on('change', function() {
       clearTimeout(delay);
       delay = setTimeout(update, 300);

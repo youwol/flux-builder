@@ -6,12 +6,12 @@ import { uuidv4 } from './utils'
 
 export function getAvailablePlugins( mdle , pluginsFactory ) {
 
-    let plugins = []
+    const plugins = []
     Array.from(pluginsFactory.entries()).forEach( ([k,v]) => {
         if(mdle.factory && v.parentModule === mdle.factory.id)
-            plugins.push({
+            {plugins.push({
                 factoryId: k,pluginFactory:v
-            })
+            })}
     })
     return plugins
 }
@@ -24,11 +24,11 @@ export function getPlugins( moduleId: string, project:Project) : Array<PluginFlu
 
 export function addPlugin( Factory, parentModule , project, ready$, environment: IEnvironment ) {
 
-    let debugSingleton = AppDebugEnvironment.getInstance()
+    const debugSingleton = AppDebugEnvironment.getInstance()
 
-    let configuration  = new Factory.Configuration()
-    let moduleId       = Factory.id + "_" + uuidv4()
-    let plugin         = new Factory.Module( {parentModule, moduleId, configuration, Factory, ready$, environment}) 
+    const configuration  = new Factory.Configuration()
+    const moduleId       = Factory.id + "_" + uuidv4()
+    const plugin         = new Factory.Module( {parentModule, moduleId, configuration, Factory, ready$, environment}) 
     
     debugSingleton.debugOn && 
     debugSingleton.logWorkflowBuilder( {  
@@ -38,14 +38,14 @@ export function addPlugin( Factory, parentModule , project, ready$, environment:
             pluginFactory: Factory }
     })
 
-    let workflow   = new Workflow({
+    const workflow   = new Workflow({
         ...project.workflow,
         ...{
             plugins: project.workflow.plugins.concat([plugin])
         }
     })
     
-    let projectNew = new Project({
+    const projectNew = new Project({
         ...project,
         ...{
             workflow

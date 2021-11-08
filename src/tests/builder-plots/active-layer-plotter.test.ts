@@ -1,21 +1,20 @@
 
-import '../common/dependencies'
+import { environment } from '../common/dependencies'
 import { createDrawingArea } from '@youwol/flux-svg-plots'
 import { AppObservables, AppDebugEnvironment, AppStore, 
     AppBuildViewObservables }  from '../../app/builder-editor/builder-state/index'
     
 import { take, skip, filter } from 'rxjs/operators'
 import { ModulesPlotter } from '../../app/builder-editor/builder-plots/index'
-import { environment } from '../common/dependencies'
 import {packCore} from '@youwol/flux-core'
 
 test('load simple project', (done) => {
-    let p = packCore
-    let div = document.createElement("div")
+    const p = packCore
+    const div = document.createElement("div")
     div.id = "plot-container"
     document.body.appendChild(div)
   
-    let drawingArea = createDrawingArea(
+    const drawingArea = createDrawingArea(
       {  containerDivId : "plot-container",
           width : 100,
           height :100,
@@ -28,12 +27,12 @@ test('load simple project', (done) => {
     })     
   
     
-    let appObservables = AppObservables.getInstance()
-    let plottersObservables = AppBuildViewObservables.getInstance()
+    const appObservables = AppObservables.getInstance()
+    const plottersObservables = AppBuildViewObservables.getInstance()
     AppDebugEnvironment.getInstance().debugOn = false
   
-    let appStore : AppStore = AppStore.getInstance(environment)
-    let mdlesPlotter = new ModulesPlotter(drawingArea, plottersObservables,appObservables,appStore)
+    const appStore : AppStore = AppStore.getInstance(environment)
+    const mdlesPlotter = new ModulesPlotter(drawingArea, plottersObservables,appObservables,appStore)
     
     appObservables.ready$.pipe(
         filter(d => d)
@@ -46,19 +45,19 @@ test('load simple project', (done) => {
         take(1)
     ).subscribe( (svgElements) =>{
         
-        let groupElem = svgElements["GroupModules_child-layer"]
+        const groupElem = svgElements["GroupModules_child-layer"]
         expect(groupElem).toBeDefined()
-        expect(groupElem.id ).toEqual("expanded_GroupModules_child-layer")
-        let elemInDocument =  document.getElementById("expanded_GroupModules_child-layer")
+        expect(groupElem.id ).toBe("expanded_GroupModules_child-layer")
+        const elemInDocument =  document.getElementById("expanded_GroupModules_child-layer")
 
         expect(elemInDocument).toBeDefined()
-        let x= elemInDocument.getAttribute("x"), y = elemInDocument.getAttribute("y")
-        expect(x).toEqual("60")
-        expect(y).toEqual("50")
-        let titleSvg = elemInDocument.querySelector(".title")
-        expect(titleSvg.innerHTML).toEqual("group")
+        const x= elemInDocument.getAttribute("x"), y = elemInDocument.getAttribute("y")
+        expect(x).toBe("60")
+        expect(y).toBe("50")
+        const titleSvg = elemInDocument.querySelector(".title")
+        expect(titleSvg.innerHTML).toBe("group")
 
-        let layerSvg =  document.querySelector(".active-layer-box")
+        const layerSvg =  document.querySelector(".active-layer-box")
         expect(layerSvg).toBeDefined()
         appStore.selectActiveGroup(appStore.getRootComponent().moduleId)
     })
@@ -67,7 +66,7 @@ test('load simple project', (done) => {
         skip(1),
         take(1)
     ).subscribe( (_) =>{
-        let layerSvg =  document.querySelector(".active-layer-box")
+        const layerSvg =  document.querySelector(".active-layer-box")
         expect(layerSvg).toBeFalsy()
         appStore.selectActiveGroup("GroupModules_child-layer")
     })
@@ -75,7 +74,7 @@ test('load simple project', (done) => {
         skip(2),
         take(1)
     ).subscribe( (_) =>{
-        let layerSvg =  document.getElementById("GroupModules_child-layer")
+        const layerSvg =  document.getElementById("GroupModules_child-layer")
         expect(layerSvg).toBeDefined()
         done()
     })

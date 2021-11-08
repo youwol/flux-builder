@@ -7,7 +7,7 @@ export class AppExtensionsObservables extends ExtensionsObservables {
     private static instance : AppExtensionsObservables = undefined
     static getInstance() {
         if(!AppExtensionsObservables.instance)
-        AppExtensionsObservables.instance =  new AppExtensionsObservables()
+        {AppExtensionsObservables.instance =  new AppExtensionsObservables()}
         return AppExtensionsObservables.instance
     }
     debugSingleton = AppDebugEnvironment.getInstance()

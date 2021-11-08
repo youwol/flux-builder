@@ -8,15 +8,15 @@ import { GroupModules } from '@youwol/flux-core';
 
 export function uuidv4() {
   return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
-    var r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8);
+    const r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8);
     return v.toString(16);
   });
 }
 
 export function convert(bbox, matrix, drawingArea) {
-  var offset = document.getElementById(drawingArea.svgCanvas.attr("id")).getBoundingClientRect();
-  let transform = drawingArea.overallTranform
-  let a = {
+  const offset = document.getElementById(drawingArea.svgCanvas.attr("id")).getBoundingClientRect();
+  const transform = drawingArea.overallTranform
+  const a = {
     xmin: ((matrix.a * bbox.x) + (matrix.c * bbox.y) + matrix.e - offset.left
       - transform.translateX) / transform.scale,
     ymin: ((matrix.b * bbox.x) + (matrix.d * bbox.y) + matrix.f - offset.top
@@ -29,9 +29,9 @@ export function convert(bbox, matrix, drawingArea) {
   return a
 }
 
-export function getBoundingBox(modulesId: Array<String>, margin: number, drawingArea) {
+export function getBoundingBox(modulesId: Array<string>, margin: number, drawingArea) {
 
-  let bbox = modulesId
+  const bbox = modulesId
     .map((mid: string) => document.getElementById(mid))
     .filter(e => e)
     .map((e: any) => {
@@ -59,7 +59,7 @@ export function getBoundingBox(modulesId: Array<String>, margin: number, drawing
 
 export function focusElement(drawingArea: DrawingArea, svgElement: SVGElement) {
 
-  let boudingBox = svgElement.getBoundingClientRect()
+  const boudingBox = svgElement.getBoundingClientRect()
   drawingArea.lookAt(0.5*(boudingBox.left + boudingBox.right), 0.5*(boudingBox.top + boudingBox.bottom))
 }
 
@@ -76,11 +76,11 @@ function mapToFocusCoordinate(activeLayerUpdated$ : Observable<{fromLayerId:stri
     map( ({fromLayer, toLayer}) =>{ 
         // if zoom-in
         if( fromLayer.getAllChildren(appStore.project.workflow).includes(toLayer))
-            return document.getElementById("expanded_"+toLayer.moduleId)    
+            {return document.getElementById("expanded_"+toLayer.moduleId)}    
         
         // if zoom-out
         if( toLayer.getAllChildren(appStore.project.workflow).includes(fromLayer)){
-            let targetLayer = toLayer.getDirectChildren(appStore.project.workflow)
+            const targetLayer = toLayer.getDirectChildren(appStore.project.workflow)
             .find( layer => layer instanceof GroupModules.Module && (layer==fromLayer || layer.getModuleIds().includes(fromLayer.moduleId)) )
             return document.getElementById(targetLayer.moduleId)  
         }
@@ -88,7 +88,7 @@ function mapToFocusCoordinate(activeLayerUpdated$ : Observable<{fromLayerId:stri
         return document.getElementById("expanded_"+toLayer.moduleId)
     }),
     map( svgElement => {
-      let boudingBox = svgElement.getBoundingClientRect()
+      const boudingBox = svgElement.getBoundingClientRect()
       return [0.5*(boudingBox.left + boudingBox.right), 0.5*(boudingBox.top + boudingBox.bottom)] 
     })
   )
@@ -107,7 +107,7 @@ export function plugLayersTransition_test(activeLayerUpdated$ : Observable<{from
 
     mapToFocusCoordinate(activeLayerUpdated$, appStore)
     .subscribe( (coors) => {
-      let zoom = drawingArea.zoom
+      const zoom = drawingArea.zoom
       drawingArea.svgCanvas.transition()
         .duration(1000)
         .call(zoom.translateTo, coors[0], coors[1])

@@ -4,7 +4,7 @@ import { BehaviorSubject } from "rxjs"
 
 export function infoView(text: string){
 
-    let infoToggled$ = new BehaviorSubject(false)
+    const infoToggled$ = new BehaviorSubject(false)
     return child$(
         infoToggled$,
         (toggled) => {

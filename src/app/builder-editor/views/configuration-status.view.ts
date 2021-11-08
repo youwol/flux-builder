@@ -29,26 +29,26 @@ export namespace ConfigurationStatusView{
             // - one is used by flux-builder
             // - one is used by the application
             // They are not necessarly the same, not sure what's the best way to fix this problem yet
-            let statusAny = status as any
+            const statusAny = status as any
 
             if( statusAny.intrus.length == 0 && !statusAny.typeErrors && !statusAny.missings)
-                return 
+                {return} 
 
             if( statusAny.typeErrors && statusAny.typeErrors.length > 0 )
-                this.typingErrors = new DataTreeView.State({
+                {this.typingErrors = new DataTreeView.State({
                     title: 'typing errors',
                     data: statusAny.typeErrors
-                })
+                })}
             if(  statusAny.missings && statusAny.missings.length > 0 )
-                this.missingFields = new DataTreeView.State({
+                {this.missingFields = new DataTreeView.State({
                     title: 'missing fields',
                     data: statusAny.missings
-                })
+                })}
             if(statusAny.intrus.length>0)
-                this.unexpectedFields = new DataTreeView.State({
+                {this.unexpectedFields = new DataTreeView.State({
                     title: 'unexpected fields',
                     data: statusAny.intrus
-                })
+                })}
         }
     }
 
@@ -79,12 +79,12 @@ export namespace ConfigurationStatusView{
             options?: TOptions
         }) {
             Object.assign(this, rest)
-            let styling : TOptions = {...View.defaultOptions, ...(options ? options : {}) }
+            const styling : TOptions = {...View.defaultOptions, ...(options ? options : {}) }
             this.state = state
             this.class = styling.containerClass
             this.style = styling.containerStyle
 
-            let views = [this.state.typingErrors, this.state.missingFields, this.state.unexpectedFields]
+            const views = [this.state.typingErrors, this.state.missingFields, this.state.unexpectedFields]
             .filter( d => d)
             .map( state => new DataTreeView.View({ state}))
 
@@ -96,11 +96,11 @@ export namespace ConfigurationStatusView{
 
     export function journalWidget( data: ConfigurationStatus<unknown>) : VirtualDOM{
 
-        let dataState = new DataTreeView.State({
+        const dataState = new DataTreeView.State({
             title: "merged configuration",
             data: data.result
         })
-        let configurationState = new ConfigurationStatusView.State({
+        const configurationState = new State({
             status:data
         })
 
@@ -112,7 +112,7 @@ export namespace ConfigurationStatusView{
                     children: [
                         new DataTreeView.View({state: dataState}),
                         {class:'px-4'},
-                        new ConfigurationStatusView.View({state:configurationState})
+                        new View({state:configurationState})
                     ]
                 }
             ]

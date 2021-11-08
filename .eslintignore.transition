@@ -1,13 +1,114 @@
 # Ignore all contents of src/app
 /src/app/*
-# … except src/app/views
+
+# Allow un-ignoring some contents of /src/app/builder-editor
+!/src/app/builder-editor/
+/src/app/builder-editor/*
+
+# Allow un-ignoring some contents of /src/app/builder-editor/builder-plots
+!/src/app/builder-editor/builder-plots/
+/src/app/builder-editor/builder-plots/*
+
+# Un-ignored
+!/src/app/builder-editor/builder-plots/index.ts
+!/src/app/builder-editor/builder-plots/workflow-plotter.ts
+
+# Allow un-ignoring some contents of /src/app/builder-editor/builder-state
+!/src/app/builder-editor/builder-state
+/src/app/builder-editor/builder-state/*
+
+# Un-ignored
+!/src/app/builder-editor/builder-state/app-extensions-observables.service.ts
+!/src/app/builder-editor/builder-state/app-store-description-box.ts
+!/src/app/builder-editor/builder-state/app-store-runner-rendering.ts
+!/src/app/builder-editor/builder-state/extension.ts
+!/src/app/builder-editor/builder-state/factory-utils.ts
+!/src/app/builder-editor/builder-state/index.ts
+
+# Allow un-ignoring some contents of /src/app/builder-editor/context-menu
+!/src/app/builder-editor/context-menu/
+/src/app/builder-editor/context-menu/*
+
+# Un-ignored
+!/src/app/builder-editor/context-menu/index.ts
+
+# Un-ignored
+!/src/app/builder-editor/index.ts
+!/src/app/builder-editor/utils.view.ts
+
+# Allow un-ignoring some contents of /src/app/builder-editor/views
+!/src/app/builder-editor/views/
+/src/app/builder-editor/views/*
+
+# Un-ignored
+!/src/app/builder-editor/views/builder.view.ts
+!/src/app/builder-editor/views/code-editor.view.ts
+!/src/app/builder-editor/views/index.ts
+!/src/app/builder-editor/views/info.view.ts
+
+#Un-ignored
+!/src/app/externals_evolutions/
+
+# Allow un-ignoring some contents of /src/app/grapesjs-editor
+!/src/app/grapesjs-editor/
+/src/app/grapesjs-editor/*
+
+# Un-ignored
+!/src/app/grapesjs-editor/index.ts
+!/src/app/grapesjs-editor/panels.ts
+!/src/app/grapesjs-editor/resources-initialisation.ts
+!/src/app/grapesjs-editor/style-manager.ts
+!/src/app/grapesjs-editor/utils.ts
+
+
+# Allow un-ignoring some contents of /src/app/grapesjs-editor
+!/src/app/grapesjs-editor/views
+/src/app/grapesjs-editor/views/*
+
+# Un-ignored
+!/src/app/grapesjs-editor/views/render.view.ts
+
+# Un-ignored
+!/src/app/index.ts
+
+# Un-ignored
+!/src/app/layout-editor/
+
+# Un-ignored
+!/src/app/loading.views.ts
+!/src/app/main.ts
+!/src/app/on-load.ts
+
+# Un-ignored
+!/src/app/page/
+
+# Allow un-ignoring some contents of /src/app/views
 !/src/app/views/
-# and ignore all this content
 /src/app/views/*
-# … except one file
+
+# Un-ignored
 !/src/app/views/project-tree.view.ts
 
 # Ignore all contents of src/tests
 /src/tests/*
-# … except src/tests/views
+
+# Allow un-ignoring some contents of /src/tests/builder-state
+!/src/tests/builder-state/
+/src/tests/builder-state/*
+
+# Un-ignored
+!/src/tests/builder-state/app-store-adaptor.test.ts
+!/src/tests/builder-state/app-store-builder-rendering.test.ts
+!/src/tests/builder-state/app-store-layer.test_.ts
+
+# Allow un-ignoring some contents of /src/app/common
+!/src/tests/common/
+/src/tests/common/*
+
+# Un-ignored
+!/src/tests/common/factory.ts
+!/src/tests/common/mockito.ts
+!/src/tests/common/projects-data.ts
+
+# Un-ignored
 !/src/tests/views/

@@ -1,7 +1,7 @@
 
 import { ModuleFlux, Property, Flux, BuilderView, Pipe, RenderView, PluginFlux, freeContract, FluxPack} from '@youwol/flux-core';
 
-export let testPack = new FluxPack({
+export const testPack = new FluxPack({
     name:'flux-test',
     description: 'flux pack helpers to test',
     version: '0.0.0'
@@ -130,8 +130,8 @@ export namespace SimplePlugin {
         namespace:      SimplePlugin,
         icon:           `<path d=""/>`,
         render:         (plugin)=> {
-            let input = plugin.inputSlots[0]
-            let div = document.createElement('div') as any
+            const input = plugin.inputSlots[0]
+            const div = document.createElement('div') as any
             div.innerHTML = `
             <rect height="40" width="150" class="module plugin content" x=-75 y=0 filter="url(#shadow)" ></rect>
             <line id="input-line_${input.slotId+"_"+ plugin.moduleId}" 

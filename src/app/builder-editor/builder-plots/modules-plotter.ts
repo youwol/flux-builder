@@ -18,11 +18,11 @@ import { getBoundingBox} from './drawing-utils';
  */
 export function  createPlot(mdle,drawingArea){
 
-    let Factory     = mdle.Factory
-    let Rendering   = new Factory.BuilderView()
-    let entities$   = new Subject()
-    let plotId      = toCssName(Factory.uid) + "_ModulesPlot"
-    let plotter     = new CrossPlot({ 
+    const Factory     = mdle.Factory
+    const Rendering   = new Factory.BuilderView()
+    const entities$   = new Subject()
+    const plotId      = toCssName(Factory.uid) + "_ModulesPlot"
+    const plotter     = new CrossPlot({ 
         plotId:     plotId, 
         plotClasses:[ plotId,Factory.packId ],drawingArea,
         entities$
@@ -34,23 +34,23 @@ export function  createPlot(mdle,drawingArea){
 
 function getCenter(currentViews) {
 
-    let views = currentViews.modulesView
-    let coorsParentLayer = views.map( m => [m.xWorld,m.yWorld])
-    let xmin = coorsParentLayer.reduce((acc,e) =>acc<e[0]?acc:e[0] ,1.e10) 
-    let xmax = coorsParentLayer.reduce((acc,e) =>acc>e[0]?acc:e[0] ,-1.e10) 
-    let ymin = coorsParentLayer.reduce((acc,e) =>acc<e[1]?acc:e[1] ,1.e10) 
-    let ymax = coorsParentLayer.reduce((acc,e) =>acc>e[1]?acc:e[1] ,-1.e10) 
+    const views = currentViews.modulesView
+    const coorsParentLayer = views.map( m => [m.xWorld,m.yWorld])
+    const xmin = coorsParentLayer.reduce((acc,e) =>acc<e[0]?acc:e[0] ,1.e10) 
+    const xmax = coorsParentLayer.reduce((acc,e) =>acc>e[0]?acc:e[0] ,-1.e10) 
+    const ymin = coorsParentLayer.reduce((acc,e) =>acc<e[1]?acc:e[1] ,1.e10) 
+    const ymax = coorsParentLayer.reduce((acc,e) =>acc>e[1]?acc:e[1] ,-1.e10) 
     return [(xmax+xmin)/2,(ymax+ymin)/2]
 }
 
 function getScaleFactors(currentViews){
 
-    let views = currentViews.modulesView
-    let coorsParentLayer = views.map( m => [m.xWorld,m.yWorld])
-    let xmin = coorsParentLayer.reduce((acc,e) =>acc<e[0]?acc:e[0] ,1.e10) 
-    let xmax = coorsParentLayer.reduce((acc,e) =>acc>e[0]?acc:e[0] ,-1.e10) 
-    let ymin = coorsParentLayer.reduce((acc,e) =>acc<e[1]?acc:e[1] ,1.e10) 
-    let ymax = coorsParentLayer.reduce((acc,e) =>acc>e[1]?acc:e[1] ,-1.e10) 
+    const views = currentViews.modulesView
+    const coorsParentLayer = views.map( m => [m.xWorld,m.yWorld])
+    const xmin = coorsParentLayer.reduce((acc,e) =>acc<e[0]?acc:e[0] ,1.e10) 
+    const xmax = coorsParentLayer.reduce((acc,e) =>acc>e[0]?acc:e[0] ,-1.e10) 
+    const ymin = coorsParentLayer.reduce((acc,e) =>acc<e[1]?acc:e[1] ,1.e10) 
+    const ymax = coorsParentLayer.reduce((acc,e) =>acc>e[1]?acc:e[1] ,-1.e10) 
     return [(xmax-xmin)/2,(ymax-ymin)/2]
 }
 
@@ -59,27 +59,27 @@ function drawModules(
     appStore : AppStore,
     plotObservables$  ){
       
-    let allPlots = []      
-    let displayedModulesView = appStore.getDisplayedModulesView()
+    const allPlots = []      
+    const displayedModulesView = appStore.getDisplayedModulesView()
     let projection = undefined       
 
     if( appStore.activeGroupId != appStore.rootComponentId && 
         displayedModulesView.currentLayer.modulesView.length>0 ){
 
-        let center = getCenter(displayedModulesView.currentLayer)
-        let factors = getScaleFactors(displayedModulesView.currentLayer)
-        let moduleViewLayer = displayedModulesView.parentLayer.currentGroupModuleView
+        const center = getCenter(displayedModulesView.currentLayer)
+        const factors = getScaleFactors(displayedModulesView.currentLayer)
+        const moduleViewLayer = displayedModulesView.parentLayer.currentGroupModuleView
         
         projection = (x,y)=>{
-            let d0 = Math.pow( (x-moduleViewLayer.xWorld)*(x-moduleViewLayer.xWorld) + (y-moduleViewLayer.yWorld) * (y-moduleViewLayer.yWorld) ,0.5)
-            let cos_theta0 = (x-moduleViewLayer.xWorld)/d0
-            let sin_theta0 = (y-moduleViewLayer.yWorld)/d0
-            let dx = ( d0 + factors[0]) * cos_theta0 + cos_theta0/Math.abs(cos_theta0) * 50
-            let dy = ( d0 + factors[1]) * sin_theta0 + sin_theta0/Math.abs(sin_theta0) * 75
+            const d0 = Math.pow( (x-moduleViewLayer.xWorld)*(x-moduleViewLayer.xWorld) + (y-moduleViewLayer.yWorld) * (y-moduleViewLayer.yWorld) ,0.5)
+            const cos_theta0 = (x-moduleViewLayer.xWorld)/d0
+            const sin_theta0 = (y-moduleViewLayer.yWorld)/d0
+            const dx = ( d0 + factors[0]) * cos_theta0 + cos_theta0/Math.abs(cos_theta0) * 50
+            const dy = ( d0 + factors[1]) * sin_theta0 + sin_theta0/Math.abs(sin_theta0) * 75
             return [ center[0] + dx, center[1] + dy ]
         }
     }
-    let fromModuleViewInside = (view)=>({
+    const fromModuleViewInside = (view)=>({
         x: view.xWorld, 
         y:view.yWorld,
         classes:["module"].concat( appStore.isSelected(view.moduleId) ? ["selected"] : []),
@@ -89,19 +89,19 @@ function drawModules(
         data:{module:appStore.getModule(view.moduleId),
             moduleView : view } 
     })
-    let fromModuleOutside = (view)=>Object.assign({}, fromModuleViewInside(view), {projection:projection})
+    const fromModuleOutside = (view)=>Object.assign({}, fromModuleViewInside(view), {projection:projection})
 
-    let plotsData0 = displayedModulesView.currentLayer.modulesView.map(fromModuleViewInside)
-    let plotsData1 = displayedModulesView.parentLayer.modulesView.map(fromModuleOutside)
+    const plotsData0 = displayedModulesView.currentLayer.modulesView.map(fromModuleViewInside)
+    const plotsData1 = displayedModulesView.parentLayer.modulesView.map(fromModuleOutside)
     
-    let grouped          = _.groupBy([...plotsData0,...plotsData1], d => d.Factory.uid  )
-    let modulesDrawn     = {}
-    let activeSeriesId   = []
-    let updateMdlesDrawn = (d)=>{
+    const grouped          = _.groupBy([...plotsData0,...plotsData1], d => d.Factory.uid  )
+    const modulesDrawn     = {}
+    const activeSeriesId   = []
+    const updateMdlesDrawn = (d)=>{
         d.filter(g=>g).forEach( g => {
             if( g.id.includes("group") ){
-                let m = appStore.getModule(g.id)
-                let mIds = m.inputSlots.map( s => s.moduleId ).concat(m.outputSlots.map( s => s.moduleId ))
+                const m = appStore.getModule(g.id)
+                const mIds = m.inputSlots.map( s => s.moduleId ).concat(m.outputSlots.map( s => s.moduleId ))
                 mIds.forEach( mid =>{  modulesDrawn[mid] = g })
             }
         modulesDrawn[g.id] = g 
@@ -110,11 +110,11 @@ function drawModules(
 
     Object.entries(grouped).map( ([factId,modules] : [string, Array<any>]) => {
         
-        let plot = createPlot(modules[0] , drawingArea )
+        const plot = createPlot(modules[0] , drawingArea )
         
         activeSeriesId.push(plot.plotId)
         allPlots.push(plot)  
-        let groups = plot.draw(modules)   
+        const groups = plot.draw(modules)   
         
         groups.entered._groups.forEach( d =>  updateMdlesDrawn(d))
         groups.updated._groups.forEach( d =>  updateMdlesDrawn(d))
@@ -132,17 +132,17 @@ function drawModules(
 function drawExpandedGroup( layerId :string, drawingArea : DrawingArea, appStore : AppStore ){
     
     if(!layerId || layerId === appStore.rootComponentId ){
-        let plotter = new CrossPlot({ plotId:"activeLayerPlotter", plotClasses:[], drawingArea, entities:[]})
+        const plotter = new CrossPlot({ plotId:"activeLayerPlotter", plotClasses:[], drawingArea, entities:[]})
         plotter.draw([])
         return {}
     }
-    let activateLayer = appStore.getGroup(layerId)
-    let groupMdle = appStore.project.workflow.modules
+    const activateLayer = appStore.getGroup(layerId)
+    const groupMdle = appStore.project.workflow.modules
     .find( m => m instanceof GroupModules.Module && m.moduleId == activateLayer.moduleId) as GroupModules.Module
 
     const displayedElements = appStore.getDisplayedModulesView()
     const includedEntities  = displayedElements.currentLayer.modulesView.map(g => g.moduleId)
-    let rect                = includedEntities.length > 0
+    const rect                = includedEntities.length > 0
         ? getBoundingBox(includedEntities,50,drawingArea)
         : { x:drawingArea.hScale(displayedElements.parentLayer.currentGroupModuleView.xWorld), 
             y:drawingArea.vScale(displayedElements.parentLayer.currentGroupModuleView.yWorld), 
@@ -150,23 +150,23 @@ function drawExpandedGroup( layerId :string, drawingArea : DrawingArea, appStore
             height:200 
         }
         
-    let x = drawingArea.hScale.invert( rect.x + rect.width/2)
-    let y = drawingArea.vScale.invert( rect.y + rect.height/2)
+    const x = drawingArea.hScale.invert( rect.x + rect.width/2)
+    const y = drawingArea.vScale.invert( rect.y + rect.height/2)
     
-    let plotData =  [{ 
+    const plotData =  [{ 
         id: "expanded_"+groupMdle.moduleId, 
         x: x, y: y, 
         classes:["active-layer-box"], 
         attributes:{ layerId : layerId },
         data:{boundingBox:rect }}]
 
-    let plotter = new CrossPlot({ plotId:"activeLayerPlotter",plotClasses:[],
+    const plotter = new CrossPlot({ plotId:"activeLayerPlotter",plotClasses:[],
                                   drawingArea: drawingArea, entities:plotData})
     
     plotter.defaultElementDisplay = GroupModules.expandedGroupPlot(groupMdle)
     
-    let drawnElements = plotter.draw(plotData)
-    let all = drawnElements.entered._groups.concat(drawnElements.updated._groups).reduce( (acc,e)=>acc.concat(e),[]).filter(g=>g)
+    const drawnElements = plotter.draw(plotData)
+    const all = drawnElements.entered._groups.concat(drawnElements.updated._groups).reduce( (acc,e)=>acc.concat(e),[]).filter(g=>g)
     return {[groupMdle.moduleId]: all[0]}
 }
 
@@ -186,7 +186,7 @@ export class ModulesPlotter{
                  public readonly appObservables: AppObservables,
                  public readonly appStore : AppStore){
                      
-        let plotObservables$ = new Subject<any>()
+        const plotObservables$ = new Subject<any>()
 
         this.debugSingleton.debugOn && 
         this.debugSingleton.logWorkflowView( {  
@@ -205,9 +205,9 @@ export class ModulesPlotter{
         combineLatest([appObservables.packagesLoaded$,  this.plottersObservables.modulesViewUpdated$])
         .subscribe(
             () => {
-                let { modulesDrawn, activeSeries } = drawModules(this.drawingArea, this.appStore, plotObservables$)
-                let pluginsDrawn = this.pluginsPlotter.draw(modulesDrawn)
-                let expandedGroup = drawExpandedGroup( this.appStore.activeGroupId, this.drawingArea, this.appStore )
+                const { modulesDrawn, activeSeries } = drawModules(this.drawingArea, this.appStore, plotObservables$)
+                const pluginsDrawn = this.pluginsPlotter.draw(modulesDrawn)
+                const expandedGroup = drawExpandedGroup( this.appStore.activeGroupId, this.drawingArea, this.appStore )
                 this.connectUserInteractions(Object.assign({},modulesDrawn,expandedGroup))
                 this.emptyRemovedSeries(this.previousActiveSeriesId, activeSeries)   
                 this.previousActiveSeriesId =  activeSeries
@@ -217,17 +217,17 @@ export class ModulesPlotter{
         
         this.appObservables.moduleSelected$.subscribe(
             mdle =>{
-                let elem =  document.getElementById(mdle.moduleId)
+                const elem =  document.getElementById(mdle.moduleId)
                 if(elem && !elem.classList.contains("selected"))
-                    elem.classList.add("selected")}
+                    {elem.classList.add("selected")}}
         )
         
         this.appObservables.modulesUnselected$.subscribe(
             mdles =>{
                 mdles.forEach( mdle => {
-                let elem =  document.getElementById(mdle.moduleId)
+                const elem =  document.getElementById(mdle.moduleId)
                 if(elem && elem.classList.contains("selected"))
-                    elem.classList.remove("selected")
+                    {elem.classList.remove("selected")}
                 })
         })
 
@@ -236,11 +236,11 @@ export class ModulesPlotter{
         })       
     }
 
-    highlight(modulesId:Array<String>){
+    highlight(modulesId:Array<string>){
 
-        let htmlElems= modulesId
+        const htmlElems= modulesId
         .map( (mid:string) => document.getElementById(mid))
-        htmlElems.forEach( e => { if(e) e.classList.add("highlighted") })
+        htmlElems.forEach( e => { if(e) {e.classList.add("highlighted")} })
     }
     unselect(){
 
@@ -262,7 +262,7 @@ export class ModulesPlotter{
     connectUserInteractions(modulesDrawn){
          
         Object.entries(modulesDrawn).forEach( ([moduleId, g] : [string,SVGElement])=> {
-            let onclick = (event:any) => { 
+            const onclick = (event:any) => { 
                 if( event.target.classList.contains("slot") ){
                     event.target.classList.contains("output")?
                         this.plottersObservables.plugOutputClicked$.next({event,group:g,moduleId}):                        
@@ -276,11 +276,11 @@ export class ModulesPlotter{
             g.onmousedown = onclick
             
             if(this.appStore.project.workflow.plugins.map(m=>m.moduleId).includes(moduleId))
-                return
+                {return}
             if(g.classList.contains("active-layer-box"))
-                return
+                {return}
 
-            var drag = d3Drag();
+            const drag = d3Drag();
             drag
             .on("start",  (ev) => {
                 this.dragSelection( ev, false )})
@@ -291,23 +291,23 @@ export class ModulesPlotter{
     }
 
     emptyRemovedSeries(oldSeries, newSeries) {
-        let removeds = oldSeries.filter( name => !newSeries.includes(name))
+        const removeds = oldSeries.filter( name => !newSeries.includes(name))
         removeds.forEach( name => document.querySelector("g#"+name).remove())
     }
 
     dragSelection( d3Event, update )  {
 
         this.dragging = true
-        let modules = this.appStore
+        const modules = this.appStore
         .getModulesSelected()
         .filter( m =>this.appStore.getActiveGroup().getModuleIds().includes(m.moduleId) || m["layerId"] )
 
-        let newPos = []
+        const newPos = []
         modules.forEach( m => {
-            let g = document.getElementById(m.moduleId)
-            let plugins = g.querySelectorAll('g.plugin')
-            let x = Number(g.getAttribute("x")) + d3Event.dx 
-            let y = Number(g.getAttribute("y")) + d3Event.dy
+            const g = document.getElementById(m.moduleId)
+            const plugins = g.querySelectorAll('g.plugin')
+            const x = Number(g.getAttribute("x")) + d3Event.dx 
+            const y = Number(g.getAttribute("y")) + d3Event.dy
             Array.from(plugins).forEach( gPlugin => {
                 gPlugin.setAttribute( "x", Number(gPlugin.getAttribute("x")) + d3Event.dx)
                 gPlugin.setAttribute( "y", Number(gPlugin.getAttribute("y")) + d3Event.dy)

@@ -10,8 +10,8 @@ import { Subject } from 'rxjs'
 test('instantiateBuilderRendering', () => {
 
     AppDebugEnvironment.getInstance().debugOn = false
-    let workflow$ = new Subject<Workflow>()
-    let modulesData = [{
+    const workflow$ = new Subject<Workflow>()
+    const modulesData = [{
         moduleId : "unique-id-0",
         factoryId:{module:"SimpleModule", pack:"flux-test"},
         configuration:{
@@ -22,13 +22,13 @@ test('instantiateBuilderRendering', () => {
         }
         }
     }]
-    let factory = new Map( 
+    const factory = new Map( 
         Object.values(testPack['modules'])
         .map( (mdleFact) => [( JSON.stringify({module:mdleFact['id'], pack:testPack.name})), mdleFact ])
       )
-    let modules =  instantiateProjectModules(modulesData,factory, environment, workflow$)
+    const modules =  instantiateProjectModules(modulesData,factory, environment, workflow$)
 
-    let renderBuilderData = {
+    const renderBuilderData = {
         modulesView : modulesData.map( m => ({ moduleId: m.moduleId, xWorld:0, yWorld:0 }) ),
         descriptionsBoxes: [
             {
@@ -42,8 +42,8 @@ test('instantiateBuilderRendering', () => {
         connectionsView: []
     }
 
-    let builderRendering = instantiateProjectBuilderRendering(modules,renderBuilderData)
+    const builderRendering = instantiateProjectBuilderRendering(modules,renderBuilderData)
 
-    expect(builderRendering.modulesView.length).toEqual(modulesData.length)
+    expect(builderRendering.modulesView).toHaveLength(modulesData.length)
 })
   

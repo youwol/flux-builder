@@ -10,7 +10,7 @@ import { AddPluginsNode, ContextTreeNode, NewModulesNode,
 
 
 
-let ALL_ACTIONS = {
+const ALL_ACTIONS = {
     newModules: {
         createNode: ( state : AppStore) => new NewModulesNode(),
         applicable: ( state: AppStore) => state.getModulesSelected().length >= 0
@@ -30,9 +30,9 @@ let ALL_ACTIONS = {
         createNode: (state : AppStore) => new DocumentationNode(state),
         applicable: ( state: AppStore) => {
             if(state.getModulesSelected().length !=1 )
-                return false
-            let mdle = state.getModuleSelected()
-            let resources = mdle.Factory.resources 
+                {return false}
+            const mdle = state.getModuleSelected()
+            const resources = mdle.Factory.resources 
             return resources && Object.entries(resources).length > 0
         }
     }
@@ -55,14 +55,14 @@ export class ContextMenuState extends ContextMenu.State{
 
     dispatch(ev: MouseEvent){
         
-        let children = Object.values(ALL_ACTIONS)
+        const children = Object.values(ALL_ACTIONS)
         .filter( action => action.applicable(this.appState))
         .map( action => action.createNode(this.appState))
 
-        let root = new ContextRootNode({children})
-        let state = new ContextTreeState(root)
+        const root = new ContextRootNode({children})
+        const state = new ContextTreeState(root)
         
-        let view = new ImmutableTree.View(
+        const view = new ImmutableTree.View(
             {
                 state, 
                 headerView,

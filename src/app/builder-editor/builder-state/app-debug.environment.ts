@@ -8,10 +8,10 @@ export enum LogLevel{
 export class LogEntry {
 
     date : Date
-    hours: number =0;
-    minutes: number=0;
-    seconds: number=0;
-    miniseconds: number=0
+    hours =0;
+    minutes=0;
+    seconds=0;
+    miniseconds=0
 
     constructor( public readonly topic:string, 
                  public readonly message:string,
@@ -26,19 +26,19 @@ export class LogerConsole{
 
     log(e: LogEntry){
         if(e.level==LogLevel.Info || e.level==LogLevel.Debug)
-            console.log( "#"+e.topic,
+            {console.log( "#"+e.topic,
                         { date: e.date.getHours() + "h" + e.date.getMinutes() + "mn"+ e.date.getSeconds() +"s"+ e .date.getMilliseconds(),
                         level : e.level,
                         message: e.message,
                         object: e.object 
-            })
+            })}
         if(e.level==LogLevel.Error )
-            console.error( "#"+e.topic,
+            {console.error( "#"+e.topic,
                         { date: e.date.getHours() + "h" + e.date.getMinutes() + "mn"+ e.date.getSeconds() +"s"+ e .date.getMilliseconds(),
                         level : e.level,
                         message: e.message,
                         object: e.object 
-            })
+            })}
     }
 }
 
@@ -46,25 +46,25 @@ export class AppDebugEnvironment{
 
     debugOn = true
 
-    WorkflowBuilderEnabled: boolean = true
+    WorkflowBuilderEnabled = true
     WorkflowBuilderLevel : LogLevel = LogLevel.Info
 
-    workflowViewEnabled: boolean = true
+    workflowViewEnabled = true
     workflowViewLevel : LogLevel = LogLevel.Info
     
-    workflowView$Enabled: boolean = true
+    workflowView$Enabled = true
     workflowView$Level : LogLevel = LogLevel.Info
 
-    observableEnabled: boolean = true
+    observableEnabled = true
     observableLevel : LogLevel  = LogLevel.Info
     
-    renderTopicEnabled: boolean = true
+    renderTopicEnabled = true
     renderTopicLevel : LogLevel  = LogLevel.Info
     
-    appTopicEnabled: boolean = true
+    appTopicEnabled = true
     appTopicLevel : LogLevel = LogLevel.Info
 
-    workflowUIEnabled : boolean = true
+    workflowUIEnabled  = true
 
     loger = new LogerConsole()
 
@@ -123,14 +123,14 @@ export class AppDebugEnvironment{
 
     static getInstance() {
         if(!AppDebugEnvironment.instance)
-            AppDebugEnvironment.instance =  new AppDebugEnvironment( 
+            {AppDebugEnvironment.instance =  new AppDebugEnvironment( 
                 {   WorkflowBuilder:LogLevel.Info, 
                     workflowView:LogLevel.Info, 
                     UI:LogLevel.Info,
                     observable: LogLevel.Info,
                     renderTopicLevel: LogLevel.Info,
                     appTopicLevel: LogLevel.Info
-                })
+                })}
         return AppDebugEnvironment.instance
     }
 }

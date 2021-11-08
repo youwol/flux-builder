@@ -12,11 +12,11 @@ let cachedCSS= ""
 
 export function plugCommands(editor: any, appStore: AppStore) {
 
-    let debugSingleton = AppDebugEnvironment.getInstance()
+    const debugSingleton = AppDebugEnvironment.getInstance()
 
     editor.on('change', (element: any) => {
 
-        let html = localStorage.getItem("gjs-html")
+        const html = localStorage.getItem("gjs-html")
         if ( html != cachedHTML && html != "") {
             debugSingleton.debugOn &&
                 debugSingleton.logRenderTopic({
@@ -30,7 +30,7 @@ export function plugCommands(editor: any, appStore: AppStore) {
             appStore.setRenderingLayout(localStorage.getItem("gjs-html"))
             cachedHTML = html
         }
-        let css = cleanCss(localStorage.getItem("gjs-css"))
+        const css = cleanCss(localStorage.getItem("gjs-css"))
         if ( css != cachedCSS && css !="") {
             debugSingleton.debugOn &&
                 debugSingleton.logRenderTopic({
@@ -51,8 +51,8 @@ export function plugCommands(editor: any, appStore: AppStore) {
         debugSingleton.debugOn &&
             debugSingleton.logRenderTopic({ level: LogLevel.Info, message: "canvas:drop", object: { dataTransfer, component: component.toJSON() } })
 
-        let child = component.view.el as HTMLDivElement
-        let mdle = appStore.getModule(child.id)
+        const child = component.view.el as HTMLDivElement
+        const mdle = appStore.getModule(child.id)
 
         if (mdle) {
 
@@ -87,15 +87,15 @@ export function plugCommands(editor: any, appStore: AppStore) {
 
         // a drop of any component is done => do nothing as the  canvas:drop wil handle the addition
         if (typeof (modelToDrop) == "string")
-            return
+            {return}
 
         // from here: the drag end is a move => in case of flux-component the cache has the appropriate content 
-        let mdle = appStore.getModule(modelToDrop.ccid)
+        const mdle = appStore.getModule(modelToDrop.ccid)
         if(!mdle)
-            return
+            {return}
             
 
-        let moduleIds = (mdle instanceof Component.Module)
+        const moduleIds = (mdle instanceof Component.Module)
             ? mdle.getAllChildren(appStore.project.workflow).map(m => m.moduleId)
             : [mdle.moduleId]
 
@@ -104,7 +104,7 @@ export function plugCommands(editor: any, appStore: AppStore) {
 
     editor.on('component:remove', (component) => {
         if (appStore.getActiveGroup().getModuleIds().includes(component.ccid))
-            setDynamicComponentsBlocks(appStore, editor)
+            {setDynamicComponentsBlocks(appStore, editor)}
     });
 
     editor.on('selector:add', selector => {
@@ -176,9 +176,9 @@ export function plugCommands(editor: any, appStore: AppStore) {
             const pn = editor.Panels;
             const id = 'code';
             const panel = pn.getPanel(id) || pn.addPanel({ id });
-            let divi = this.getCodeEl(this.getRowEl(editor));
+            const divi = this.getCodeEl(this.getRowEl(editor));
             console.log("Code elements", divi)
-            if (!this.codePanel) this.codePanel = buildCodePanel(appStore, editor, panel)
+            if (!this.codePanel) {this.codePanel = buildCodePanel(appStore, editor, panel)}
             console.log("Code Panel", this.codePanel)
             this.codePanel.style.display = 'block';
             divi.appendChild(this.codePanel)
@@ -186,7 +186,7 @@ export function plugCommands(editor: any, appStore: AppStore) {
             //editor.$('.gjs-cv-canvas').get(0).style.width = '65%';
         },
         stop: function (editor, senderBtn) {
-            if (this.codePanel) this.codePanel.style.display = 'none';
+            if (this.codePanel) {this.codePanel.style.display = 'none';}
             //editor.$('#panel__right_render').get(0).style.width = '15%';
             //editor.$('.gjs-cv-canvas').get(0).style.width = '85%';
         },
@@ -195,46 +195,46 @@ export function plugCommands(editor: any, appStore: AppStore) {
         run(editor: any, sender: any) {
 
             document.querySelector("#gjs-cv-tools").classList.add("preview")
-            let body = editor.Canvas.getDocument().body.querySelector('div')
+            const body = editor.Canvas.getDocument().body.querySelector('div')
             body.classList.add("preview")
             // we hide template elements
             Array.from(editor.Canvas.getDocument().querySelectorAll(".flux-builder-only"))
                 .forEach((element: any) => element.classList.add('preview')
                 );
 
-            let panelsContainer = document.getElementById("panels-container-render")
+            const panelsContainer = document.getElementById("panels-container-render")
             panelsContainer.classList.add("collapsed")
-            let panel = document.getElementById("panel__right_render")
+            const panel = document.getElementById("panel__right_render")
             panel.classList.add("collapsed")
             panel.querySelectorAll(".flex-align-switch").forEach((e: HTMLElement) => e.style.flexDirection = "column")
 
             panel.querySelectorAll(".buttons-toolbox").forEach((e: HTMLDivElement) => {
-                let div = e.firstChild as HTMLElement
+                const div = e.firstChild as HTMLElement
                 if (div && div.style)
-                    div.style.flexDirection = "column"
+                    {div.style.flexDirection = "column"}
             })
         },
         stop(editor: any, sender: any) {
 
             document.querySelector("#gjs-cv-tools").classList.remove("preview")
-            let body = editor.Canvas.getDocument().body.querySelector('div')
+            const body = editor.Canvas.getDocument().body.querySelector('div')
             body.classList.remove("preview")
 
             Array.from(editor.Canvas.getDocument().querySelectorAll(".flux-builder-only"))
                 .forEach((element: any) => element.classList.remove('preview')
                 );
             
-            let panelsContainer = document.getElementById("panels-container-render")
+            const panelsContainer = document.getElementById("panels-container-render")
             panelsContainer.classList.remove("collapsed")
-            let panel = document.getElementById("panel__right_render")
+            const panel = document.getElementById("panel__right_render")
             panel.classList.remove("collapsed")
             panel.querySelectorAll(".flex-align-switch").forEach((e: HTMLElement) => e.style.flexDirection = "row")
 
             //editor.$('#panel__right_render').get(0).style.width = '15%';
             panel.querySelectorAll(".buttons-toolbox").forEach((e: HTMLDivElement) => {
-                let div = e.firstChild as HTMLElement
+                const div = e.firstChild as HTMLElement
                 if (div && div.style)
-                    div.style.flexDirection = "row"
+                    {div.style.flexDirection = "row"}
             })
         }
     })

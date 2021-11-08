@@ -46,38 +46,38 @@ export namespace ExpectationView{
 
     export function parseReport( rootStatus : ExpectationStatus<any>){
 
-        let parseNode = (status : ExpectationStatus<any>) => {
+        const parseNode = (status : ExpectationStatus<any>) => {
 
             let nodeChildren =  status.children && status.children.length > 0 
                 ? status.children.map( node => parseNode(node))
                 : undefined
-            let dataNode = new DataTreeView.ObjectNode({
+            const dataNode = new DataTreeView.ObjectNode({
                 id: uuidv4(),
                 name:'evaluated-with', 
                 data:status.fromValue, 
                 nestedIndex:0
             })
             if( nodeChildren && status.succeeded != undefined && !(status.expectation instanceof Contract) )
-                nodeChildren = [dataNode, ...nodeChildren ]
+                {nodeChildren = [dataNode, ...nodeChildren ]}
             if(status.expectation instanceof Contract)
-                return new ExpectationNode({name: status.expectation.description, children: nodeChildren, 
-                    isRealized: status.succeeded, evaluatedFrom: status.fromValue})
+                {return new ExpectationNode({name: status.expectation.description, children: nodeChildren, 
+                    isRealized: status.succeeded, evaluatedFrom: status.fromValue})}
 
             if(status.expectation instanceof AnyOf)
-                return new AnyOfNode({name:  status.expectation.description, children: nodeChildren, 
-                    isRealized: status.succeeded, evaluatedFrom: status.fromValue})
+                {return new AnyOfNode({name:  status.expectation.description, children: nodeChildren, 
+                    isRealized: status.succeeded, evaluatedFrom: status.fromValue})}
 
             if(status.expectation instanceof AllOf)
-                return new AllOfNode({name: status.expectation.description, children: nodeChildren,
-                    isRealized: status.succeeded, evaluatedFrom: status.fromValue})
+                {return new AllOfNode({name: status.expectation.description, children: nodeChildren,
+                    isRealized: status.succeeded, evaluatedFrom: status.fromValue})}
 
             if(status.expectation instanceof Of )
-                return new OfNode({name:  status.expectation.description, children: nodeChildren, 
-                    isRealized: status.succeeded, evaluatedFrom: status.fromValue})
+                {return new OfNode({name:  status.expectation.description, children: nodeChildren, 
+                    isRealized: status.succeeded, evaluatedFrom: status.fromValue})}
             
             if(status.expectation instanceof OptionalsOf )
-                return new AnyOfNode({name:  status.expectation.description, children: nodeChildren, 
-                    isRealized: status.succeeded, evaluatedFrom: status.fromValue})
+                {return new AnyOfNode({name:  status.expectation.description, children: nodeChildren, 
+                    isRealized: status.succeeded, evaluatedFrom: status.fromValue})}
                     
             return new ExpectationNode({
                 name: status.expectation.description, 
@@ -99,13 +99,13 @@ export namespace ExpectationView{
 
         try{
             let lines = stack.split('\n')
-            let message = lines[0]
+            const message = lines[0]
             lines = lines.filter( line => line.includes('eval') && line.split(',').length==2)
             if(lines.length==0){
                 return new ExecutionError(message, undefined, undefined)
             }
-            let p = lines[0].split(',')[1].split('<anonymous>:')[1].split(')')[0]
-            let [row,col] = [ Number(p.split(':')[0]) - 2, Number(p.split(':')[1]) ]
+            const p = lines[0].split(',')[1].split('<anonymous>:')[1].split(')')[0]
+            const [row,col] = [ Number(p.split(':')[0]) - 2, Number(p.split(':')[1]) ]
             return new ExecutionError(message, row, col)
         }
         catch(e){
@@ -130,8 +130,8 @@ export namespace ExpectationView{
             
             this.status = status
 
-            let treeNode = parseReport(this.status)
-            let requiredRootNode = treeNode.children && treeNode.children.length > 0 
+            const treeNode = parseReport(this.status)
+            const requiredRootNode = treeNode.children && treeNode.children.length > 0 
                 ? treeNode.children[0] 
                 : new ExpectationNode({name:'No required conditions defined', children:undefined, isRealized:true, evaluatedFrom:undefined})
                 
@@ -140,7 +140,7 @@ export namespace ExpectationView{
                 expandedNodes:expandedNodes$
             })
 
-            let optionalRootNode = treeNode.children && treeNode.children.length > 1 
+            const optionalRootNode = treeNode.children && treeNode.children.length > 1 
                 ? treeNode.children[1] 
                 : new ExpectationNode({name:'No optional conditions defined', children:undefined, isRealized:true, evaluatedFrom:undefined})
 
@@ -178,7 +178,7 @@ export namespace ExpectationView{
             options?: TOptions
         }) {
             Object.assign(this, rest)
-            let styling : TOptions = {...View.defaultOptions, ...(options ? options : {}) }
+            const styling : TOptions = {...View.defaultOptions, ...(options ? options : {}) }
             this.state = state
             this.class = styling.containerClass
             this.style = styling.containerStyle
@@ -217,13 +217,13 @@ export namespace ExpectationView{
     }
     export function journalWidget(data: ExpectationStatus<unknown>) : VirtualDOM {
 
-        let dataState = new DataTreeView.State({
+        const dataState = new DataTreeView.State({
             title: "incoming data",
             data: data.fromValue,
             expandedNodes: ["incoming data_0"]
         })
 
-        let expectationState = new ExpectationView.State({
+        const expectationState = new State({
             status: data
         })
         
@@ -235,7 +235,7 @@ export namespace ExpectationView{
                     children: [
                         new DataTreeView.View({state: dataState}),
                         {class:'px-4'},
-                        new ExpectationView.View({ state: expectationState })
+                        new View({ state: expectationState })
                     ]
                 }
             ]
@@ -251,17 +251,17 @@ export namespace ExpectationView{
 
         let classes = ""
         if(node.isRealized)
-            classes = "fv-text-success"
+            {classes = "fv-text-success"}
         //if(node.isRealized==false)
         //    classes = "fv-text-error"
         if(node.isRealized==undefined)
-            classes = "fv-text-disabled"
+            {classes = "fv-text-disabled"}
             
         let icon = ""
         if(node.isRealized)
-            icon = "fas fa-check fv-text-success px-1"
+            {icon = "fas fa-check fv-text-success px-1"}
         if(node.isRealized==false)
-            icon = "fas fa-times fv-text-error px-1"
+            {icon = "fas fa-times fv-text-error px-1"}
 
         if(node instanceof AllOfNode){
             return {

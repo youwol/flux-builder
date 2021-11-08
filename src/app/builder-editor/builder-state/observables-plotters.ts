@@ -8,7 +8,7 @@ export class AppBuildViewObservables{
     private static instance : AppBuildViewObservables = undefined
     static getInstance() {
         if(!AppBuildViewObservables.instance)
-            AppBuildViewObservables.instance =  new AppBuildViewObservables()
+            {AppBuildViewObservables.instance =  new AppBuildViewObservables()}
         return AppBuildViewObservables.instance
     }
 

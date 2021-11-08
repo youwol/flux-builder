@@ -21,16 +21,16 @@ export namespace ModalView{
 
         options = options || {displayOk:true, displayCancel: true}
 
-        let okBttn = new Button.View({
+        const okBttn = new Button.View({
             state: new Button.State(),
             contentView: () => ({ innerText: 'Ok'}),
             class: "fv-btn fv-btn-primary fv-bg-focus mr-2"
         } as any)
 
-        let cancelBttn = Button.simpleTextButton('Cancel')
+        const cancelBttn = Button.simpleTextButton('Cancel')
         
-        let modalState = new Modal.State(ok$)
-        let modalDiv = render(
+        const modalState = new Modal.State(ok$)
+        const modalDiv = render(
             new Modal.View({
                 state: modalState,
                 contentView: () => {
@@ -50,7 +50,7 @@ export namespace ModalView{
                     }
                 },
                 connectedCallback: (elem) => {
-                    let subs = [
+                    const subs = [
                         okBttn.state.click$.subscribe( () => modalState.ok$.next()),
                         cancelBttn.state.click$.subscribe( () => modalState.cancel$.next()),
                         merge(modalState.cancel$, modalState.ok$ ).subscribe( () => modalDiv.remove() )

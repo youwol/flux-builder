@@ -142,11 +142,11 @@ export namespace ContextView{
         }){
             Object.assign(this, rest)
             this.state = state
-            let styling : TOptions = {...View.defaultOptions, ...(options ? options : {}) }
+            const styling : TOptions = {...View.defaultOptions, ...(options ? options : {}) }
             this.class = styling.containerClass
             this.style = styling.containerStyle
 
-            let treeView = new ImmutableTree.View({
+            const treeView = new ImmutableTree.View({
                 state,
                 headerView,
                 class:styling.treeViewClass,
@@ -166,12 +166,12 @@ export namespace ContextView{
 
     export function reportContext(context: Context, nodeId?:string){
 
-        let state = new State({
+        const state = new State({
             context,
             expandedNodes: nodeId ? nodePath(context).concat(nodeId) : nodePath(context),
             selectedNode:  nodeId//errorLog.id
         })
-        let view = new View({
+        const view = new View({
             state,
         })
         ModalView.popup({
@@ -183,14 +183,14 @@ export namespace ContextView{
     }
 
     function headerView( state:State, node: NodeBase){
-        let heightBar = '3px'
+        const heightBar = '3px'
         if (node instanceof ContextNode){
 
-            let tStart = node.context.startTimestamp - state.rootCtx.startTimestamp
-            let left =  100 * tStart / (state.tEnd - state.tStart)
-            let width = 100 * node.context.elapsed() / (state.tEnd - state.tStart)
-            let elapsed = Math.floor(100 * node.context.elapsed()) / 100
-            let classes = {
+            const tStart = node.context.startTimestamp - state.rootCtx.startTimestamp
+            const left =  100 * tStart / (state.tEnd - state.tStart)
+            const width = 100 * node.context.elapsed() / (state.tEnd - state.tStart)
+            const elapsed = Math.floor(100 * node.context.elapsed()) / 100
+            const classes = {
                 [ContextStatus.FAILED] : "fas fa-times fv-text-error",
                 [ContextStatus.SUCCESS] : "fas fa-check fv-text-success",
                 [ContextStatus.RUNNING] : "fas fa-cog fa-spin",
@@ -225,8 +225,8 @@ export namespace ContextView{
         }
         if (node instanceof LogNodeBase){
 
-            let tStart = node.log.timestamp - state.rootCtx.startTimestamp
-            let left =  100 * tStart / (state.tEnd - state.tStart)
+            const tStart = node.log.timestamp - state.rootCtx.startTimestamp
+            const left =  100 * tStart / (state.tEnd - state.tStart)
 
             let classes = 'fv-text-primary fas fa-info'
             
@@ -260,17 +260,17 @@ export namespace ContextView{
         }
         if (node instanceof DataNodeBase){
 
-            let views = Journal.getViews(node.data).map( view => view.view)
+            const views = Journal.getViews(node.data).map( view => view.view)
             
             if(views.length>0)
-                return {
+                {return {
                     class: 'd-flex flex-grow-1',
                     style:{'white-space': 'nowrap', "min-width":'0px'},
                     children: 
                         views
-                }
+                }}
 
-            let dataState = new DataTreeView.State({
+            const dataState = new DataTreeView.State({
                 title: "",
                 data: node.data,
                 expandedNodes:['_0']

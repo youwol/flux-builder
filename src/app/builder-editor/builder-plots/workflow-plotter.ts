@@ -59,11 +59,11 @@ export class WorkflowPlotter{
                 ? drawingArea.svgCanvas.select(".workspace-background").attr("class", "workspace-background child-layer")
                 : drawingArea.svgCanvas.select(".workspace-background").attr("class", "workspace-background")
         })
-        let plotObservable = this.plottersObservables
-        let boxSelectorPlotter = this.boxSelectorPlotter
-        let background = document.querySelector("svg") as SVGElement
+        const plotObservable = this.plottersObservables
+        const boxSelectorPlotter = this.boxSelectorPlotter
+        const background = document.querySelector("svg") as SVGElement
 
-        let toPosition = (event: MouseEvent)=>
+        const toPosition = (event: MouseEvent)=>
             [event.offsetX || event.clientX, event.offsetY || event.clientY]
         
         background.onmousedown = (event) =>  { 
@@ -71,22 +71,22 @@ export class WorkflowPlotter{
         }
         background.onmousemove = (event) => {             
             if(event.ctrlKey)
-                boxSelectorPlotter.moveTo(toPosition(event))
+                {boxSelectorPlotter.moveTo(toPosition(event))}
             else
-                plotObservable.mouseMoved$.next(toPosition(event)) 
+                {plotObservable.mouseMoved$.next(toPosition(event))} 
                
         }
         background.onmouseup = (event) => { 
             if(event.ctrlKey)
-                boxSelectorPlotter.finishSelection(toPosition(event))
+                {boxSelectorPlotter.finishSelection(toPosition(event))}
         }
         background.onclick = (event)  => { 
             if(!event.ctrlKey )
-                appStore.unselect()
+                {appStore.unselect()}
         }
         window.onkeydown = (event) => { 
             if(event.key=="Delete" && document.activeElement.tagName=="BODY") 
-                this.appStore.deleteSelected()
+                {this.appStore.deleteSelected()}
         }   
         this.loadExtensions()   
     }
@@ -94,7 +94,7 @@ export class WorkflowPlotter{
     loadExtensions(){
         // this test is for backward compatibility w/ flux-lib-core
         if(!FluxExtensionAPIs)
-            return
+            {return}
         BuilderRenderingAPI.initialize(this)
         FluxExtensionAPIs.registerAPI('BuilderRenderingAPI', BuilderRenderingAPI)
     }

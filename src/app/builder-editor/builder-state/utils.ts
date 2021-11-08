@@ -5,18 +5,18 @@ import { toProjectData } from './factory-utils';
 
 export function uuidv4() {
     return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
-      var r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8);
+      const r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8);
       return v.toString(16);
     });
   }
 
   function css(el, doc) {
-    var sheets = doc.styleSheets, ret = [];
+    const sheets = doc.styleSheets, ret = [];
     el.matches = el.matches || el.webkitMatchesSelector || el.mozMatchesSelector 
         || el.msMatchesSelector || el.oMatchesSelector;
-    for (var i in sheets) {
-        var rules = sheets[i].rules || sheets[i].cssRules;
-        for (var r in rules) {
+    for (const i in sheets) {
+        const rules = sheets[i].rules || sheets[i].cssRules;
+        for (const r in rules) {
             if (el.matches(rules[r]["selectorText"])) {
                 ret.push(rules[r].cssText);
             }
@@ -82,7 +82,7 @@ export function uuidv4() {
 
   export function packageAssetProject(project: Project){
 
-    let publishRequest = {
+    const publishRequest = {
       asset:{
         name: project.name,
         description: project.description
@@ -99,7 +99,7 @@ export function uuidv4() {
 
           // This should go somewhere else above at some point (when multiple FluxAppstore data will be needed) 
           if(!mdle.Factory.consumersData.FluxAppstore)
-            mdle.Factory.consumersData.FluxAppstore = {notifiersPluged: false}
+            {mdle.Factory.consumersData.FluxAppstore = {notifiersPluged: false}}
 
           // notifier is static, we subscribe only one time to it
           if(mdle.Factory.BuilderView.notifier$ && !mdle.Factory.consumersData.FluxAppstore.notifiersPluged){

@@ -8,15 +8,15 @@ import { environment } from '../common/dependencies'
 
 function setupProject({modulesCount}:{modulesCount:number}): any {
 
-  let appStore: AppStore = new AppStore(
+  const appStore: AppStore = new AppStore(
       environment,
       AppObservables.getInstance(),
       AppBuildViewObservables.getInstance()
   )
   new Array(modulesCount).fill(0).map( () => appStore.addModule(SimpleModule) )
-  let workflow = appStore.project.workflow
-  expect(appStore.project.workflow.modules.length).toEqual(modulesCount+1)
-  let mdles = workflow.modules.filter(mdle => mdle instanceof SimpleModule.Module) as SimpleModule.Module[]
+  const workflow = appStore.project.workflow
+  expect(appStore.project.workflow.modules).toHaveLength(modulesCount+1)
+  const mdles = workflow.modules.filter(mdle => mdle instanceof SimpleModule.Module) as SimpleModule.Module[]
 
   return [appStore, ...mdles]
 }
@@ -25,23 +25,23 @@ function setupProject({modulesCount}:{modulesCount:number}): any {
 test('add 2 module and connections + description box ', () => {
     AppDebugEnvironment.getInstance().debugOn = false
   
-    let [appStore, mdle0, mdle1] = setupProject({modulesCount:2})
+    const [appStore, mdle0, mdle1] = setupProject({modulesCount:2})
 
-    let properties = new DescriptionBoxProperties("blue")
-    let descriptionBox = new DescriptionBox("descriptionBoxId","title",[mdle0.moduleId,mdle1.moduleId],"",properties)
+    const properties = new DescriptionBoxProperties("blue")
+    const descriptionBox = new DescriptionBox("descriptionBoxId","title",[mdle0.moduleId,mdle1.moduleId],"",properties)
     appStore.addDescriptionBox(descriptionBox)
 
-    expect(appStore.project.builderRendering.descriptionsBoxes.length).toEqual(1)
+    expect(appStore.project.builderRendering.descriptionsBoxes).toHaveLength(1)
     expect(appStore.project.builderRendering.descriptionsBoxes[0]).toEqual(descriptionBox)
 
     appStore.undo()
-    expect(appStore.project.builderRendering.descriptionsBoxes.length).toEqual(0)
+    expect(appStore.project.builderRendering.descriptionsBoxes).toHaveLength(0)
     appStore.redo()
-    expect(appStore.project.builderRendering.descriptionsBoxes.length).toEqual(1)
+    expect(appStore.project.builderRendering.descriptionsBoxes).toHaveLength(1)
     expect(appStore.project.builderRendering.descriptionsBoxes[0]).toEqual(descriptionBox)
 
     appStore.deleteModule(mdle0)
-    expect(appStore.project.builderRendering.descriptionsBoxes.length).toEqual(1)
+    expect(appStore.project.builderRendering.descriptionsBoxes).toHaveLength(1)
     
     appStore.undo()
     expect(appStore.project.builderRendering.descriptionsBoxes[0]).toEqual(descriptionBox)
@@ -54,22 +54,22 @@ test('add 2 module and connections + description box ', () => {
 test('add 2 module and connections + description box + delete', () => {
     AppDebugEnvironment.getInstance().debugOn = false
   
-    let [appStore, mdle0, mdle1] = setupProject({modulesCount:2})
+    const [appStore, mdle0, mdle1] = setupProject({modulesCount:2})
 
-    let properties = new DescriptionBoxProperties("blue")
-    let descriptionBox = new DescriptionBox("descriptionBoxId","title",[mdle0.moduleId,mdle1.moduleId],"",properties)
+    const properties = new DescriptionBoxProperties("blue")
+    const descriptionBox = new DescriptionBox("descriptionBoxId","title",[mdle0.moduleId,mdle1.moduleId],"",properties)
     appStore.addDescriptionBox(descriptionBox)
 
-    expect(appStore.project.builderRendering.descriptionsBoxes.length).toEqual(1)
+    expect(appStore.project.builderRendering.descriptionsBoxes).toHaveLength(1)
     expect(appStore.project.builderRendering.descriptionsBoxes[0]).toEqual(descriptionBox)
 
     appStore.deleteDescriptionBox(descriptionBox)
-    expect(appStore.project.builderRendering.descriptionsBoxes.length).toEqual(0)
+    expect(appStore.project.builderRendering.descriptionsBoxes).toHaveLength(0)
     appStore.undo()
-    expect(appStore.project.builderRendering.descriptionsBoxes.length).toEqual(1)
+    expect(appStore.project.builderRendering.descriptionsBoxes).toHaveLength(1)
     expect(appStore.project.builderRendering.descriptionsBoxes[0]).toEqual(descriptionBox)
     appStore.redo()
-    expect(appStore.project.builderRendering.descriptionsBoxes.length).toEqual(0)
+    expect(appStore.project.builderRendering.descriptionsBoxes).toHaveLength(0)
 
     appStore.updateProjectToIndexHistory(0, appStore.indexHistory)
   })
@@ -81,22 +81,22 @@ test('add 2 module and connections + description box + delete', () => {
   test('add 2 module and connections + description box + update', () => {
     AppDebugEnvironment.getInstance().debugOn = false
   
-    let [appStore, mdle0, mdle1] = setupProject({modulesCount:2})
+    const [appStore, mdle0, mdle1] = setupProject({modulesCount:2})
 
-    let properties = new DescriptionBoxProperties("blue")
-    let descriptionBox = new DescriptionBox("descriptionBoxId","title",[mdle0.moduleId,mdle1.moduleId],"",properties)
+    const properties = new DescriptionBoxProperties("blue")
+    const descriptionBox = new DescriptionBox("descriptionBoxId","title",[mdle0.moduleId,mdle1.moduleId],"",properties)
     appStore.addDescriptionBox(descriptionBox)
 
-    expect(appStore.project.builderRendering.descriptionsBoxes.length).toEqual(1)
+    expect(appStore.project.builderRendering.descriptionsBoxes).toHaveLength(1)
     expect(appStore.project.builderRendering.descriptionsBoxes[0]).toEqual(descriptionBox)
 
-    let propertiesNew = new DescriptionBoxProperties("red")
-    let descriptionBoxNew = new DescriptionBox("descriptionBoxId","title2",[mdle0.moduleId],"",propertiesNew)
+    const propertiesNew = new DescriptionBoxProperties("red")
+    const descriptionBoxNew = new DescriptionBox("descriptionBoxId","title2",[mdle0.moduleId],"",propertiesNew)
     appStore.updateDescriptionBox(descriptionBoxNew)
 
-    expect(appStore.project.builderRendering.descriptionsBoxes.length).toEqual(1)
-    let dBox = appStore.project.builderRendering.descriptionsBoxes[0]
-    expect(dBox.title).toEqual("title2")
+    expect(appStore.project.builderRendering.descriptionsBoxes).toHaveLength(1)
+    const dBox = appStore.project.builderRendering.descriptionsBoxes[0]
+    expect(dBox.title).toBe("title2")
     expect(dBox.modulesId).toEqual([mdle0.moduleId])
     expect(dBox.properties).toEqual(propertiesNew)
     appStore.undo()

@@ -4,9 +4,9 @@ import { DescriptionBox, Project, BuilderRendering } from '@youwol/flux-core'
 
 export function addDescriptionBox(descriptionBox : DescriptionBox, project: Project) : Project{
 
-    let boxes = project.builderRendering.descriptionsBoxes.concat(descriptionBox)
+    const boxes = project.builderRendering.descriptionsBoxes.concat(descriptionBox)
 
-    let projectNew = new Project({
+    const projectNew = new Project({
         ...project,
         ...{
             builderRendering:new BuilderRendering(project.builderRendering.modulesView,project.builderRendering.connectionsView,boxes)
@@ -18,12 +18,12 @@ export function addDescriptionBox(descriptionBox : DescriptionBox, project: Proj
 
 export function updateDescriptionBox(descriptionBox : DescriptionBox, project: Project) : Project{
     
-    let toKeeps = project.builderRendering.descriptionsBoxes.filter(
+    const toKeeps = project.builderRendering.descriptionsBoxes.filter(
         b => b.descriptionBoxId != descriptionBox.descriptionBoxId
     )
-    let boxes = toKeeps.concat([descriptionBox])
+    const boxes = toKeeps.concat([descriptionBox])
 
-    let projectNew = new Project({
+    const projectNew = new Project({
         ...project,
         ...{
             builderRendering:new BuilderRendering(project.builderRendering.modulesView,project.builderRendering.connectionsView,boxes)
@@ -35,10 +35,10 @@ export function updateDescriptionBox(descriptionBox : DescriptionBox, project: P
 
 export function deleteDescriptionBox(descriptionBox, project: Project) : Project{
     
-    let toKeeps = project.builderRendering.descriptionsBoxes.filter(
+    const toKeeps = project.builderRendering.descriptionsBoxes.filter(
         b => b.descriptionBoxId != descriptionBox.descriptionBoxId
     )
-    let projectNew = new Project({
+    const projectNew = new Project({
         ...project,
         ...{
             builderRendering:new BuilderRendering(project.builderRendering.modulesView,project.builderRendering.connectionsView,toKeeps)

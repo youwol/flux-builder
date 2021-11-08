@@ -10,20 +10,20 @@ test('test from project loading', (done) => {
 
   AppDebugEnvironment.getInstance().debugOn = false
 
-  let appStore : AppStore = AppStore.getInstance(environment)
+  const appStore : AppStore = AppStore.getInstance(environment)
 
-  let appObservables = AppObservables.getInstance()
+  const appObservables = AppObservables.getInstance()
 
   appObservables.ready$.pipe(
       filter(d=>d)
   ).subscribe((_)=>{
-      expect(appStore.getActiveGroup().moduleId).toEqual("Component_root-component")
-      let mdleGroup = appStore.getModule("GroupModules_child-layer") as GroupModules.Module
+      expect(appStore.getActiveGroup().moduleId).toBe("Component_root-component")
+      const mdleGroup = appStore.getModule("GroupModules_child-layer") as GroupModules.Module
       mdleGroup.Factory.BuilderView.notifier$.next({type:'groupFocused', data: mdleGroup.moduleId}) 
   })
   appObservables.activeLayerUpdated$.pipe(skip(1)).subscribe( d =>{
-      let layerId = appStore.getActiveGroup().moduleId
-      expect(layerId).toEqual("GroupModules_child-layer") 
+      const layerId = appStore.getActiveGroup().moduleId
+      expect(layerId).toBe("GroupModules_child-layer") 
       done()
     })
 

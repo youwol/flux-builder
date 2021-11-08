@@ -1,6 +1,6 @@
 import { Component, ProjectSchema, RequirementsSchema } from "@youwol/flux-core"
 
-let requirements: RequirementsSchema = {
+const requirements: RequirementsSchema = {
     fluxPacks: ["flux-test"],
     loadingGraph: {
         definition: [
@@ -16,7 +16,7 @@ let requirements: RequirementsSchema = {
 }
 
 
-export let projects: { [key: string]: ProjectSchema } = {
+export const projects: { [key: string]: ProjectSchema } = {
 
     emptyProject: {
         name: 'emptyProject',

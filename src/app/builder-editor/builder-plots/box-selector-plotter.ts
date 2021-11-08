@@ -38,9 +38,9 @@ export class BoxSelectorPlotter{
     finishSelection(coordinates){
         
         this.start = undefined
-        let modulesId = BoxSelectorPlotter.getSelectedModules(this.appStore.getActiveModulesView(), 
+        const modulesId = BoxSelectorPlotter.getSelectedModules(this.appStore.getActiveModulesView(), 
             this.drawingArea,this.rect)
-        let finalRect = getBoundingBox(modulesId,10,this.drawingArea)
+        const finalRect = getBoundingBox(modulesId,10,this.drawingArea)
 
         this.rect/*.transition()
         .duration(500)
@@ -56,34 +56,34 @@ export class BoxSelectorPlotter{
     }
     moveTo(coordinates){
         if( !this.start)
-            return 
+            {return} 
         coordinates = this.convert(coordinates)
         this.rect.attr("width", Math.max(0, coordinates[0] - +this.rect.attr("x")))
         .attr("height", Math.max(0, coordinates[1] - +this.rect.attr("y")));
 
-        let highlighteds = BoxSelectorPlotter.getSelectedModules(this.appStore.getActiveModulesView(), 
+        const highlighteds = BoxSelectorPlotter.getSelectedModules(this.appStore.getActiveModulesView(), 
             this.drawingArea,this.rect)
         this.modulesPlotter.highlight(highlighteds )
     }
     
-    static getSelectedModules(modulesView,drawingArea, rect) : Array<String> {
-        let coors = modulesView
+    static getSelectedModules(modulesView,drawingArea, rect) : Array<string> {
+        const coors = modulesView
         .map(m => [
             m.moduleId,
             drawingArea.hScale(m.xWorld), 
             drawingArea.vScale(m.yWorld)])
 
-        let x0 = Number(rect.attr("x"))
-        let y0 = Number(rect.attr("y"))
-        let x1 = x0 + Number(rect.attr("width"))
-        let y1 = y0 + Number(rect.attr("height"))
+        const x0 = Number(rect.attr("x"))
+        const y0 = Number(rect.attr("y"))
+        const x1 = x0 + Number(rect.attr("width"))
+        const y1 = y0 + Number(rect.attr("height"))
         return coors
         .filter( ([_,x,y]) =>  x > x0  &&  x < x1 && y > y0 &&  y < y1)
         .map( ([mid,x,y] :[string,number,number]) =>mid)
         
     }
     convert([x,y]) {
-        let transform = this.drawingArea.overallTranform
+        const transform = this.drawingArea.overallTranform
        
         return [(x-transform.translateX)/transform.scale,(y-transform.translateY)/transform.scale]
     }

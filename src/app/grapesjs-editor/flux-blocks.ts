@@ -6,31 +6,31 @@ import * as grapesjs from 'grapesjs'
 
 function scaleSvgIcons(g: any) {
     if (g.style.transform)
-        return
-    let parentBRect = g.parentElement.getBoundingClientRect()
-    let bRect = g.getBoundingClientRect()
-    let ty = parentBRect.top - bRect.top
-    let tx = parentBRect.left - bRect.left
-    let scale = Math.min(parentBRect.width / bRect.width, parentBRect.height / bRect.height)
+        {return}
+    const parentBRect = g.parentElement.getBoundingClientRect()
+    const bRect = g.getBoundingClientRect()
+    const ty = parentBRect.top - bRect.top
+    const tx = parentBRect.left - bRect.left
+    const scale = Math.min(parentBRect.width / bRect.width, parentBRect.height / bRect.height)
     g.style.transform = `translate(${parentBRect.width / 4}px,${parentBRect.height / 4}px) scale(${0.5 * scale}) translate(${tx}px,${ty}px)`;
 }
 
 
 export function setDynamicComponentsBlocks(appStore: AppStore, editor: grapesjs.Editor) {
 
-    let debugSingleton = AppDebugEnvironment.getInstance()
-    let all = getAllComponentsRec(editor)
+    const debugSingleton = AppDebugEnvironment.getInstance()
+    const all = getAllComponentsRec(editor)
 
-    let layerModuleIds = appStore.getActiveGroup().getModuleIds()
-    let pluginIds = appStore.project.workflow.plugins
+    const layerModuleIds = appStore.getActiveGroup().getModuleIds()
+    const pluginIds = appStore.project.workflow.plugins
         .filter(plugin => layerModuleIds.includes(plugin.parentModule.moduleId))
         .map(plugin => plugin.moduleId)
 
-    let modulesToRender = [...layerModuleIds, ...pluginIds]
+    const modulesToRender = [...layerModuleIds, ...pluginIds]
         .filter(mid => !all[mid])
         .map(mid => appStore.getModule(mid)).filter(m => m.Factory.RenderView)
 
-    let componentBlocks = editor.BlockManager.getAll().filter(block => block.get('category').id == "Components")
+    const componentBlocks = editor.BlockManager.getAll().filter(block => block.get('category').id == "Components")
     debugSingleton.debugOn &&
         debugSingleton.logRenderTopic({
             level: LogLevel.Info,
@@ -52,13 +52,13 @@ function toDynamicBlock(mdle: ModuleFlux, editor: grapesjs.Editor, workflow: Wor
         activate: true,
         category: "Components",
         render: ({ el }: { el: any }) => {
-            let div = document.createElement("div")
+            const div = document.createElement("div")
             div.id = mdle.moduleId
             el.appendChild(div)
-            let svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+            const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
             svg.setAttribute("width", "100px");
             svg.setAttribute("height", "70px");
-            let item = new mdle.Factory.BuilderView().icon()
+            const item = new mdle.Factory.BuilderView().icon()
 
             const g = document.createElementNS("http://www.w3.org/2000/svg", "g")
             g.style.stroke = "currentColor"
@@ -77,7 +77,7 @@ function toDynamicBlock(mdle: ModuleFlux, editor: grapesjs.Editor, workflow: Wor
 
 export function getFluxBlockContent(mdle: ModuleFlux, editor: grapesjs.Editor, workflow: Workflow ) {
 
-    let debugSingleton = AppDebugEnvironment.getInstance()
+    const debugSingleton = AppDebugEnvironment.getInstance()
     debugSingleton.debugOn &&
         debugSingleton.logRenderTopic({
             level: LogLevel.Info,
@@ -86,18 +86,18 @@ export function getFluxBlockContent(mdle: ModuleFlux, editor: grapesjs.Editor, w
         })
 
     if (mdle instanceof Component.Module) {
-        let html = mdle.getFullHTML(workflow)
+        const html = mdle.getFullHTML(workflow)
         return html 
             ? html.outerHTML 
             : `<div id="${mdle.moduleId}" class="flux-element flux-component"  data-gjs-name="${mdle.configuration.title}"></div>`
     }
-    let attr = mdle.Factory.RenderView.wrapperDivAttributes
+    const attr = mdle.Factory.RenderView.wrapperDivAttributes
 
-    let classes = `flux-element` +
+    const classes = `flux-element` +
         (attr && attr(mdle).class ? " " + attr(mdle).class : "")
 
-    let styles = attr && attr(mdle).style ? attr(mdle).style : {}
-    let styleStr = Object.entries(styles).reduce((acc, [k, v]) => acc + k + ":" + v + ";", "")
+    const styles = attr && attr(mdle).style ? attr(mdle).style : {}
+    const styleStr = Object.entries(styles).reduce((acc, [k, v]) => acc + k + ":" + v + ";", "")
     editor.getStyle().add(`#${mdle.moduleId}{${styleStr}}`)
     // we should be able to use a Component Definition: https://grapesjs.com/docs/api/block.html#block
     // I can't make it works

@@ -9,17 +9,17 @@ import { uuidv4 } from './utils';
 export function subscribeConnections(  allSubscriptions : Map<Connection, Subscription> , delta : {removedElements,createdElements },
     modules:Array<ModuleFlux> , plugins:Array<ModuleFlux>){
 
-    let flatInputSlots  = modules.concat( plugins).reduce( (acc,e)=> acc.concat(e.inputSlots) , [])
-    let flatOutputSlots = modules.concat( plugins).reduce( (acc,e)=> acc.concat(e.outputSlots) , [])
+    const flatInputSlots  = modules.concat( plugins).reduce( (acc,e)=> acc.concat(e.inputSlots) , [])
+    const flatOutputSlots = modules.concat( plugins).reduce( (acc,e)=> acc.concat(e.outputSlots) , [])
 
     delta.removedElements.forEach( (c:Connection) => {
         allSubscriptions.get(c).unsubscribe()
         allSubscriptions.delete(c)
     })
     delta.createdElements.forEach( (c:Connection) => {
-        let slotOut      = flatOutputSlots.find(slot => slot.slotId==c.start.slotId && slot.moduleId == c.start.moduleId )
-        let slotIn       = flatInputSlots.find(slot => slot.slotId==c.end.slotId && slot.moduleId == c.end.moduleId )
-        let subscription =   slotOut.observable$.subscribe(d => slotIn.subscribeFct({connection:c,message:d}) )
+        const slotOut      = flatOutputSlots.find(slot => slot.slotId==c.start.slotId && slot.moduleId == c.start.moduleId )
+        const slotIn       = flatInputSlots.find(slot => slot.slotId==c.end.slotId && slot.moduleId == c.end.moduleId )
+        const subscription =   slotOut.observable$.subscribe(d => slotIn.subscribeFct({connection:c,message:d}) )
         allSubscriptions.set(c,subscription )
     })
 }
@@ -29,7 +29,7 @@ export function addConnection( connection: Connection,
     project:Project ,
     allSubscriptions: Map<Connection,Subscription> ): Project{
 
-    let debugSingleton = AppDebugEnvironment.getInstance()
+    const debugSingleton = AppDebugEnvironment.getInstance()
 
     debugSingleton.debugOn && 
     debugSingleton.logWorkflowBuilder( {  
@@ -39,8 +39,8 @@ export function addConnection( connection: Connection,
         }
     })
     
-    let modules = project.workflow.modules
-    let connections = project.workflow.connections.concat(connection)
+    const modules = project.workflow.modules
+    const connections = project.workflow.connections.concat(connection)
     let workflow   = new Workflow({  
         modules,
         connections,
@@ -53,7 +53,7 @@ export function addConnection( connection: Connection,
         plugins: project.workflow.plugins
     })
 
-    let projectNew = new Project({
+    const projectNew = new Project({
         ...project,
         ...{workflow:workflow}
     })
@@ -65,16 +65,16 @@ export function addAdaptor(connection : Connection,
     project:Project,
     allSubscriptions: Map<Connection,Subscription>) : Project{
 
-    let connections = project.workflow.connections.filter(c => c!=connection)
-    let newConnection = new Connection(connection.start,connection.end, adaptor )
-    let workflow = new Workflow({
+    const connections = project.workflow.connections.filter(c => c!=connection)
+    const newConnection = new Connection(connection.start,connection.end, adaptor )
+    const workflow = new Workflow({
         ...project.workflow,
         ...{
             connections: connections.concat(newConnection)
         }
     })
 
-    let projectNew = new Project({
+    const projectNew = new Project({
         ...project,
         ...{workflow}
     })
@@ -84,20 +84,20 @@ export function addAdaptor(connection : Connection,
 export function updateAdaptor(connection : Connection, mappingFunction : string, project:Project,
     allSubscriptions: Map<Connection,Subscription>) : Project {
 
-    let connections = project.workflow.connections.filter(c => c!==connection)
+    const connections = project.workflow.connections.filter(c => c!==connection)
 
-    let adaptor = connection.adaptor
+    const adaptor = connection.adaptor
         ? new Adaptor(connection.adaptor.adaptorId,mappingFunction)
         : new Adaptor( uuidv4(), mappingFunction )
-    let newConnection = new Connection(connection.start,connection.end, adaptor )
-    let workflow = new Workflow({
+    const newConnection = new Connection(connection.start,connection.end, adaptor )
+    const workflow = new Workflow({
         ...project.workflow,
         ...{
             connections: connections.concat(newConnection)
         }
     })
 
-    let projectNew = new Project({
+    const projectNew = new Project({
         ...project,
         ...{workflow}
     })
@@ -107,16 +107,16 @@ export function updateAdaptor(connection : Connection, mappingFunction : string,
 export function deleteAdaptor(connection : Connection, project:Project,
         allSubscriptions: Map<Connection,Subscription>) : Project{
 
-    let connections = project.workflow.connections.filter(c => c!=connection)
-    let newConnection = new Connection(connection.start,connection.end, undefined )
-    let workflow = new Workflow({
+    const connections = project.workflow.connections.filter(c => c!=connection)
+    const newConnection = new Connection(connection.start,connection.end, undefined )
+    const workflow = new Workflow({
         ...project.workflow,
         ...{
             connections: connections.concat(newConnection)
         }
     })
 
-    let projectNew = new Project({
+    const projectNew = new Project({
         ...project,
         ...{workflow}
     })
@@ -128,15 +128,15 @@ export function deleteConnection(connection : Connection,
     project:Project,
     allSubscriptions: Map<Connection,Subscription> ) : Project{
         
-    let connections = project.workflow.connections.filter(c => c!=connection)
-    let workflow = new Workflow({
+    const connections = project.workflow.connections.filter(c => c!=connection)
+    const workflow = new Workflow({
         ...project.workflow,
         ...{
             connections
         }
     })
 
-    let projectNew = new Project({
+    const projectNew = new Project({
         ...project,
         ...{workflow}
     })
@@ -145,12 +145,12 @@ export function deleteConnection(connection : Connection,
 
 export function setConnectionView(connection: Connection, config: any, project:Project ){
     
-    let connectViews = project.builderRendering.connectionsView
+    const connectViews = project.builderRendering.connectionsView
     .filter(c => c.connectionId != connection.connectionId )
     .concat( [{connectionId:connection.connectionId, wireless:config.wireless}])
 
-    let builderRendering = new BuilderRendering(project.builderRendering.modulesView, connectViews, project.builderRendering.descriptionsBoxes)
-    let projectNew = new Project({
+    const builderRendering = new BuilderRendering(project.builderRendering.modulesView, connectViews, project.builderRendering.descriptionsBoxes)
+    const projectNew = new Project({
         ...project,
         ...{builderRendering}
     })

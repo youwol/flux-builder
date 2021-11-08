@@ -5,9 +5,9 @@ import { AppDebugEnvironment, AppObservables,
 
 test('test info debugs', () => {
 
-  let debugSingleton = AppDebugEnvironment.getInstance()
+  const debugSingleton = AppDebugEnvironment.getInstance()
   debugSingleton.debugOn = true
-  let messages = []
+  const messages = []
   console.log = function (a1,a2) {
     messages.push({message:a1, object:a2})
   }
@@ -18,7 +18,7 @@ test('test info debugs', () => {
   debugSingleton.logWorkflowBuilder({level:LogLevel.Info, message: "test", object:{index:3}})
   debugSingleton.logWorkflowView({level:LogLevel.Info, message: "test", object:{index:4}})
 
-  let targets=[
+  const targets=[
     {message:"#App",object:{level:1,message:"test",object:{index:0}}},
     {message:"#Observables",object:{level:1,message:"test",object:{index:1}}},
     {message:"#Render",object:{level:1,message:"test",object:{index:2}}},
@@ -35,9 +35,9 @@ test('test info debugs', () => {
 
 test('test log level debugs', () => {
 
-  let debugSingleton = AppDebugEnvironment.getInstance()
+  const debugSingleton = AppDebugEnvironment.getInstance()
   debugSingleton.debugOn = true
-  let messages = []
+  const messages = []
   console.log = function (a1,a2) {
     messages.push({message:a1, object:a2})
   }
@@ -55,9 +55,9 @@ test('test log level debugs', () => {
 
 test('test app observables logs', () => {
 
-  let debugSingleton = AppDebugEnvironment.getInstance()
+  const debugSingleton = AppDebugEnvironment.getInstance()
   debugSingleton.debugOn = true
-  let messages = []
+  const messages = []
   console.log = function (a1,a2) {
     messages.push({message:a1, object:a2})
   }
@@ -65,18 +65,18 @@ test('test app observables logs', () => {
     messages.push({message:a1, object:a2})
   }
 
-  let app$ = AppObservables.getInstance()
+  const app$ = AppObservables.getInstance()
   app$.ready$.next(true)
 
-  expect(messages.length).toEqual(1) 
+  expect(messages).toHaveLength(1) 
   })
 
 
 test('test plotters observables logs', () => {
 
-  let debugSingleton = AppDebugEnvironment.getInstance()
+  const debugSingleton = AppDebugEnvironment.getInstance()
   debugSingleton.debugOn = true
-  let messages = []
+  const messages = []
   console.log = function (a1,a2) {
     messages.push({message:a1, object:a2})
   }
@@ -84,9 +84,9 @@ test('test plotters observables logs', () => {
     messages.push({message:a1, object:a2})
   }
 
-  let app$ = AppBuildViewObservables.getInstance()
+  const app$ = AppBuildViewObservables.getInstance()
   app$.modulesDrawn$.next(true)
 
-  expect(messages.length).toEqual(1)
+  expect(messages).toHaveLength(1)
   })
 

@@ -34,7 +34,7 @@ export class ConnectionView{
 }
 
 
-let elementViewsFactory = (connection: Connection, appStore: AppStore) => [
+const elementViewsFactory = (connection: Connection, appStore: AppStore) => [
     {
         test: (value: AutoForm.ValueDescription) => {
             return value.metadata && value.metadata.type == "code"
@@ -68,14 +68,14 @@ export class ConnectionSettingsState{
         public readonly appStore: AppStore
         ){
             
-        let connectionViewData = appStore.getConnectionView( connection.connectionId)
-        let data = new ConnectionView({
+        const connectionViewData = appStore.getConnectionView( connection.connectionId)
+        const data = new ConnectionView({
             ...(connectionViewData? {wireless:connectionViewData.wireless} : {}),
             ...(connection.adaptor? {adaptor:connection.adaptor.toString()} : {})
         })
-        let schemaWithValue = flattenSchemaWithValue(data)
+        const schemaWithValue = flattenSchemaWithValue(data)
         Object.keys(schemaWithValue).forEach( k => schemaWithValue[k] = schemaWithValue[k][0])
-        let configurationIn$ = new BehaviorSubject<Object>(data)
+        const configurationIn$ = new BehaviorSubject<Object>(data)
 
         this.autoFormState = new AutoForm.State(
             configurationIn$,
@@ -85,7 +85,7 @@ export class ConnectionSettingsState{
         
         this.initialSettings$ = new BehaviorSubject(data)
 
-        let sub1 = this.autoFormState.currentValue$.pipe(
+        const sub1 = this.autoFormState.currentValue$.pipe(
             filter( (value) => value['wireless'] != this.initialSettings$.getValue()['wireless'] )
         )
         .subscribe( (value: ConnectionView) => {
@@ -94,12 +94,12 @@ export class ConnectionSettingsState{
             this.appStore.selectConnection(connection.connectionId)
         })
 
-        let sub2 = this.autoFormState.currentValue$.pipe(
+        const sub2 = this.autoFormState.currentValue$.pipe(
             filter( (value) => value['adaptor'] != this.initialSettings$.getValue()['adaptor'] )
         )
         .subscribe( (value: ConnectionView) => {
             this.initialSettings$.next(value)
-            let adaptor = new Adaptor(uuidv4(), value.adaptor)
+            const adaptor = new Adaptor(uuidv4(), value.adaptor)
             appStore.addAdaptor(adaptor, connection)
             this.appStore.selectConnection(connection.connectionId)
         })

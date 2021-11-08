@@ -18,12 +18,12 @@ export namespace ShareUriView{
         constructor({appStore}:{
             appStore: AppStore
         }) {
-            let selectItems = [
+            const selectItems = [
                 new Select.ItemData('youwol-url','YouWol Platform URL'),
                 new Select.ItemData('relative-url','Relative URL')
             ]
             if( location.hostname=='localhost')
-                selectItems.push(new Select.ItemData('localhost-url','Localhost URL'))
+                {selectItems.push(new Select.ItemData('localhost-url','Localhost URL'))}
 
             this.selectState = new Select.State(selectItems,'youwol-url')
 
@@ -33,9 +33,9 @@ export namespace ShareUriView{
         toUrl( uri: string, mode: string){
 
             if(mode=='relative-url')
-              return `${uri}`
+              {return `${uri}`}
             if(mode=='localhost-url')
-              return `${location.hostname}:${location.port}${uri}`
+              {return `${location.hostname}:${location.port}${uri}`}
             return `https://platform.youwol.com${uri}`
           }
       
@@ -72,7 +72,7 @@ export namespace ShareUriView{
             this.class = this.class || View.defaultOptions.containerClass
             this.style = this.style || View.defaultOptions.containerStyle
 
-            let copyLinkBttn = new Button.View({
+            const copyLinkBttn = new Button.View({
                 state: new Button.State(),
                 contentView: () => ({ innerText: '' }),
                 class: "fv-btn fv-btn-primary fv-bg-focus fas fa-copy ml-2"
@@ -127,8 +127,8 @@ export namespace ShareUriView{
 
     export function popupModal(appStore: AppStore) {
 
-        let state = new State({appStore})
-        let view = new View({state})
+        const state = new State({appStore})
+        const view = new View({state})
         
         ModalView.popup({
             view,
