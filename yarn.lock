@@ -950,10 +950,10 @@
   resolved "https://registry.yarnpkg.com/@xtuc/long/-/long-4.2.2.tgz#d291c6a4e97989b5c61d9acf396ae4fe133a718d"
   integrity sha512-NuHqBY1PB/D8xU6s/thBgOAiAP7HOYDQ32+BFZILJ8ivkUkAHQnWfn6WhL79Owj1qmUnoN/YPhktdIoucipkAQ==
 
-"@youwol/cdn-client@~0.0.8":
-  version "0.0.8"
-  resolved "https://registry.yarnpkg.com/@youwol/cdn-client/-/cdn-client-0.0.8.tgz#313407ae0c791a7e73d8401ac11c97424c73d570"
-  integrity sha512-KzCt647Jxfzu7wO0FIYX+HNSU3mR0JDLu6jJQ6T/5jA2CxNbbMrHI7Na7q/KMrmnMHX7fXRwwcGXzXFotfMJAQ==
+"@youwol/cdn-client@~0.0.9":
+  version "0.0.9"
+  resolved "https://registry.yarnpkg.com/@youwol/cdn-client/-/cdn-client-0.0.9.tgz#e774db81217f3eff06b54eb37357e053213e701d"
+  integrity sha512-aEmdQ6KQm7cZhegg07FxrHFvUCI5ogR8yK6nZRZk3kuXXJFyKfgs3fK36Zu4dOmeIL41BKQvAyPWKbnOAaOx4A==
 
 "@youwol/flux-core@~0.0.21":
   version "0.0.21"
@@ -1746,6 +1746,11 @@ codemirror@^5.58.2:
   version "5.60.0"
   resolved "https://registry.yarnpkg.com/codemirror/-/codemirror-5.60.0.tgz#00a8cfd287d5d8737ceb73987f04aee2fe5860da"
   integrity sha512-AEL7LhFOlxPlCL8IdTcJDblJm8yrAGib7I+DErJPdZd4l6imx8IMgKK3RblVgBQqz3TZJR4oknQ03bz+uNjBYA==
+
+codemirror@^5.63.3:
+  version "5.63.3"
+  resolved "https://registry.yarnpkg.com/codemirror/-/codemirror-5.63.3.tgz#97042a242027fe0c87c09b36bc01931d37b76527"
+  integrity sha512-1C+LELr+5grgJYqwZKqxrcbPsHFHapVaVAloBsFBASbpLnQqLw1U8yXJ3gT5D+rhxIiSpo+kTqN+hQ+9ialIXw==
 
 collect-v8-coverage@^1.0.0:
   version "1.0.1"

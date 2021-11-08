@@ -1,3 +1,5 @@
+/** @format */
+
 const path = require('path')
 const ROOT = path.resolve(__dirname, 'src/app')
 const DESTINATION = path.resolve(__dirname, 'dist')
@@ -57,6 +59,7 @@ module.exports = {
             '@youwol/fv-tabs': "window['@youwol/fv-tabs']",
             '@youwol/fv-context-menu': "window['@youwol/fv-context-menu']",
             codemirror: "window['codemirror']",
+            js_beautify: "window['js_beautify']",
         },
     ],
     module: {
