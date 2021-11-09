@@ -31,7 +31,10 @@ import {
 } from './builder-editor/builder-state/'
 import { AssetsBrowserClient } from './clients/assets-browser.client'
 
-import { createLayoutEditor, initLayoutEditor } from './layout-editors/grapes-editor'
+import {
+    createLayoutEditor,
+    initLayoutEditor,
+} from './layout-editors/grapes-editor'
 import { setDynamicComponentsBlocks } from './layout-editors/grapes-editor/flux-blocks'
 import {
     autoAddElementInLayout,
@@ -223,9 +226,11 @@ export async function connectGrapes(
         layoutEditor.Commands.run('show-attributes')
     })
 
-    presenterUiState.getPresenterViewState('grapes-layout-editor').state$.subscribe(() => {
-        layoutEditor.refresh()
-    })
+    presenterUiState
+        .getPresenterViewState('grapes-layout-editor')
+        .state$.subscribe(() => {
+            layoutEditor.refresh()
+        })
     loading = false
 }
 

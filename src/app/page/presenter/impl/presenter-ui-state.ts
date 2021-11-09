@@ -37,17 +37,17 @@ export class ImplPresenterUiState implements PresenterUiState {
         this.current =
             this.current.kind === 'mono'
                 ? {
-                    kind: 'split',
-                    topView: this.current.view,
-                    bottomView:
-                        this.current.view === 'flow-builder'
-                            ? this.conf.defaultBottom
-                            : 'flow-builder',
-                }
+                      kind: 'split',
+                      topView: this.current.view,
+                      bottomView:
+                          this.current.view === 'flow-builder'
+                              ? this.conf.defaultBottom
+                              : 'flow-builder',
+                  }
                 : {
-                    kind: 'mono',
-                    view: this.current.topView,
-                }
+                      kind: 'mono',
+                      view: this.current.topView,
+                  }
         this.log = logFactory()
             .getChildLogger('UiState')
             .getChildLogger(toString(this.current))

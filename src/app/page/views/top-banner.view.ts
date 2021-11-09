@@ -2,7 +2,7 @@
 
 import { ModuleFlux } from '@youwol/flux-core'
 import { attr$, VirtualDOM } from '@youwol/flux-view'
-import { BehaviorSubject, merge, Observable, of } from 'rxjs'
+import { merge, Observable, of } from 'rxjs'
 import { map } from 'rxjs/operators'
 import { AppStore } from '../../builder-editor/builder-state'
 import { ViewState } from '../model'
@@ -45,7 +45,7 @@ function getActions(appStore: AppStore, presenter: PresenterUiState) {
                     if (
                         confirm(
                             'This page will be redirected. All unsaved changes will be lost.\n' +
-                            'Do you confirm  ?',
+                                'Do you confirm  ?',
                         )
                     ) {
                         document.location.href = document.location.href.replace(
@@ -64,7 +64,7 @@ function getActions(appStore: AppStore, presenter: PresenterUiState) {
                     if (
                         confirm(
                             'This page will be redirected. All unsaved changes will be lost.\n' +
-                            'Do you confirm  ?',
+                                'Do you confirm  ?',
                         )
                     ) {
                         document.location.href =
@@ -187,7 +187,8 @@ function getActions(appStore: AppStore, presenter: PresenterUiState) {
                                 viewState.display !== 'mono',
                         ),
                     ),
-                onTriggered: () => presenter.toggleView('flow-builder', 'bottom'),
+                onTriggered: () =>
+                    presenter.toggleView('flow-builder', 'bottom'),
             },
             {
                 name: 'grapejs-view',
@@ -202,7 +203,8 @@ function getActions(appStore: AppStore, presenter: PresenterUiState) {
                                 viewState.display !== 'mono',
                         ),
                     ),
-                onTriggered: () => presenter.toggleView('grapes-layout-editor', 'bottom'),
+                onTriggered: () =>
+                    presenter.toggleView('grapes-layout-editor', 'bottom'),
             },
             {
                 name: 'editor-view',
@@ -217,7 +219,8 @@ function getActions(appStore: AppStore, presenter: PresenterUiState) {
                                 viewState.display !== 'mono',
                         ),
                     ),
-                onTriggered: () => presenter.toggleView('raw-layout-editor', 'bottom'),
+                onTriggered: () =>
+                    presenter.toggleView('raw-layout-editor', 'bottom'),
             },
             {
                 name: 'runner-view',

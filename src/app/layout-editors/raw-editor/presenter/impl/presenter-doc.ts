@@ -93,9 +93,9 @@ export class ImplPresenterDoc<typeDoc extends TypeDoc> implements PresenterDoc {
         return startAt < 0
             ? missing
             : present({
-                indexStart: startAt,
-                indexEnd: startAt + searchStringLength,
-            })
+                  indexStart: startAt,
+                  indexEnd: startAt + searchStringLength,
+              })
     }
 }
 

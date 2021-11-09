@@ -10,7 +10,8 @@ const log = logFactory().getChildLogger('Component')
 
 export class ImplModelComponent
     extends ImplModelModule
-    implements ModelComponent {
+    implements ModelComponent
+{
     private readonly ownLog
 
     constructor(

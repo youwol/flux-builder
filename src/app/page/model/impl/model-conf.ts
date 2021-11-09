@@ -2,12 +2,14 @@
 
 import { Features } from '../model-common'
 import { Conf } from '../model-conf'
-import { defaultMono, defaultSplitRawEditor, defaultSplitGrapesEditor } from './model-ui-state'
+import {
+    defaultMono,
+    defaultSplitRawEditor,
+    defaultSplitGrapesEditor,
+} from './model-ui-state'
 
 export function factoryConf(features: Features): Conf {
-    return features === 'grapes'
-        ? defaultsGrapesEditor
-        : defaultsRawEditor
+    return features === 'grapes' ? defaultsGrapesEditor : defaultsRawEditor
 }
 
 const defaultsRawEditor: Conf = {

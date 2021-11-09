@@ -28,7 +28,8 @@ export function factoryHierarchy(
 
 export class ImplPresenterModule
     extends ImmutableTree.Node
-    implements PresenterTreeNode, PresenterPosition {
+    implements PresenterTreeNode, PresenterPosition
+{
     readonly log: Logger
     readonly id: string
     readonly typeModule: TypeModule

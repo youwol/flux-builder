@@ -71,9 +71,9 @@ export class ImplModelModule implements ModelModule {
         ]
         return children.length != 0
             ? children.map(
-                (navChild) =>
-                    new ImplModelModule(navChild.get(), this.appStore),
-            )
+                  (navChild) =>
+                      new ImplModelModule(navChild.get(), this.appStore),
+              )
             : undefined
     }
 }

@@ -78,20 +78,20 @@ const nodeHeaderView = (
 
 const classesFromPosition =
     (iconClass: string) =>
-        ([selected, position]: [boolean, PositionInDoc]) => {
-            const format = (classColor) => `mx-1 fab ${iconClass} ${classColor}`
-            let _exhaustSwitchCases: never
-            switch (position.typeInDoc) {
-                case 'ignore':
-                    return ''
-                case 'missing':
-                    return selected ? format('fv-text-success') : ''
-                case 'present':
-                    return format('fv-text-secondary')
-                default:
-                    _exhaustSwitchCases = position
-            }
+    ([selected, position]: [boolean, PositionInDoc]) => {
+        const format = (classColor) => `mx-1 fab ${iconClass} ${classColor}`
+        let _exhaustSwitchCases: never
+        switch (position.typeInDoc) {
+            case 'ignore':
+                return ''
+            case 'missing':
+                return selected ? format('fv-text-success') : ''
+            case 'present':
+                return format('fv-text-secondary')
+            default:
+                _exhaustSwitchCases = position
         }
+    }
 
 /**
  * The View
