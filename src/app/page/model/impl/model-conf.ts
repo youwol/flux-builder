@@ -5,7 +5,7 @@ import { Conf } from '../model-conf'
 import { defaultMono, defaultSplit, defaultSplitBeta } from './model-ui-state'
 
 export function factoryConf(features: Features): Conf {
-    return features === 'main' ? defaults : defaultsBeta
+    return features === 'grapes' ? defaults : defaultsBeta
 }
 
 const defaultsBeta: Conf = {

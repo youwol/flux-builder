@@ -3,9 +3,9 @@
 import { Features } from '../../model'
 
 export function getFeatures(): Features {
-    if (document.documentURI.endsWith('&features=beta')) {
-        return 'beta'
+    if (document.documentURI.endsWith('&layout-mode=raw')) {
+        return 'raw'
     } else {
-        return 'main'
+        return 'grapes'
     }
 }

@@ -1,6 +1,6 @@
 /** @format */
 
-export type Features = 'main' | 'beta'
+export type Features = 'grapes' | 'raw'
 
 export type RenderViewPosition = 'top' | 'bottom'
 

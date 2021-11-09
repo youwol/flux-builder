@@ -20,7 +20,7 @@ function getRendersViews(
     appStore: AppStore,
     presenterUiState: PresenterUiState,
 ) {
-    if (presenterUiState.features === 'main') {
+    if (presenterUiState.layoutMode === 'grapes') {
         return [
             builderView(appStore, presenterUiState),
             renderView(appStore, presenterUiState),

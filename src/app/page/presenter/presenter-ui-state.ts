@@ -12,5 +12,5 @@ export interface PresenterUiState {
         view: RenderViewName,
         additionalClasses?: string,
     ): PresenterViewState
-    readonly features: Features
+    readonly layoutMode: Features
 }

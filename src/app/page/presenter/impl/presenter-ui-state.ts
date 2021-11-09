@@ -92,7 +92,7 @@ export class ImplPresenterUiState implements PresenterUiState {
         return new PresenterViewState(this.uiState$, view, additionalClasses)
     }
 
-    public get features(): Features {
+    public get layoutMode(): Features {
         return getFeatures()
     }
 }

@@ -39,17 +39,17 @@ function getActions(appStore: AppStore, presenter: PresenterUiState) {
             {
                 name: 'main',
                 class: 'fas fa-palette',
-                visible: of(presenter.features !== 'main'),
-                enabled: of(presenter.features !== 'main'),
+                visible: presenter.layoutMode === 'raw',
+                enabled: presenter.layoutMode === 'raw',
                 onTriggered: () => {
                     if (
                         confirm(
                             'This page will be redirected. All unsaved changes will be lost.\n' +
-                                'Do you confirm  ?',
+                            'Do you confirm  ?',
                         )
                     ) {
                         document.location.href = document.location.href.replace(
-                            '&features=beta',
+                            '&layout-mode=raw',
                             '',
                         )
                     }
@@ -58,17 +58,17 @@ function getActions(appStore: AppStore, presenter: PresenterUiState) {
             {
                 name: 'beta',
                 class: 'fas fa-code',
-                visible: of(presenter.features !== 'beta'),
-                enabled: of(presenter.features !== 'beta'),
+                visible: presenter.layoutMode === 'grapes',
+                enabled: presenter.layoutMode === 'grapes',
                 onTriggered: () => {
                     if (
                         confirm(
                             'This page will be redirected. All unsaved changes will be lost.\n' +
-                                'Do you confirm  ?',
+                            'Do you confirm  ?',
                         )
                     ) {
                         document.location.href =
-                            document.location + '&features=beta'
+                            document.location + '&layout-mode=raw'
                     }
                 },
             },
@@ -77,14 +77,14 @@ function getActions(appStore: AppStore, presenter: PresenterUiState) {
             {
                 name: 'save',
                 class: 'fas fa-save',
-                visible: of(true),
-                enabled: of(true),
+                visible: true,
+                enabled: true,
                 onTriggered: () => appStore.saveProject(),
             },
             {
                 name: 'undo',
                 class: 'fas fa-undo',
-                visible: new BehaviorSubject(true),
+                visible: true,
                 enabled: observables.projectUpdated$.pipe(
                     map(() => {
                         return appStore.indexHistory > 1
@@ -95,7 +95,7 @@ function getActions(appStore: AppStore, presenter: PresenterUiState) {
             {
                 name: 'redo',
                 class: 'fas fa-redo',
-                visible: new BehaviorSubject(true),
+                visible: true,
                 enabled: observables.projectUpdated$.pipe(
                     map(() => {
                         return (
@@ -110,9 +110,9 @@ function getActions(appStore: AppStore, presenter: PresenterUiState) {
             {
                 name: 'builder-view',
                 class: 'fas fa-project-diagram n-resize',
-                visible: of(true),
+                visible: true,
                 enabled: presenter
-                    .getPresenterViewState('builder')
+                    .getPresenterViewState('flow-builder')
                     .state$.pipe(
                         map(
                             (viewState: ViewState) =>
@@ -120,14 +120,14 @@ function getActions(appStore: AppStore, presenter: PresenterUiState) {
                                 viewState.display !== 'mono',
                         ),
                     ),
-                onTriggered: () => presenter.toggleView('builder'),
+                onTriggered: () => presenter.toggleView('flow-builder'),
             },
             {
                 name: 'grapejs-view',
                 class: 'fas fa-palette n-resize',
-                visible: of(presenter.features === 'main'),
+                visible: presenter.layoutMode === 'raw',
                 enabled: presenter
-                    .getPresenterViewState('grapejs')
+                    .getPresenterViewState('grapes-layout-editor')
                     .state$.pipe(
                         map(
                             (viewState: ViewState) =>
@@ -135,14 +135,14 @@ function getActions(appStore: AppStore, presenter: PresenterUiState) {
                                 viewState.display !== 'mono',
                         ),
                     ),
-                onTriggered: () => presenter.toggleView('grapejs'),
+                onTriggered: () => presenter.toggleView('grapes-layout-editor'),
             },
             {
                 name: 'editor-view',
                 class: 'fas fa-code n-resize',
-                visible: of(presenter.features === 'beta'),
+                visible: presenter.layoutMode === 'raw',
                 enabled: presenter
-                    .getPresenterViewState('editor')
+                    .getPresenterViewState('raw-layout-editor')
                     .state$.pipe(
                         map(
                             (viewState: ViewState) =>
@@ -150,12 +150,12 @@ function getActions(appStore: AppStore, presenter: PresenterUiState) {
                                 viewState.display !== 'mono',
                         ),
                     ),
-                onTriggered: () => presenter.toggleView('editor'),
+                onTriggered: () => presenter.toggleView('raw-layout-editor'),
             },
             {
                 name: 'runner-view',
                 class: 'fas fa-eye n-resize',
-                visible: of(presenter.features === 'beta'),
+                visible: presenter.layoutMode === 'raw',
                 enabled: presenter
                     .getPresenterViewState('runner')
                     .state$.pipe(
@@ -171,15 +171,15 @@ function getActions(appStore: AppStore, presenter: PresenterUiState) {
                 name: 'builder-view',
                 class: 'fas fa-columns fa-rotate-90',
                 visible: presenter.split$,
-                enabled: of(true),
+                enabled: true,
                 onTriggered: () => presenter.toggleSplit(),
             },
             {
                 name: 'builder-view',
                 class: 'fas fa-project-diagram s-resize',
-                visible: of(true),
+                visible: true,
                 enabled: presenter
-                    .getPresenterViewState('builder')
+                    .getPresenterViewState('flow-builder')
                     .state$.pipe(
                         map(
                             (viewState: ViewState) =>
@@ -187,14 +187,14 @@ function getActions(appStore: AppStore, presenter: PresenterUiState) {
                                 viewState.display !== 'mono',
                         ),
                     ),
-                onTriggered: () => presenter.toggleView('builder', 'bottom'),
+                onTriggered: () => presenter.toggleView('flow-builder', 'bottom'),
             },
             {
                 name: 'grapejs-view',
                 class: 'fas fa-palette s-resize',
-                visible: of(presenter.features === 'main'),
+                visible: presenter.layoutMode === 'raw',
                 enabled: presenter
-                    .getPresenterViewState('grapejs')
+                    .getPresenterViewState('grapes-layout-editor')
                     .state$.pipe(
                         map(
                             (viewState: ViewState) =>
@@ -202,14 +202,14 @@ function getActions(appStore: AppStore, presenter: PresenterUiState) {
                                 viewState.display !== 'mono',
                         ),
                     ),
-                onTriggered: () => presenter.toggleView('grapejs', 'bottom'),
+                onTriggered: () => presenter.toggleView('grapes-layout-editor', 'bottom'),
             },
             {
                 name: 'editor-view',
                 class: 'fas fa-code s-resize',
-                visible: of(presenter.features === 'beta'),
+                visible: presenter.layoutMode === 'raw',
                 enabled: presenter
-                    .getPresenterViewState('editor')
+                    .getPresenterViewState('raw-layout-editor')
                     .state$.pipe(
                         map(
                             (viewState: ViewState) =>
@@ -217,12 +217,12 @@ function getActions(appStore: AppStore, presenter: PresenterUiState) {
                                 viewState.display !== 'mono',
                         ),
                     ),
-                onTriggered: () => presenter.toggleView('editor', 'bottom'),
+                onTriggered: () => presenter.toggleView('raw-layout-editor', 'bottom'),
             },
             {
                 name: 'runner-view',
                 class: 'fas fa-eye s-resize',
-                visible: of(presenter.features === 'beta'),
+                visible: presenter.layoutMode === 'raw',
                 enabled: presenter
                     .getPresenterViewState('runner')
                     .state$.pipe(
@@ -246,7 +246,7 @@ function getActions(appStore: AppStore, presenter: PresenterUiState) {
             {
                 name: 'duplicate',
                 class: 'fas fa-clone',
-                visible: of(true),
+                visible: true,
                 enabled: merge(
                     observables.unselect$,
                     observables.moduleSelected$,
@@ -259,7 +259,7 @@ function getActions(appStore: AppStore, presenter: PresenterUiState) {
             {
                 name: 'horizontal align',
                 class: 'fas fa-ruler-vertical',
-                visible: of(true),
+                visible: true,
                 enabled: merge(
                     observables.unselect$,
                     observables.moduleSelected$,
@@ -272,7 +272,7 @@ function getActions(appStore: AppStore, presenter: PresenterUiState) {
             {
                 name: 'horizontal align',
                 class: 'fas fa-ruler-horizontal',
-                visible: of(true),
+                visible: true,
                 enabled: merge(
                     observables.unselect$,
                     observables.moduleSelected$,
@@ -295,7 +295,7 @@ function getActions(appStore: AppStore, presenter: PresenterUiState) {
             {
                 name: 'group',
                 class: 'fas fa-object-group',
-                visible: of(true),
+                visible: true,
                 enabled: merge(
                     observables.unselect$,
                     observables.moduleSelected$,
@@ -309,7 +309,7 @@ function getActions(appStore: AppStore, presenter: PresenterUiState) {
             {
                 name: 'component',
                 class: 'fas fa-cube',
-                visible: of(true),
+                visible: true,
                 enabled: merge(
                     observables.unselect$,
                     observables.moduleSelected$,

@@ -77,7 +77,7 @@ const presenter = factoryPresenterUiState()
 createMainView(appStore, presenter)
 
 let layoutEditor
-if (presenter.features === 'main') {
+if (presenter.layoutMode === 'grapes') {
     layoutEditor = await createLayoutEditor()
     initializeGrapesAssets(layoutEditor)
 }
@@ -90,8 +90,8 @@ new ContextMenu.View({ state: contextState, class: 'fv-bg-background' } as {
     state: ContextMenuState
 })
 
-if (presenter.features === 'main') {
-    connectStreams(appStore, layoutEditor, presenter).then(() =>
+if (presenter.layoutMode === 'grapes') {
+    connectGrapes(appStore, layoutEditor, presenter).then(() =>
         log.debug('ConnectStreams resolved'),
     )
 } else {
@@ -158,7 +158,7 @@ function initializeGrapesAssets(layoutEditor) {
     writableEnv.renderingWindow = layoutEditor.Canvas.getDocument().defaultView
 }
 
-export async function connectStreams(
+export async function connectGrapes(
     appStore: AppStore,
     layoutEditor: grapesjs.Editor,
     presenterUiState: PresenterUiState,
