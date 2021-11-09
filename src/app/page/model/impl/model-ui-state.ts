@@ -7,13 +7,13 @@ export const defaultMono: UiState = {
     view: 'flow-builder',
 }
 
-export const defaultSplitBeta: UiState = {
+export const defaultSplitRawEditor: UiState = {
     kind: 'split',
     topView: 'editor',
     bottomView: 'builder',
 }
 
-export const defaultSplit: UiState = {
+export const defaultSplitGrapesEditor: UiState = {
     kind: 'split',
     topView: 'flow-builder',
     bottomView: 'grapes-layout-editor',
