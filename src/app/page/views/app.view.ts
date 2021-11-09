@@ -1,6 +1,6 @@
 /** @format */
 
-import { attr$, VirtualDOM } from '@youwol/flux-view'
+import { VirtualDOM } from '@youwol/flux-view'
 import { ReplaySubject } from 'rxjs'
 import { AppStore } from '../../builder-editor/builder-state'
 import { builderView } from '../../builder-editor/views/builder.view'
