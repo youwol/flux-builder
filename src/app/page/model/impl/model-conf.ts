@@ -19,5 +19,5 @@ const defaults: Conf = {
     initState: defaultSplit,
     defaultMono: defaultMono,
     defaultSplit: defaultSplit,
-    defaultBottom: 'grapejs',
+    defaultBottom: 'grapes-layout-editor',
 }

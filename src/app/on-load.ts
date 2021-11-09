@@ -223,7 +223,7 @@ export async function connectGrapes(
         layoutEditor.Commands.run('show-attributes')
     })
 
-    presenterUiState.getPresenterViewState('grapejs').state$.subscribe(() => {
+    presenterUiState.getPresenterViewState('grapes-layout-editor').state$.subscribe(() => {
         layoutEditor.refresh()
     })
     loading = false

@@ -22,7 +22,7 @@ export function layoutEditorView(
     return {
         id: 'layout-editor-component',
         class: attr$(
-            presenterUiState.getPresenterViewState('editor', 'd-flex').state$,
+            presenterUiState.getPresenterViewState('raw-layout-editor', 'd-flex').state$,
             (viewState: ViewState) => viewState.classes,
         ),
 

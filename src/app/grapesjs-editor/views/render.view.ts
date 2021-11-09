@@ -11,7 +11,7 @@ export function renderView(
     return {
         id: 'render-component',
         class: attr$(
-            presenter.getPresenterViewState('grapejs').state$,
+            presenter.getPresenterViewState('grapes-layout-editor').state$,
             (viewState: ViewState) => viewState.classes,
         ),
         children: [

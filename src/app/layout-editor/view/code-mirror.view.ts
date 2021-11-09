@@ -2,7 +2,7 @@
 
 import { VirtualDOM } from '@youwol/flux-view'
 import { Subscription } from 'rxjs'
-import { PresenterUiState } from '../../page/'
+import { PresenterUiState } from '../../page'
 import { TypeDoc } from '../model'
 import { PresenterDoc } from '../presenter'
 import { markDocument } from './text-marker.view'
@@ -42,7 +42,7 @@ export function codeMirrorView<typeDoc extends TypeDoc>(
                     markDocument(typeDoc, cmEditor, marksSubscriptions),
                 ),
                 presenterUiState
-                    .getPresenterViewState('editor')
+                    .getPresenterViewState('raw-layout-editor')
                     .state$.subscribe(() => cmEditor.refresh()),
             )
         },
