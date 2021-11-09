@@ -1,7 +1,7 @@
 /** @format */
 
 import { Subscription } from 'rxjs'
-import { logFactory, PresenterComponent } from '../'
+import { logFactory, PresenterComponent } from '..'
 import { Logger, v } from '../../../externals_evolutions/logging'
 import { ModelApp } from '../../model'
 import { ImplPresenterDoc } from './presenter-doc'

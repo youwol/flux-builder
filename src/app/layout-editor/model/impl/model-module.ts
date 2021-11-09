@@ -6,7 +6,7 @@ import {
     ModuleFlux,
     PluginFlux,
 } from '@youwol/flux-core'
-import { logFactory, ModelModule, TypeModule } from '../'
+import { logFactory, ModelModule, TypeModule } from '..'
 import { AppStore } from '../../../builder-editor/builder-state'
 import { navigate } from '../../../externals_evolutions/core/navigation'
 
@@ -71,9 +71,9 @@ export class ImplModelModule implements ModelModule {
         ]
         return children.length != 0
             ? children.map(
-                  (navChild) =>
-                      new ImplModelModule(navChild.get(), this.appStore),
-              )
+                (navChild) =>
+                    new ImplModelModule(navChild.get(), this.appStore),
+            )
             : undefined
     }
 }

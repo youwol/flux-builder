@@ -1,7 +1,7 @@
 /** @format */
 import { Observable } from 'rxjs'
-import { TypeDoc, TypeModule } from '../model/'
-import { PositionInDoc } from './'
+import { TypeDoc, TypeModule } from '../model'
+import { PositionInDoc } from '.'
 
 export type PresenterPosition = Readonly<IPosition>
 

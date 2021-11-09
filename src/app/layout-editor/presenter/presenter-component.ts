@@ -1,5 +1,5 @@
 /** @format */
-import { PresenterDoc, PresenterTree } from './'
+import { PresenterDoc, PresenterTree } from '.'
 
 export type PresenterComponent = Readonly<IPresenterComponent>
 

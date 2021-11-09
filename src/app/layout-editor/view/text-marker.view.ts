@@ -3,7 +3,7 @@ import CodeMirror, { TextMarker } from 'codemirror'
 import { Subscription } from 'rxjs'
 import { TypeDoc } from '../model'
 import { isPresent, PresenterPosition } from '../presenter'
-import { logFactory } from './'
+import { logFactory } from '.'
 import { IconForTypeModule } from './icon-for-type-module.view'
 
 const log = logFactory().getChildFactory('TextMarker')
@@ -14,38 +14,38 @@ export const markDocument =
         cmEditor: CodeMirror.Editor,
         marksSubscriptions: Subscription[],
     ) =>
-    (modulesPositions: PresenterPosition[]) => {
-        marksSubscriptions.forEach((subscription) => subscription.unsubscribe())
-        cmEditor
-            .getDoc()
-            .getAllMarks()
-            .forEach((mark) => mark.clear())
-        modulesPositions.forEach((modulePosition) => {
-            const position = modulePosition.getPositionIn(typeDoc)
-            if (isPresent(position)) {
-                const htmlSpanElement = factoryTextMarker(
-                    modulePosition,
-                    marksSubscriptions,
-                )
-                const mark = cmEditor
-                    .getDoc()
-                    .markText(
-                        cmEditor.getDoc().posFromIndex(position.indexStart),
-                        cmEditor.getDoc().posFromIndex(position.indexEnd),
-                        {
-                            replacedWith: htmlSpanElement,
-                        },
+        (modulesPositions: PresenterPosition[]) => {
+            marksSubscriptions.forEach((subscription) => subscription.unsubscribe())
+            cmEditor
+                .getDoc()
+                .getAllMarks()
+                .forEach((mark) => mark.clear())
+            modulesPositions.forEach((modulePosition) => {
+                const position = modulePosition.getPositionIn(typeDoc)
+                if (isPresent(position)) {
+                    const htmlSpanElement = factoryTextMarker(
+                        modulePosition,
+                        marksSubscriptions,
                     )
-                marksSubscriptions.push(
-                    modulePosition.selected$.subscribe((selected) => {
-                        selected
-                            ? focusElement(mark, cmEditor)
-                            : unfocusElement(htmlSpanElement)
-                    }),
-                )
-            }
-        })
-    }
+                    const mark = cmEditor
+                        .getDoc()
+                        .markText(
+                            cmEditor.getDoc().posFromIndex(position.indexStart),
+                            cmEditor.getDoc().posFromIndex(position.indexEnd),
+                            {
+                                replacedWith: htmlSpanElement,
+                            },
+                        )
+                    marksSubscriptions.push(
+                        modulePosition.selected$.subscribe((selected) => {
+                            selected
+                                ? focusElement(mark, cmEditor)
+                                : unfocusElement(htmlSpanElement)
+                        }),
+                    )
+                }
+            })
+        }
 
 const factoryTextMarker = (
     presenterModule: PresenterPosition,

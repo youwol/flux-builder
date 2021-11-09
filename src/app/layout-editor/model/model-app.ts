@@ -1,7 +1,7 @@
 /** @format */
 
 import { Observable } from 'rxjs'
-import { ModelComponent } from './'
+import { ModelComponent } from '.'
 
 export interface ModelApp {
     readonly activeComponent$: Observable<ModelComponent>

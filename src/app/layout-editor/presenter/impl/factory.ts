@@ -1,6 +1,6 @@
 /** @format */
 
-import { PresenterComponent } from '../'
+import { PresenterComponent } from '..'
 import { AppStore } from '../../../builder-editor/builder-state'
 import { factoryModel } from '../../model'
 import { ImplPresenterComponent } from './presenter-component'

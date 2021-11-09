@@ -3,7 +3,7 @@
 import { ImmutableTree } from '@youwol/fv-tree'
 import { Subscription } from 'rxjs'
 import { filter, map } from 'rxjs/operators'
-import { logFactory, PresenterTreeNode } from '../'
+import { logFactory, PresenterTreeNode } from '..'
 import { selectNodeAndExpand } from '../../../externals_evolutions/fv-tree/immutable-tree'
 import { Logger, v } from '../../../externals_evolutions/logging'
 import { ImplPresenterComponent } from './presenter-component'

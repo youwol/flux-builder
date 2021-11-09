@@ -4,7 +4,7 @@ import { attr$, child$, VirtualDOM } from '@youwol/flux-view'
 import { ImmutableTree } from '@youwol/fv-tree'
 import { combineLatest } from 'rxjs'
 import { PositionInDoc, PresenterTree, PresenterTreeNode } from '../presenter'
-import { logFactory } from './'
+import { logFactory } from '.'
 import { IconForTypeModule } from './icon-for-type-module.view'
 
 const log = logFactory().getChildLogger('ViewTree')
@@ -78,20 +78,20 @@ const nodeHeaderView = (
 
 const classesFromPosition =
     (iconClass: string) =>
-    ([selected, position]: [boolean, PositionInDoc]) => {
-        const format = (classColor) => `mx-1 fab ${iconClass} ${classColor}`
-        let _exhaustSwitchCases: never
-        switch (position.typeInDoc) {
-            case 'ignore':
-                return ''
-            case 'missing':
-                return selected ? format('fv-text-success') : ''
-            case 'present':
-                return format('fv-text-secondary')
-            default:
-                _exhaustSwitchCases = position
+        ([selected, position]: [boolean, PositionInDoc]) => {
+            const format = (classColor) => `mx-1 fab ${iconClass} ${classColor}`
+            let _exhaustSwitchCases: never
+            switch (position.typeInDoc) {
+                case 'ignore':
+                    return ''
+                case 'missing':
+                    return selected ? format('fv-text-success') : ''
+                case 'present':
+                    return format('fv-text-secondary')
+                default:
+                    _exhaustSwitchCases = position
+            }
         }
-    }
 
 /**
  * The View

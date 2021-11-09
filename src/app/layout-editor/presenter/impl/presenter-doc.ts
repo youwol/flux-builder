@@ -11,7 +11,7 @@ import {
     present,
     PresenterDoc,
     PresenterPosition,
-} from '../'
+} from '..'
 import { v } from '../../../externals_evolutions/logging'
 import { ModelComponent, TypeDoc } from '../../model'
 import { ImplPresenterComponent } from './presenter-component'
@@ -93,9 +93,9 @@ export class ImplPresenterDoc<typeDoc extends TypeDoc> implements PresenterDoc {
         return startAt < 0
             ? missing
             : present({
-                  indexStart: startAt,
-                  indexEnd: startAt + searchStringLength,
-              })
+                indexStart: startAt,
+                indexEnd: startAt + searchStringLength,
+            })
     }
 }
 

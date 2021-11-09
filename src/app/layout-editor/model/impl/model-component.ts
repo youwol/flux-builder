@@ -1,7 +1,7 @@
 /** @format */
 
 import { Component, ModuleConfiguration } from '@youwol/flux-core'
-import { logFactory, ModelComponent } from '../'
+import { logFactory, ModelComponent } from '..'
 import { AppStore } from '../../../builder-editor/builder-state'
 import { v } from '../../../externals_evolutions/logging'
 import { ImplModelModule } from './model-module'
@@ -10,8 +10,7 @@ const log = logFactory().getChildLogger('Component')
 
 export class ImplModelComponent
     extends ImplModelModule
-    implements ModelComponent
-{
+    implements ModelComponent {
     private readonly ownLog
 
     constructor(

@@ -10,9 +10,9 @@ import {
     PositionInDoc,
     PresenterPosition,
     PresenterTreeNode,
-} from '../'
+} from '..'
 import { Logger, v } from '../../../externals_evolutions/logging'
-import { ModelModule, TypeDoc, TypeModule } from '../../model/'
+import { ModelModule, TypeDoc, TypeModule } from '../../model'
 
 const log = logFactory().getChildFactory('Module')
 
@@ -28,8 +28,7 @@ export function factoryHierarchy(
 
 export class ImplPresenterModule
     extends ImmutableTree.Node
-    implements PresenterTreeNode, PresenterPosition
-{
+    implements PresenterTreeNode, PresenterPosition {
     readonly log: Logger
     readonly id: string
     readonly typeModule: TypeModule

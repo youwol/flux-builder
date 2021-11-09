@@ -1,7 +1,7 @@
 /** @format */
 
 import { ImmutableTree } from '@youwol/fv-tree/src/index'
-import { logFactory as parentLogFactory } from '../'
+import { logFactory as parentLogFactory } from '..'
 import { PresenterTreeNode } from './presenter-tree-node'
 
 export function logFactory() {

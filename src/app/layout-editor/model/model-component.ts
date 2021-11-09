@@ -1,5 +1,5 @@
 /** @format */
-import { ModelModule } from './'
+import { ModelModule } from '.'
 
 export interface ModelComponent extends ModelModule {
     contentHtml: string

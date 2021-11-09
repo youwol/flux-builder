@@ -45,9 +45,9 @@ export class ImplPresenterUiState implements PresenterUiState {
                             : 'flow-builder',
                 }
                 : {
-                      kind: 'mono',
-                      view: this.current.topView,
-                  }
+                    kind: 'mono',
+                    view: this.current.topView,
+                }
         this.log = logFactory()
             .getChildLogger('UiState')
             .getChildLogger(toString(this.current))

@@ -1,7 +1,7 @@
 /** @format */
 import CodeMirror from 'codemirror'
 import { Observable } from 'rxjs'
-import { PresenterPosition } from './'
+import { PresenterPosition } from '.'
 
 export type PresenterDoc = Readonly<IDoc>
 

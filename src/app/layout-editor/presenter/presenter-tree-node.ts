@@ -2,7 +2,7 @@
 import { ImmutableTree } from '@youwol/fv-tree'
 import { Observable } from 'rxjs'
 import { TypeModule } from '../model'
-import { PositionInDoc } from './'
+import { PositionInDoc } from '.'
 
 export type PresenterTreeNode = Readonly<ITreeNode & ImmutableTree.Node>
 
