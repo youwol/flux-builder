@@ -2,7 +2,7 @@
 
 import { VirtualDOM } from '@youwol/flux-view'
 import { Subscription } from 'rxjs'
-import { PresenterUiState } from '../../page'
+import { PresenterUiState } from '../../../page'
 import { TypeDoc } from '../model'
 import { PresenterDoc } from '../presenter'
 import { markDocument } from './text-marker.view'

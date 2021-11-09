@@ -11,7 +11,7 @@ import {
     PresenterPosition,
     PresenterTreeNode,
 } from '..'
-import { Logger, v } from '../../../externals_evolutions/logging'
+import { Logger, v } from '../../../../externals_evolutions/logging'
 import { ModelModule, TypeDoc, TypeModule } from '../../model'
 
 const log = logFactory().getChildFactory('Module')

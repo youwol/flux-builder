@@ -31,15 +31,15 @@ import {
 } from './builder-editor/builder-state/'
 import { AssetsBrowserClient } from './clients/assets-browser.client'
 
-import { createLayoutEditor, initLayoutEditor } from './grapesjs-editor/'
-import { setDynamicComponentsBlocks } from './grapesjs-editor/flux-blocks'
+import { createLayoutEditor, initLayoutEditor } from './layout-editors/grapes-editor'
+import { setDynamicComponentsBlocks } from './layout-editors/grapes-editor/flux-blocks'
 import {
     autoAddElementInLayout,
     autoRemoveElementInLayout,
     removeTemplateElements,
     replaceTemplateElements,
     updateElementsInLayout,
-} from './grapesjs-editor/flux-rendering-components'
+} from './layout-editors/grapes-editor/flux-rendering-components'
 import { loadingLibView, loadingProjectView } from './loading.views'
 
 import { plugNotifications } from './notification'

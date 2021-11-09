@@ -12,7 +12,7 @@ import {
     PresenterDoc,
     PresenterPosition,
 } from '..'
-import { v } from '../../../externals_evolutions/logging'
+import { v } from '../../../../externals_evolutions/logging'
 import { ModelComponent, TypeDoc } from '../../model'
 import { ImplPresenterComponent } from './presenter-component'
 

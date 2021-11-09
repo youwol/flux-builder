@@ -7,8 +7,8 @@ import {
     PluginFlux,
 } from '@youwol/flux-core'
 import { logFactory, ModelModule, TypeModule } from '..'
-import { AppStore } from '../../../builder-editor/builder-state'
-import { navigate } from '../../../externals_evolutions/core/navigation'
+import { AppStore } from '../../../../builder-editor/builder-state'
+import { navigate } from '../../../../externals_evolutions/core/navigation'
 
 const log = logFactory().getChildLogger('Module')
 

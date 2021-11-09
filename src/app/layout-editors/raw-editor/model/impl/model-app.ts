@@ -4,9 +4,9 @@ import { Component } from '@youwol/flux-core'
 import { combineLatest, Observable } from 'rxjs'
 import { distinctUntilChanged, map, tap } from 'rxjs/operators'
 import { logFactory, ModelApp, ModelComponent } from '..'
-import { AppStore } from '../../../builder-editor/builder-state'
-import { navigate } from '../../../externals_evolutions/core/navigation'
-import { v } from '../../../externals_evolutions/logging'
+import { AppStore } from '../../../../builder-editor/builder-state'
+import { navigate } from '../../../../externals_evolutions/core/navigation'
+import { v } from '../../../../externals_evolutions/logging'
 import { ImplModelComponent } from './model-component'
 
 const log = logFactory().getChildLogger('App')

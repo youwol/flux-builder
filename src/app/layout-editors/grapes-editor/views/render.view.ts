@@ -1,8 +1,8 @@
 /** @format */
 
 import { attr$, VirtualDOM } from '@youwol/flux-view'
-import { AppStore } from '../../builder-editor/builder-state'
-import { PresenterUiState, ViewState } from '../../page'
+import { AppStore } from '../../../builder-editor/builder-state'
+import { PresenterUiState, ViewState } from '../../../page'
 
 export function renderView(
     appStore: AppStore,

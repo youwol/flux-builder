@@ -1,12 +1,11 @@
 import { Component, ModuleFlux, Workflow } from "@youwol/flux-core"
-import { AppDebugEnvironment, AppStore, LogLevel } from "../builder-editor/builder-state"
+import { AppDebugEnvironment, AppStore, LogLevel } from "../../builder-editor/builder-state"
 import { getAllComponentsRec } from "./utils"
 import * as grapesjs from 'grapesjs'
 
 
 function scaleSvgIcons(g: any) {
-    if (g.style.transform)
-        {return}
+    if (g.style.transform) { return }
     const parentBRect = g.parentElement.getBoundingClientRect()
     const bRect = g.getBoundingClientRect()
     const ty = parentBRect.top - bRect.top
@@ -75,7 +74,7 @@ function toDynamicBlock(mdle: ModuleFlux, editor: grapesjs.Editor, workflow: Wor
 }
 
 
-export function getFluxBlockContent(mdle: ModuleFlux, editor: grapesjs.Editor, workflow: Workflow ) {
+export function getFluxBlockContent(mdle: ModuleFlux, editor: grapesjs.Editor, workflow: Workflow) {
 
     const debugSingleton = AppDebugEnvironment.getInstance()
     debugSingleton.debugOn &&
@@ -87,8 +86,8 @@ export function getFluxBlockContent(mdle: ModuleFlux, editor: grapesjs.Editor, w
 
     if (mdle instanceof Component.Module) {
         const html = mdle.getFullHTML(workflow)
-        return html 
-            ? html.outerHTML 
+        return html
+            ? html.outerHTML
             : `<div id="${mdle.moduleId}" class="flux-element flux-component"  data-gjs-name="${mdle.configuration.title}"></div>`
     }
     const attr = mdle.Factory.RenderView.wrapperDivAttributes

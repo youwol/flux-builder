@@ -1,14 +1,14 @@
 
 import { Component } from '@youwol/flux-core';
 
-import { LogLevel, AppDebugEnvironment, AppStore } from '../builder-editor/builder-state/index';
+import { LogLevel, AppDebugEnvironment, AppStore } from '../../builder-editor/builder-state/index';
 import { cleanCss, privateClasses } from './utils';
 import { buildCodePanel } from './code-editors';
 import { setDynamicComponentsBlocks } from './flux-blocks';
 import { replaceTemplateElements } from './flux-rendering-components';
 
 let cachedHTML = ""
-let cachedCSS= ""
+let cachedCSS = ""
 
 export function plugCommands(editor: any, appStore: AppStore) {
 
@@ -17,7 +17,7 @@ export function plugCommands(editor: any, appStore: AppStore) {
     editor.on('change', (element: any) => {
 
         const html = localStorage.getItem("gjs-html")
-        if ( html != cachedHTML && html != "") {
+        if (html != cachedHTML && html != "") {
             debugSingleton.debugOn &&
                 debugSingleton.logRenderTopic({
                     level: LogLevel.Info, message: "change => layout",
@@ -31,7 +31,7 @@ export function plugCommands(editor: any, appStore: AppStore) {
             cachedHTML = html
         }
         const css = cleanCss(localStorage.getItem("gjs-css"))
-        if ( css != cachedCSS && css !="") {
+        if (css != cachedCSS && css != "") {
             debugSingleton.debugOn &&
                 debugSingleton.logRenderTopic({
                     level: LogLevel.Info, message: "change => style",
@@ -62,7 +62,7 @@ export function plugCommands(editor: any, appStore: AppStore) {
             let childrenModulesId = []
             if (mdle instanceof Component.Module) {
                 childrenModulesId = (mdle as Component.Module).getAllChildren(appStore.project.workflow).map(m => m.moduleId)
-                editor.getStyle().add(mdle.getFullCSS(appStore.project.workflow, { asString:true }))
+                editor.getStyle().add(mdle.getFullCSS(appStore.project.workflow, { asString: true }))
             }
             child.id = mdle.moduleId
             replaceTemplateElements([child.id, ...childrenModulesId], editor, appStore)
@@ -86,14 +86,12 @@ export function plugCommands(editor: any, appStore: AppStore) {
             debugSingleton.logRenderTopic({ level: LogLevel.Info, message: "sorter:drag:end", object: { module: modelToDrop } })
 
         // a drop of any component is done => do nothing as the  canvas:drop wil handle the addition
-        if (typeof (modelToDrop) == "string")
-            {return}
+        if (typeof (modelToDrop) == "string") { return }
 
         // from here: the drag end is a move => in case of flux-component the cache has the appropriate content 
         const mdle = appStore.getModule(modelToDrop.ccid)
-        if(!mdle)
-            {return}
-            
+        if (!mdle) { return }
+
 
         const moduleIds = (mdle instanceof Component.Module)
             ? mdle.getAllChildren(appStore.project.workflow).map(m => m.moduleId)
@@ -103,13 +101,12 @@ export function plugCommands(editor: any, appStore: AppStore) {
     });
 
     editor.on('component:remove', (component) => {
-        if (appStore.getActiveGroup().getModuleIds().includes(component.ccid))
-            {setDynamicComponentsBlocks(appStore, editor)}
+        if (appStore.getActiveGroup().getModuleIds().includes(component.ccid)) { setDynamicComponentsBlocks(appStore, editor) }
     });
 
     editor.on('selector:add', selector => {
-        selector.set('active', false )
-        selector.set('private', privateClasses.includes(selector.id)) 
+        selector.set('active', false)
+        selector.set('private', privateClasses.includes(selector.id))
     });
 
     editor.Commands.add('show-blocks', {
@@ -178,7 +175,7 @@ export function plugCommands(editor: any, appStore: AppStore) {
             const panel = pn.getPanel(id) || pn.addPanel({ id });
             const divi = this.getCodeEl(this.getRowEl(editor));
             console.log("Code elements", divi)
-            if (!this.codePanel) {this.codePanel = buildCodePanel(appStore, editor, panel)}
+            if (!this.codePanel) { this.codePanel = buildCodePanel(appStore, editor, panel) }
             console.log("Code Panel", this.codePanel)
             this.codePanel.style.display = 'block';
             divi.appendChild(this.codePanel)
@@ -186,7 +183,7 @@ export function plugCommands(editor: any, appStore: AppStore) {
             //editor.$('.gjs-cv-canvas').get(0).style.width = '65%';
         },
         stop: function (editor, senderBtn) {
-            if (this.codePanel) {this.codePanel.style.display = 'none';}
+            if (this.codePanel) { this.codePanel.style.display = 'none'; }
             //editor.$('#panel__right_render').get(0).style.width = '15%';
             //editor.$('.gjs-cv-canvas').get(0).style.width = '85%';
         },
@@ -210,8 +207,7 @@ export function plugCommands(editor: any, appStore: AppStore) {
 
             panel.querySelectorAll(".buttons-toolbox").forEach((e: HTMLDivElement) => {
                 const div = e.firstChild as HTMLElement
-                if (div && div.style)
-                    {div.style.flexDirection = "column"}
+                if (div && div.style) { div.style.flexDirection = "column" }
             })
         },
         stop(editor: any, sender: any) {
@@ -223,7 +219,7 @@ export function plugCommands(editor: any, appStore: AppStore) {
             Array.from(editor.Canvas.getDocument().querySelectorAll(".flux-builder-only"))
                 .forEach((element: any) => element.classList.remove('preview')
                 );
-            
+
             const panelsContainer = document.getElementById("panels-container-render")
             panelsContainer.classList.remove("collapsed")
             const panel = document.getElementById("panel__right_render")
@@ -233,8 +229,7 @@ export function plugCommands(editor: any, appStore: AppStore) {
             //editor.$('#panel__right_render').get(0).style.width = '15%';
             panel.querySelectorAll(".buttons-toolbox").forEach((e: HTMLDivElement) => {
                 const div = e.firstChild as HTMLElement
-                if (div && div.style)
-                    {div.style.flexDirection = "row"}
+                if (div && div.style) { div.style.flexDirection = "row" }
             })
         }
     })

@@ -1,13 +1,13 @@
-import {AppDebugEnvironment, AppStore, LogLevel} from '../builder-editor/builder-state/index'
+import { AppDebugEnvironment, AppStore, LogLevel } from '../../builder-editor/builder-state/index'
 
-import {getRenderPanels} from './panels'
+import { getRenderPanels } from './panels'
 
-import {getBlocks} from './blocks'
-import {getStylesSectors} from './style-manager'
-import {plugCommands} from './commands'
-import {applyPatches} from './patches'
-import {Subject} from 'rxjs'
-import {take} from 'rxjs/operators'
+import { getBlocks } from './blocks'
+import { getStylesSectors } from './style-manager'
+import { plugCommands } from './commands'
+import { applyPatches } from './patches'
+import { Subject } from 'rxjs'
+import { take } from 'rxjs/operators'
 
 import * as grapesjs from 'grapesjs'
 
@@ -67,14 +67,11 @@ export async function createLayoutEditor(): grapesjs.Editor {
     editor.fluxCache = {}
 
     const bootstrapCss = document.getElementById("bootstrap-css")
-    if (!bootstrapCss)
-        {console.error("Bootstrap css needs to be included in host application with id 'bootstrap-css' ")}
+    if (!bootstrapCss) { console.error("Bootstrap css needs to be included in host application with id 'bootstrap-css' ") }
     const fontawesomeCss = document.getElementById("fontawesome-css")
-    if (!fontawesomeCss)
-        {console.error("Fontawesome css needs to be included in host application with id 'fontawesome-css' ")}
+    if (!fontawesomeCss) { console.error("Fontawesome css needs to be included in host application with id 'fontawesome-css' ") }
     const youwolCss = document.getElementById("youwol-css")
-    if (!youwolCss)
-        {console.error("Fontawesome css needs to be included in host application with id 'fontawesome-css' ")}
+    if (!youwolCss) { console.error("Fontawesome css needs to be included in host application with id 'fontawesome-css' ") }
 
     editor.on('load', function () {
         const document = editor.Canvas.getDocument() as HTMLDocument
@@ -104,7 +101,7 @@ export async function createLayoutEditor(): grapesjs.Editor {
 
 export function initLayoutEditor(
     editor: grapesjs.Editor,
-    {layout, style} : {layout: HTMLDivElement, style: string},
+    { layout, style }: { layout: HTMLDivElement, style: string },
     appStore: AppStore
 ) {
 
@@ -124,7 +121,7 @@ export function initLayoutEditor(
 
     applyPatches(editor)
 
-    console.log("INIT!!", {layout:layout.outerHTML, style})
+    console.log("INIT!!", { layout: layout.outerHTML, style })
     editor.setComponents(layout.outerHTML)
 
     editor.setStyle(style);
