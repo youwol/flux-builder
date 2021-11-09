@@ -13,8 +13,8 @@ export function factoryConf(features: Features): Conf {
 const defaultsRawEditor: Conf = {
     initState: defaultSplitRawEditor,
     defaultMono: defaultMono,
-    defaultSplit: defaultSplitBeta,
-    defaultBottom: 'editor',
+    defaultSplit: defaultSplitRawEditor,
+    defaultBottom: 'runner',
 }
 
 const defaultsGrapesEditor: Conf = {

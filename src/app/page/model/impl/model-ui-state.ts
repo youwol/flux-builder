@@ -9,8 +9,8 @@ export const defaultMono: UiState = {
 
 export const defaultSplitRawEditor: UiState = {
     kind: 'split',
-    topView: 'editor',
-    bottomView: 'builder',
+    topView: 'flow-builder',
+    bottomView: 'runner',
 }
 
 export const defaultSplitGrapesEditor: UiState = {
