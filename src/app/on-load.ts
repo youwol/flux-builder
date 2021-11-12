@@ -1,5 +1,8 @@
 /** @format */
 
+import * as grapesjs from 'grapesjs'
+import { merge } from 'rxjs'
+import { take } from 'rxjs/operators'
 import {
     ConfigurationStatus,
     Environment,
@@ -10,10 +13,6 @@ import {
 import { createDrawingArea as createDrawingAreaSvg } from '@youwol/flux-svg-plots'
 import { render, VirtualDOM } from '@youwol/flux-view'
 import { ContextMenu } from '@youwol/fv-context-menu'
-import * as grapesjs from 'grapesjs'
-import { merge } from 'rxjs'
-import { take } from 'rxjs/operators'
-import { logFactory } from './'
 import {
     AssetsExplorerView,
     ConfigurationStatusView,
@@ -31,15 +30,19 @@ import {
 } from './builder-editor/builder-state/'
 import { AssetsBrowserClient } from './clients/assets-browser.client'
 
-import { createLayoutEditor, initLayoutEditor } from './grapesjs-editor/'
-import { setDynamicComponentsBlocks } from './grapesjs-editor/flux-blocks'
+import {
+    createLayoutEditor,
+    initLayoutEditor,
+} from './layout-editors/grapesjs-editor/'
+import { setDynamicComponentsBlocks } from './layout-editors/grapesjs-editor/flux-blocks'
+import { logFactory } from '.'
 import {
     autoAddElementInLayout,
     autoRemoveElementInLayout,
     removeTemplateElements,
     replaceTemplateElements,
     updateElementsInLayout,
-} from './grapesjs-editor/flux-rendering-components'
+} from './layout-editors/grapesjs-editor/flux-rendering-components'
 import { loadingLibView, loadingProjectView } from './loading.views'
 
 import { plugNotifications } from './notification'

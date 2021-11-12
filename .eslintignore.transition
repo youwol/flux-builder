@@ -49,30 +49,34 @@
 #Un-ignored
 !/src/app/externals_evolutions/
 
-# Allow un-ignoring some contents of /src/app/grapesjs-editor
-!/src/app/grapesjs-editor/
-/src/app/grapesjs-editor/*
+# Allow un-ignoring some contents of /src/app/layout-editors
+!/src/app/layout-editors/
+/src/app/layout-editors/*
+
+# Allow un-ignoring some contents of /src/app/layout-editors/grapesjs-editor
+!/src/app/layout-editors/grapesjs-editor/
+/src/app/layout-editors/grapesjs-editor/*
 
 # Un-ignored
-!/src/app/grapesjs-editor/index.ts
-!/src/app/grapesjs-editor/panels.ts
-!/src/app/grapesjs-editor/resources-initialisation.ts
-!/src/app/grapesjs-editor/style-manager.ts
-!/src/app/grapesjs-editor/utils.ts
+!/src/app/layout-editors/grapesjs-editor/index.ts
+!/src/app/layout-editors/grapesjs-editor/panels.ts
+!/src/app/layout-editors/grapesjs-editor/resources-initialisation.ts
+!/src/app/layout-editors/grapesjs-editor/style-manager.ts
+!/src/app/layout-editors/grapesjs-editor/utils.ts
 
 
-# Allow un-ignoring some contents of /src/app/grapesjs-editor
-!/src/app/grapesjs-editor/views
-/src/app/grapesjs-editor/views/*
+# Allow un-ignoring some contents of /src/app/layout-editors/grapesjs-editor
+!/src/app/layout-editors/grapesjs-editor/views
+/src/app/layout-editors/grapesjs-editor/views/*
 
 # Un-ignored
-!/src/app/grapesjs-editor/views/render.view.ts
+!/src/app/layout-editors/grapesjs-editor/views/render.view.ts
 
 # Un-ignored
 !/src/app/index.ts
 
 # Un-ignored
-!/src/app/layout-editor/
+!/src/app/layout-editors/raw-editor
 
 # Un-ignored
 !/src/app/loading.views.ts

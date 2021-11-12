@@ -1,9 +1,9 @@
 /** @format */
 
-import { ModuleFlux } from '@youwol/flux-core'
-import { attr$, VirtualDOM } from '@youwol/flux-view'
 import { BehaviorSubject, merge, Observable, of } from 'rxjs'
 import { map } from 'rxjs/operators'
+import { ModuleFlux } from '@youwol/flux-core'
+import { attr$, VirtualDOM } from '@youwol/flux-view'
 import { AppStore } from '../../builder-editor/builder-state'
 import { ViewState } from '../model'
 import { PresenterUiState } from '../presenter'

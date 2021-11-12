@@ -2,7 +2,7 @@
 
 import { Observable } from 'rxjs'
 import { Features, RenderViewName, RenderViewPosition } from '../model'
-import { PresenterViewState } from './'
+import { PresenterViewState } from '.'
 
 export interface PresenterUiState {
     split$: Observable<boolean>

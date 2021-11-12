@@ -1,7 +1,7 @@
 /** @format */
 
 import { v } from '../../../externals_evolutions/logging'
-import { logFactory, UiState, ViewState } from '../'
+import { logFactory, UiState, ViewState } from '..'
 import { UiStateMono, UiStateSplit } from '../model-ui-state'
 
 const log = logFactory().getChildFactory('ViewState')

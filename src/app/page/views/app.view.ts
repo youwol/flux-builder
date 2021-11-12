@@ -1,11 +1,10 @@
 /** @format */
 
 import { VirtualDOM } from '@youwol/flux-view'
-import { ReplaySubject } from 'rxjs'
 import { AppStore } from '../../builder-editor/builder-state'
 import { builderView } from '../../builder-editor/views/builder.view'
-import { renderView } from '../../grapesjs-editor/views/render.view'
-import { layoutEditorView } from '../../layout-editor'
+import { renderView } from '../../layout-editors/grapesjs-editor/views/render.view'
+import { layoutEditorView } from '../../layout-editors/raw-editor'
 import { PresenterUiState } from '../presenter'
 import { runnerView } from './runnerView'
 import { topBanner } from './top-banner.view'
@@ -38,8 +37,6 @@ export function mainView(
     appStore: AppStore,
     presenterUiState: PresenterUiState,
 ): VirtualDOM {
-    const test$ = new ReplaySubject(1)
-    test$.next('test')
     return {
         id: 'main-container',
         class: 'h-100 w-100 d-flex flex-column',

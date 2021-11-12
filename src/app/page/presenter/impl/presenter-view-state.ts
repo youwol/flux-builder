@@ -9,7 +9,7 @@ import {
     UiState,
     ViewState,
 } from '../../model'
-import { logFactory } from '../'
+import { logFactory } from '..'
 
 const log = logFactory().getChildFactory('ViewState')
 

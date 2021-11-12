@@ -9,8 +9,8 @@ import {
     RenderViewPosition,
     UiState,
 } from '../../model'
+import { logFactory } from '..'
 import { PresenterUiState } from '../presenter-ui-state'
-import { logFactory } from '../'
 import { getFeatures } from './presenter-conf'
 import { PresenterViewState } from './presenter-view-state'
 
