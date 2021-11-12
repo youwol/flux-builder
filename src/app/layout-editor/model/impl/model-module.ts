@@ -44,31 +44,43 @@ export class ImplModelModule implements ModelModule {
     }
 
     public get childrenContainingRendersView(): ModelModule[] {
+        let children
         if (this.type === 'component') {
-            this.log.debug('Not returning renders for component')
-            return
-        }
-        const children = [
-            ...navigate(this.appStore.project.workflow)
+            this.log.debug('Only returning plugins renders for component')
+            children = navigate(this.appStore.project.workflow)
                 .from(this.mdle.moduleId)
                 .toChildren()
                 .filter(
                     (nav) =>
-                        hasRenderView(nav.get()) &&
-                        !(nav.get() instanceof Component.Module),
-                ),
-            ...navigate(this.appStore.project.workflow)
-                .from(this.mdle.moduleId)
-                .toChildren()
-                .filter(
-                    (navChild) =>
-                        navChild.toDescendantsMatching(
-                            hasRenderView,
-                            (navDescendant) =>
-                                !(navDescendant instanceof Component.Module),
-                        ).length != 0,
-                ),
-        ]
+                        nav.get() instanceof PluginFlux &&
+                        hasRenderView(nav.get()),
+                )
+        } else {
+            children = [
+                ...navigate(this.appStore.project.workflow)
+                    .from(this.mdle.moduleId)
+                    .toChildren()
+                    .filter(
+                        (nav) =>
+                            hasRenderView(nav.get()) &&
+                            !(nav.get() instanceof Component.Module),
+                    ),
+                ...navigate(this.appStore.project.workflow)
+                    .from(this.mdle.moduleId)
+                    .toChildren()
+                    .filter(
+                        (navChild) =>
+                            navChild.toDescendantsMatching(
+                                hasRenderView,
+                                (navDescendant) =>
+                                    !(
+                                        navDescendant instanceof
+                                        Component.Module
+                                    ),
+                            ).length != 0,
+                    ),
+            ]
+        }
         return children.length != 0
             ? children.map(
                   (navChild) =>
