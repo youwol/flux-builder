@@ -1,6 +1,6 @@
 /** @format */
 
-import { attr$, VirtualDOM } from '@youwol/flux-view'
+import { VirtualDOM } from '@youwol/flux-view'
 import { ReplaySubject } from 'rxjs'
 import { AppStore } from '../../builder-editor/builder-state'
 import { builderView } from '../../builder-editor/views/builder.view'
@@ -46,11 +46,7 @@ export function mainView(
         children: [
             topBanner(appStore, presenterUiState),
             {
-                // Dirty hack : grapejs is display: block and not display: flex,
-                // so its parents cannot be flex-column when its siblings are display: none
-                class: attr$(presenterUiState.split$, (isSplit) =>
-                    isSplit ? 'd-flex flex-column' : 'flex-grow-1',
-                ),
+                class: 'flex-grow-1 d-flex flex-column',
                 style: { minHeight: '0px' },
                 children: getRendersViews(appStore, presenterUiState),
             },
