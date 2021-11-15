@@ -112,7 +112,7 @@ function getActions(appStore: AppStore, presenter: PresenterUiState) {
                 class: 'fas fa-project-diagram n-resize',
                 visible: of(true),
                 enabled: presenter
-                    .getPresenterViewState('builder')
+                    .getPresenterViewState('flow-builder')
                     .state$.pipe(
                         map(
                             (viewState: ViewState) =>
@@ -120,14 +120,14 @@ function getActions(appStore: AppStore, presenter: PresenterUiState) {
                                 viewState.display !== 'mono',
                         ),
                     ),
-                onTriggered: () => presenter.toggleView('builder'),
+                onTriggered: () => presenter.toggleView('flow-builder'),
             },
             {
                 name: 'grapejs-view',
                 class: 'fas fa-palette n-resize',
                 visible: of(presenter.features === 'main'),
                 enabled: presenter
-                    .getPresenterViewState('grapejs')
+                    .getPresenterViewState('grapejs-editor')
                     .state$.pipe(
                         map(
                             (viewState: ViewState) =>
@@ -135,14 +135,14 @@ function getActions(appStore: AppStore, presenter: PresenterUiState) {
                                 viewState.display !== 'mono',
                         ),
                     ),
-                onTriggered: () => presenter.toggleView('grapejs'),
+                onTriggered: () => presenter.toggleView('grapejs-editor'),
             },
             {
                 name: 'editor-view',
                 class: 'fas fa-code n-resize',
                 visible: of(presenter.features === 'beta'),
                 enabled: presenter
-                    .getPresenterViewState('editor')
+                    .getPresenterViewState('raw-editor')
                     .state$.pipe(
                         map(
                             (viewState: ViewState) =>
@@ -150,7 +150,7 @@ function getActions(appStore: AppStore, presenter: PresenterUiState) {
                                 viewState.display !== 'mono',
                         ),
                     ),
-                onTriggered: () => presenter.toggleView('editor'),
+                onTriggered: () => presenter.toggleView('raw-editor'),
             },
             {
                 name: 'runner-view',
@@ -179,7 +179,7 @@ function getActions(appStore: AppStore, presenter: PresenterUiState) {
                 class: 'fas fa-project-diagram s-resize',
                 visible: of(true),
                 enabled: presenter
-                    .getPresenterViewState('builder')
+                    .getPresenterViewState('flow-builder')
                     .state$.pipe(
                         map(
                             (viewState: ViewState) =>
@@ -187,14 +187,15 @@ function getActions(appStore: AppStore, presenter: PresenterUiState) {
                                 viewState.display !== 'mono',
                         ),
                     ),
-                onTriggered: () => presenter.toggleView('builder', 'bottom'),
+                onTriggered: () =>
+                    presenter.toggleView('flow-builder', 'bottom'),
             },
             {
                 name: 'grapejs-view',
                 class: 'fas fa-palette s-resize',
                 visible: of(presenter.features === 'main'),
                 enabled: presenter
-                    .getPresenterViewState('grapejs')
+                    .getPresenterViewState('grapejs-editor')
                     .state$.pipe(
                         map(
                             (viewState: ViewState) =>
@@ -202,14 +203,15 @@ function getActions(appStore: AppStore, presenter: PresenterUiState) {
                                 viewState.display !== 'mono',
                         ),
                     ),
-                onTriggered: () => presenter.toggleView('grapejs', 'bottom'),
+                onTriggered: () =>
+                    presenter.toggleView('grapejs-editor', 'bottom'),
             },
             {
                 name: 'editor-view',
                 class: 'fas fa-code s-resize',
                 visible: of(presenter.features === 'beta'),
                 enabled: presenter
-                    .getPresenterViewState('editor')
+                    .getPresenterViewState('raw-editor')
                     .state$.pipe(
                         map(
                             (viewState: ViewState) =>
@@ -217,7 +219,7 @@ function getActions(appStore: AppStore, presenter: PresenterUiState) {
                                 viewState.display !== 'mono',
                         ),
                     ),
-                onTriggered: () => presenter.toggleView('editor', 'bottom'),
+                onTriggered: () => presenter.toggleView('raw-editor', 'bottom'),
             },
             {
                 name: 'runner-view',

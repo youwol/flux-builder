@@ -12,12 +12,12 @@ const defaultsBeta: Conf = {
     initState: defaultSplitBeta,
     defaultMono: defaultMono,
     defaultSplit: defaultSplitBeta,
-    defaultBottom: 'editor',
+    defaultBottom: 'raw-editor',
 }
 
 const defaults: Conf = {
     initState: defaultSplit,
     defaultMono: defaultMono,
     defaultSplit: defaultSplit,
-    defaultBottom: 'grapejs',
+    defaultBottom: 'grapejs-editor',
 }

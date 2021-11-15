@@ -42,7 +42,7 @@ export function codeMirrorView<typeDoc extends TypeDoc>(
                     markDocument(typeDoc, cmEditor, marksSubscriptions),
                 ),
                 presenterUiState
-                    .getPresenterViewState('editor')
+                    .getPresenterViewState('raw-editor')
                     .state$.subscribe(() => cmEditor.refresh()),
             )
         },

@@ -4,17 +4,17 @@ import { UiState } from '../model-ui-state'
 
 export const defaultMono: UiState = {
     kind: 'mono',
-    view: 'builder',
+    view: 'flow-builder',
 }
 
 export const defaultSplitBeta: UiState = {
     kind: 'split',
-    topView: 'editor',
-    bottomView: 'builder',
+    topView: 'flow-builder',
+    bottomView: 'raw-editor',
 }
 
 export const defaultSplit: UiState = {
     kind: 'split',
-    topView: 'builder',
-    bottomView: 'grapejs',
+    topView: 'flow-builder',
+    bottomView: 'grapejs-editor',
 }

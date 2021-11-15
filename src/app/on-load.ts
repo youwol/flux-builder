@@ -226,9 +226,11 @@ export async function connectStreams(
         layoutEditor.Commands.run('show-attributes')
     })
 
-    presenterUiState.getPresenterViewState('grapejs').state$.subscribe(() => {
-        layoutEditor.refresh()
-    })
+    presenterUiState
+        .getPresenterViewState('grapejs-editor')
+        .state$.subscribe(() => {
+            layoutEditor.refresh()
+        })
     loading = false
 }
 

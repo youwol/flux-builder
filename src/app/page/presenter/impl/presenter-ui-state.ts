@@ -40,9 +40,9 @@ export class ImplPresenterUiState implements PresenterUiState {
                       kind: 'split',
                       topView: this.current.view,
                       bottomView:
-                          this.current.view === 'builder'
+                          this.current.view === 'flow-builder'
                               ? this.conf.defaultBottom
-                              : 'builder',
+                              : 'flow-builder',
                   }
                 : {
                       kind: 'mono',
