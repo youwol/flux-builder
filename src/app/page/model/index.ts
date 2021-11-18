@@ -6,7 +6,12 @@ export function logFactory() {
     return parentLogFactory().getChildFactory('Model')
 }
 
-export { RenderViewPosition, RenderViewName, Features } from './model-common'
+export {
+    RenderViewPosition,
+    Feature,
+    rendersViewsNames,
+    RenderViewName,
+} from './model-features'
 
 export { ViewState } from './model-view-state'
 export { Conf } from './model-conf'

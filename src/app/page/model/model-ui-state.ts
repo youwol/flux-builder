@@ -1,6 +1,6 @@
 /** @format */
 
-import { RenderViewName } from './model-common'
+import { RenderViewName } from './model-features'
 export type UiState = UiStateMono | UiStateSplit
 
 export interface UiStateMono {

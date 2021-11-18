@@ -4,9 +4,13 @@ import { BehaviorSubject, merge, Observable, of } from 'rxjs'
 import { map } from 'rxjs/operators'
 import { ModuleFlux } from '@youwol/flux-core'
 import { attr$, VirtualDOM } from '@youwol/flux-view'
+import { v } from '../../externals_evolutions/logging'
 import { AppStore } from '../../builder-editor/builder-state'
+import { logFactory } from '..'
 import { ViewState } from '../model'
 import { PresenterUiState } from '../presenter'
+
+const log = logFactory().getChildLogger('TopBannerView')
 
 interface Action {
     name: string
@@ -38,28 +42,9 @@ function getActions(appStore: AppStore, presenter: PresenterUiState) {
         features: [
             {
                 name: 'main',
-                class: 'fas fa-palette',
-                visible: of(presenter.features !== 'main'),
-                enabled: of(presenter.features !== 'main'),
-                onTriggered: () => {
-                    if (
-                        confirm(
-                            'This page will be redirected. All unsaved changes will be lost.\n' +
-                                'Do you confirm  ?',
-                        )
-                    ) {
-                        document.location.href = document.location.href.replace(
-                            '&features=beta',
-                            '',
-                        )
-                    }
-                },
-            },
-            {
-                name: 'beta',
                 class: 'fas fa-code',
-                visible: of(presenter.features !== 'beta'),
-                enabled: of(presenter.features !== 'beta'),
+                visible: of(true),
+                enabled: of(true),
                 onTriggered: () => {
                     if (
                         confirm(
@@ -67,8 +52,12 @@ function getActions(appStore: AppStore, presenter: PresenterUiState) {
                                 'Do you confirm  ?',
                         )
                     ) {
-                        document.location.href =
-                            document.location + '&features=beta'
+                        const href = presenter.alternateUrl
+                        log.debug('Redirecting from "{0}" to "{1}"', [
+                            v(document.location.href),
+                            v(href),
+                        ])
+                        document.location.href = `?${href}`
                     }
                 },
             },
@@ -125,7 +114,7 @@ function getActions(appStore: AppStore, presenter: PresenterUiState) {
             {
                 name: 'grapejs-view',
                 class: 'fas fa-palette n-resize',
-                visible: of(presenter.features === 'main'),
+                visible: of(presenter.hasFeature('grapejs-editor')),
                 enabled: presenter
                     .getPresenterViewState('grapejs-editor')
                     .state$.pipe(
@@ -140,7 +129,7 @@ function getActions(appStore: AppStore, presenter: PresenterUiState) {
             {
                 name: 'editor-view',
                 class: 'fas fa-code n-resize',
-                visible: of(presenter.features === 'beta'),
+                visible: of(presenter.hasFeature('raw-editor')),
                 enabled: presenter
                     .getPresenterViewState('raw-editor')
                     .state$.pipe(
@@ -155,7 +144,7 @@ function getActions(appStore: AppStore, presenter: PresenterUiState) {
             {
                 name: 'runner-view',
                 class: 'fas fa-eye n-resize',
-                visible: of(presenter.features === 'beta'),
+                visible: of(presenter.hasFeature('runner')),
                 enabled: presenter
                     .getPresenterViewState('runner')
                     .state$.pipe(
@@ -193,7 +182,7 @@ function getActions(appStore: AppStore, presenter: PresenterUiState) {
             {
                 name: 'grapejs-view',
                 class: 'fas fa-palette s-resize',
-                visible: of(presenter.features === 'main'),
+                visible: of(presenter.hasFeature('grapejs-editor')),
                 enabled: presenter
                     .getPresenterViewState('grapejs-editor')
                     .state$.pipe(
@@ -209,7 +198,7 @@ function getActions(appStore: AppStore, presenter: PresenterUiState) {
             {
                 name: 'editor-view',
                 class: 'fas fa-code s-resize',
-                visible: of(presenter.features === 'beta'),
+                visible: of(presenter.hasFeature('raw-editor')),
                 enabled: presenter
                     .getPresenterViewState('raw-editor')
                     .state$.pipe(
@@ -224,7 +213,7 @@ function getActions(appStore: AppStore, presenter: PresenterUiState) {
             {
                 name: 'runner-view',
                 class: 'fas fa-eye s-resize',
-                visible: of(presenter.features === 'beta'),
+                visible: of(presenter.hasFeature('runner')),
                 enabled: presenter
                     .getPresenterViewState('runner')
                     .state$.pipe(

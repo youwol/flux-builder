@@ -4,14 +4,13 @@ import { ReplaySubject } from 'rxjs'
 import { v } from '../../../externals_evolutions/logging'
 import {
     Conf,
-    Features,
+    Feature,
     RenderViewName,
     RenderViewPosition,
     UiState,
 } from '../../model'
 import { logFactory } from '..'
 import { PresenterUiState } from '../presenter-ui-state'
-import { getFeatures } from './presenter-conf'
 import { PresenterViewState } from './presenter-view-state'
 
 const log = logFactory().getChildFactory('UiState')
@@ -92,8 +91,12 @@ export class ImplPresenterUiState implements PresenterUiState {
         return new PresenterViewState(this.uiState$, view, additionalClasses)
     }
 
-    public get features(): Features {
-        return getFeatures()
+    public hasFeature(feature: Feature): boolean {
+        return this.conf.features.has(feature)
+    }
+
+    get alternateUrl(): string {
+        return this.conf.altUrlQueryParams
     }
 }
 

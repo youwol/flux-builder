@@ -5,6 +5,7 @@ import { AppStore } from '../../builder-editor/builder-state'
 import { builderView } from '../../builder-editor/views/builder.view'
 import { renderView } from '../../layout-editors/grapesjs-editor/views/render.view'
 import { layoutEditorView } from '../../layout-editors/raw-editor'
+import { rendersViewsNames, RenderViewName } from '../model'
 import { PresenterUiState } from '../presenter'
 import { runnerView } from './runnerView'
 import { topBanner } from './top-banner.view'
@@ -12,24 +13,6 @@ import { topBanner } from './top-banner.view'
 function notificationsView(_appStore: AppStore): VirtualDOM {
     return {
         id: 'notifications-container',
-    }
-}
-
-function getRendersViews(
-    appStore: AppStore,
-    presenterUiState: PresenterUiState,
-) {
-    if (presenterUiState.features === 'main') {
-        return [
-            builderView(appStore, presenterUiState),
-            renderView(appStore, presenterUiState),
-        ]
-    } else {
-        return [
-            builderView(appStore, presenterUiState),
-            layoutEditorView(appStore, presenterUiState),
-            runnerView(appStore, presenterUiState),
-        ]
     }
 }
 
@@ -45,9 +28,28 @@ export function mainView(
             {
                 class: 'flex-grow-1 d-flex flex-column',
                 style: { minHeight: '0px' },
-                children: getRendersViews(appStore, presenterUiState),
+                children: rendersViewsNames
+                    .filter((renderViewName) =>
+                        presenterUiState.hasFeature(renderViewName),
+                    )
+                    .map((renderViewName) =>
+                        viewsFactories[renderViewName](
+                            appStore,
+                            presenterUiState,
+                        ),
+                    ),
             },
             notificationsView(appStore),
         ],
     }
+}
+
+const viewsFactories: Record<
+    RenderViewName,
+    (appStore: AppStore, presenterUiState: PresenterUiState) => VirtualDOM
+> = {
+    'flow-builder': builderView,
+    'grapejs-editor': renderView,
+    'raw-editor': layoutEditorView,
+    runner: runnerView,
 }

@@ -1,7 +1,7 @@
 /** @format */
 
 import { Observable } from 'rxjs'
-import { Features, RenderViewName, RenderViewPosition } from '../model'
+import { Feature, RenderViewName, RenderViewPosition } from '../model'
 import { PresenterViewState } from '.'
 
 export interface PresenterUiState {
@@ -12,5 +12,6 @@ export interface PresenterUiState {
         view: RenderViewName,
         additionalClasses?: string,
     ): PresenterViewState
-    readonly features: Features
+    hasFeature(feature: Feature): boolean
+    alternateUrl: string
 }

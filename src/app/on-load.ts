@@ -80,7 +80,7 @@ const presenter = factoryPresenterUiState()
 createMainView(appStore, presenter)
 
 let layoutEditor
-if (presenter.features === 'main') {
+if (presenter.hasFeature('grapejs-editor')) {
     layoutEditor = await createLayoutEditor()
     initializeGrapesAssets(layoutEditor)
 }
@@ -93,7 +93,7 @@ new ContextMenu.View({ state: contextState, class: 'fv-bg-background' } as {
     state: ContextMenuState
 })
 
-if (presenter.features === 'main') {
+if (presenter.hasFeature('grapejs-editor')) {
     connectStreams(appStore, layoutEditor, presenter).then(() =>
         log.debug('ConnectStreams resolved'),
     )
