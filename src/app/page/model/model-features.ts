@@ -1,6 +1,7 @@
 /** @format */
+import { NumberPanes } from './model-ui-state'
 
-export type Feature = RenderViewName | 'three_panes'
+export type Feature = RenderViewName | NumberPanes
 
 export const rendersViewsNames = [
     'flow-builder',
@@ -10,5 +11,3 @@ export const rendersViewsNames = [
 ] as const
 
 export type RenderViewName = typeof rendersViewsNames[number]
-
-export type RenderViewPosition = 'top' | 'bottom'

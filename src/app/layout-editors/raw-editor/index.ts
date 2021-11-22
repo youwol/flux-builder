@@ -6,4 +6,4 @@ export function logFactory() {
     return parentLogFactory().getChildFactory('layout-editor')
 }
 
-export { layoutEditorView } from './view'
+export { factoryRawEditorView } from './view'

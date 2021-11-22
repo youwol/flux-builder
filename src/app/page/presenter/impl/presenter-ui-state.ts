@@ -2,108 +2,50 @@
 
 import { ReplaySubject } from 'rxjs'
 import { v } from '../../../externals_evolutions/logging'
-import {
-    Conf,
-    Feature,
-    RenderViewName,
-    RenderViewPosition,
-    UiState,
-} from '../../model'
+import { Conf, NumberPanes, RenderViewName, UiState } from '../../model'
 import { logFactory } from '..'
 import { PresenterUiState } from '../presenter-ui-state'
 import { PresenterViewState } from './presenter-view-state'
 
-const log = logFactory().getChildFactory('UiState')
+const log = logFactory().getChildLogger('UiState')
 
 export class ImplPresenterUiState implements PresenterUiState {
-    private log
-    private current: UiState
-    private readonly uiState$: ReplaySubject<UiState>
-    public readonly split$: ReplaySubject<boolean>
+    private readonly current: UiState
+    public readonly uiState$: ReplaySubject<UiState> = new ReplaySubject(1)
 
     constructor(private readonly conf: Conf) {
-        this.current = this.conf.initState
-        this.uiState$ = new ReplaySubject(1)
-        this.split$ = new ReplaySubject(1)
-        this.uiState$.next(this.current)
-        this.log = log.getChildLogger(`[${toString(this.current)}]`)
-        this.uiState$.next(this.current)
-        this.split$.next(this.current.kind === 'split')
-    }
-
-    public toggleSplit(): void {
-        this.log.debug('toggle split')
-        this.current =
-            this.current.kind === 'mono'
-                ? {
-                      kind: 'split',
-                      topView: this.current.view,
-                      bottomView:
-                          this.current.view === 'flow-builder'
-                              ? this.conf.defaultBottom
-                              : 'flow-builder',
-                  }
-                : {
-                      kind: 'mono',
-                      view: this.current.topView,
-                  }
-        this.log = logFactory()
-            .getChildLogger('UiState')
-            .getChildLogger(toString(this.current))
-        this.log.debug('new state')
-        this.uiState$.next(this.current)
-        this.split$.next(this.current.kind === 'split')
-    }
-
-    public toggleView(view: RenderViewName, pos: RenderViewPosition = 'top') {
-        this.log.debug('toggle view {0}', v(view))
-        if (pos === 'bottom' && this.current.kind === 'mono') {
-            this.toggleSplit()
-        }
-        if (this.current.kind === 'mono') {
-            if (this.current.view !== view) {
-                this.current.view = view
-            }
-        } else {
-            if (pos === 'top') {
-                this.current.bottomView =
-                    this.current.bottomView === view
-                        ? this.current.topView
-                        : this.current.bottomView
-                this.current.topView = view
-            } else {
-                this.current.topView =
-                    this.current.topView === view
-                        ? this.current.bottomView
-                        : this.current.topView
-                this.current.bottomView = view
-            }
-        }
-        this.log = log.getChildLogger(`[${toString(this.current)}]`)
-        this.log.debug('new state')
+        this.current = this.conf.initUiState
         this.uiState$.next(this.current)
     }
 
-    public getPresenterViewState(
-        view: RenderViewName,
-        additionalClasses = '',
-    ): PresenterViewState {
-        return new PresenterViewState(this.uiState$, view, additionalClasses)
+    public getPresenterViewState(view: RenderViewName): PresenterViewState {
+        log.debug('Returning PresenterViewState for {0}', v(view))
+        return new PresenterViewState(this, view)
     }
 
-    public hasFeature(feature: Feature): boolean {
-        return this.conf.features.has(feature)
+    get availableRendersViews(): RenderViewName[] {
+        return this.conf.availableRendersViews
     }
 
     get alternateUrl(): string {
         return this.conf.altUrlQueryParams
     }
-}
 
-function toString(uiState: UiState): string {
-    if (uiState.kind === 'mono') {
-        return uiState.view
-    } else {
-        return `t:${uiState.topView}|b:${uiState.bottomView}`
+    public remove(renderViewName: RenderViewName) {
+        this.current.removeRenderView(renderViewName)
+        this.uiState$.next(this.current)
+    }
+
+    public switch(
+        currentRenderView: RenderViewName,
+        nextRenderView: RenderViewName,
+    ) {
+        this.current.switchRenderView(currentRenderView, nextRenderView)
+        this.uiState$.next(this.current)
+    }
+
+    setNumberPanes(numberPanes: NumberPanes): void {
+        this.current.numberPanes = numberPanes
+        this.uiState$.next(this.current)
     }
 }

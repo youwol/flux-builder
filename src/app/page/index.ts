@@ -8,4 +8,3 @@ export function logFactory() {
 
 export { mainView } from './views'
 export { factoryPresenterUiState, PresenterUiState } from './presenter'
-export { ViewState } from './model'

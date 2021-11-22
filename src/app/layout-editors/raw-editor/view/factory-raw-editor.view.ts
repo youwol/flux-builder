@@ -3,9 +3,9 @@
 import { from } from 'rxjs'
 import { share, tap } from 'rxjs/operators'
 import { install } from '@youwol/cdn-client'
-import { attr$, child$, VirtualDOM } from '@youwol/flux-view'
+import { child$, VirtualDOM } from '@youwol/flux-view'
 import { AppStore } from '../../../builder-editor/builder-state'
-import { PresenterUiState, ViewState } from '../../../page'
+import { PresenterUiState } from '../../../page'
 import { factoryPresenter } from '../presenter'
 import { logFactory } from '.'
 import { codeMirrorView } from './code-mirror.view'
@@ -13,19 +13,15 @@ import { projectTreeView } from './project-tree.view'
 
 const log = logFactory().getChildLogger('LayoutEditor')
 
-export function layoutEditorView(
+export function factoryRawEditorView(
     appStore: AppStore,
     presenterUiState: PresenterUiState,
 ): VirtualDOM {
     const cdn$ = fetchCDN$()
     const presenter = factoryPresenter(appStore)
     return {
-        id: 'layout-editor-component',
-        class: attr$(
-            presenterUiState.getPresenterViewState('raw-editor', 'd-flex')
-                .state$,
-            (viewState: ViewState) => viewState.classes,
-        ),
+        id: 'raw-editor_view',
+        class: 'd-flex w-100',
 
         children: [
             projectTreeView(presenter.presenterTree),

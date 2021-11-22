@@ -6,9 +6,8 @@ import { ModuleFlux } from '@youwol/flux-core'
 import { attr$, VirtualDOM } from '@youwol/flux-view'
 import { v } from '../../externals_evolutions/logging'
 import { AppStore } from '../../builder-editor/builder-state'
-import { logFactory } from '..'
-import { ViewState } from '../model'
 import { PresenterUiState } from '../presenter'
+import { logFactory } from '..'
 
 const log = logFactory().getChildLogger('TopBannerView')
 
@@ -97,133 +96,22 @@ function getActions(appStore: AppStore, presenter: PresenterUiState) {
         ],
         layout: [
             {
-                name: 'builder-view',
-                class: 'fas fa-project-diagram n-resize',
+                name: 'two-panes',
+                class: 'fas fa-columns fa-rotate-90 n-resize',
                 visible: of(true),
-                enabled: presenter
-                    .getPresenterViewState('flow-builder')
-                    .state$.pipe(
-                        map(
-                            (viewState: ViewState) =>
-                                viewState.display !== 'top' &&
-                                viewState.display !== 'mono',
-                        ),
-                    ),
-                onTriggered: () => presenter.toggleView('flow-builder'),
+                enabled: presenter.uiState$.pipe(
+                    map((uiState) => uiState.numberPanes !== 2),
+                ),
+                onTriggered: () => presenter.setNumberPanes(2),
             },
             {
-                name: 'grapejs-view',
-                class: 'fas fa-palette n-resize',
-                visible: of(presenter.hasFeature('grapejs-editor')),
-                enabled: presenter
-                    .getPresenterViewState('grapejs-editor')
-                    .state$.pipe(
-                        map(
-                            (viewState: ViewState) =>
-                                viewState.display !== 'top' &&
-                                viewState.display !== 'mono',
-                        ),
-                    ),
-                onTriggered: () => presenter.toggleView('grapejs-editor'),
-            },
-            {
-                name: 'editor-view',
-                class: 'fas fa-code n-resize',
-                visible: of(presenter.hasFeature('raw-editor')),
-                enabled: presenter
-                    .getPresenterViewState('raw-editor')
-                    .state$.pipe(
-                        map(
-                            (viewState: ViewState) =>
-                                viewState.display !== 'top' &&
-                                viewState.display !== 'mono',
-                        ),
-                    ),
-                onTriggered: () => presenter.toggleView('raw-editor'),
-            },
-            {
-                name: 'runner-view',
-                class: 'fas fa-eye n-resize',
-                visible: of(presenter.hasFeature('runner')),
-                enabled: presenter
-                    .getPresenterViewState('runner')
-                    .state$.pipe(
-                        map(
-                            (viewState: ViewState) =>
-                                viewState.display !== 'top' &&
-                                viewState.display !== 'mono',
-                        ),
-                    ),
-                onTriggered: () => presenter.toggleView('runner'),
-            },
-            {
-                name: 'builder-view',
-                class: 'fas fa-columns fa-rotate-90',
-                visible: presenter.split$,
-                enabled: of(true),
-                onTriggered: () => presenter.toggleSplit(),
-            },
-            {
-                name: 'builder-view',
-                class: 'fas fa-project-diagram s-resize',
-                visible: of(true),
-                enabled: presenter
-                    .getPresenterViewState('flow-builder')
-                    .state$.pipe(
-                        map(
-                            (viewState: ViewState) =>
-                                viewState.display !== 'bottom' &&
-                                viewState.display !== 'mono',
-                        ),
-                    ),
-                onTriggered: () =>
-                    presenter.toggleView('flow-builder', 'bottom'),
-            },
-            {
-                name: 'grapejs-view',
-                class: 'fas fa-palette s-resize',
-                visible: of(presenter.hasFeature('grapejs-editor')),
-                enabled: presenter
-                    .getPresenterViewState('grapejs-editor')
-                    .state$.pipe(
-                        map(
-                            (viewState: ViewState) =>
-                                viewState.display !== 'bottom' &&
-                                viewState.display !== 'mono',
-                        ),
-                    ),
-                onTriggered: () =>
-                    presenter.toggleView('grapejs-editor', 'bottom'),
-            },
-            {
-                name: 'editor-view',
-                class: 'fas fa-code s-resize',
-                visible: of(presenter.hasFeature('raw-editor')),
-                enabled: presenter
-                    .getPresenterViewState('raw-editor')
-                    .state$.pipe(
-                        map(
-                            (viewState: ViewState) =>
-                                viewState.display !== 'bottom' &&
-                                viewState.display !== 'mono',
-                        ),
-                    ),
-                onTriggered: () => presenter.toggleView('raw-editor', 'bottom'),
-            },
-            {
-                name: 'runner-view',
-                class: 'fas fa-eye s-resize',
-                visible: of(presenter.hasFeature('runner')),
-                enabled: presenter
-                    .getPresenterViewState('runner')
-                    .state$.pipe(
-                        map(
-                            (viewState: ViewState) =>
-                                viewState.display !== 'bottom' &&
-                                viewState.display !== 'mono',
-                        ),
-                    ),
-                onTriggered: () => presenter.toggleView('runner', 'bottom'),
+                name: 'three-panes',
+                class: 'fas fa-bars n-resize',
+                visible: of(presenter.availableRendersViews.length > 2),
+                enabled: presenter.uiState$.pipe(
+                    map((uiState) => uiState.numberPanes !== 3),
+                ),
+                onTriggered: () => presenter.setNumberPanes(3),
             },
             {
                 name: 'builder-view',

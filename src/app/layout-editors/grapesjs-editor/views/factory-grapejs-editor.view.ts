@@ -1,23 +1,16 @@
 /** @format */
 
-import { attr$, VirtualDOM } from '@youwol/flux-view'
+import { VirtualDOM } from '@youwol/flux-view'
 import { AppStore } from '../../../builder-editor/builder-state'
-import { PresenterUiState, ViewState } from '../../../page'
 
-export function renderView(
-    appStore: AppStore,
-    presenter: PresenterUiState,
-): VirtualDOM {
+export function factoryGrapejsEditorView(appStore: AppStore): VirtualDOM {
     return {
-        id: 'render-component',
-        class: attr$(
-            presenter.getPresenterViewState('grapejs-editor').state$,
-            (viewState: ViewState) => viewState.classes,
-        ),
+        id: 'grapejs-editor_view',
+        class: 'w-100 d-flex',
         children: [
             {
                 id: 'editor-row',
-                class: 'd-flex h-100',
+                class: 'd-flex h-100 w-100',
                 children: [
                     {
                         id: 'gjs',

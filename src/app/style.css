@@ -9,8 +9,8 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
 }
 
 #loading-screen{
-    top:0px;
-    left:0px;
+    top:0;
+    left:0;
     position: absolute ;
     z-index: 10;
     height:100vh;
@@ -82,7 +82,7 @@ background: #555;
   }
 
 .gjs-cv-canvas {
-    top: 0px !important;
+    top: 0 !important;
     height: 100% !important;
     width: 100%  !important;
 }
@@ -94,4 +94,12 @@ background: #555;
 
 .cm-module-widget-selected {
     color: #ffbb00;
+}
+
+.h-33 {
+height: 33.33%!important;
+}
+
+button.panel-btn {
+    padding: 0 2px 0 2px;
 }

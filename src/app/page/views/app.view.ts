@@ -2,12 +2,8 @@
 
 import { VirtualDOM } from '@youwol/flux-view'
 import { AppStore } from '../../builder-editor/builder-state'
-import { builderView } from '../../builder-editor/views/builder.view'
-import { renderView } from '../../layout-editors/grapesjs-editor/views/render.view'
-import { layoutEditorView } from '../../layout-editors/raw-editor'
-import { rendersViewsNames, RenderViewName } from '../model'
 import { PresenterUiState } from '../presenter'
-import { runnerView } from './runnerView'
+import { panelView } from './panel.view'
 import { topBanner } from './top-banner.view'
 
 function notificationsView(_appStore: AppStore): VirtualDOM {
@@ -26,30 +22,15 @@ export function mainView(
         children: [
             topBanner(appStore, presenterUiState),
             {
+                id: 'main-panels',
                 class: 'flex-grow-1 d-flex flex-column',
                 style: { minHeight: '0px' },
-                children: rendersViewsNames
-                    .filter((renderViewName) =>
-                        presenterUiState.hasFeature(renderViewName),
-                    )
-                    .map((renderViewName) =>
-                        viewsFactories[renderViewName](
-                            appStore,
-                            presenterUiState,
-                        ),
-                    ),
+                children: presenterUiState.availableRendersViews.map(
+                    (renderViewName) =>
+                        panelView(renderViewName, appStore, presenterUiState),
+                ),
             },
             notificationsView(appStore),
         ],
     }
-}
-
-const viewsFactories: Record<
-    RenderViewName,
-    (appStore: AppStore, presenterUiState: PresenterUiState) => VirtualDOM
-> = {
-    'flow-builder': builderView,
-    'grapejs-editor': renderView,
-    'raw-editor': layoutEditorView,
-    runner: runnerView,
 }

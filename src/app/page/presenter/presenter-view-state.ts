@@ -1,8 +1,13 @@
 /** @format */
 
 import { Observable } from 'rxjs'
-import { ViewState } from '../model'
+import { NumberPanes, RenderViewName, RenderViewPosition } from '../model'
 
 export interface PresenterViewState {
-    readonly state$: Observable<ViewState>
+    readonly state$: Observable<{
+        position: RenderViewPosition
+        numberPanes: NumberPanes
+    }>
+    close(): void
+    change(renderViewName: RenderViewName): void
 }

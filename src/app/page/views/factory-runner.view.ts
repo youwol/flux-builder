@@ -3,21 +3,13 @@
 /** @format */
 
 import { Component, renderTemplate } from '@youwol/flux-core'
-import { attr$, child$, VirtualDOM } from '@youwol/flux-view'
+import { child$, VirtualDOM } from '@youwol/flux-view'
 import { AppStore } from '../../builder-editor/builder-state'
-import { ViewState } from '../model'
-import { PresenterUiState } from '../presenter'
 
-export function runnerView(
-    appStore: AppStore,
-    presenter: PresenterUiState,
-): VirtualDOM {
+export function factoryRunnerView(appStore: AppStore): VirtualDOM {
     return {
-        id: 'final-render-view',
-        class: attr$(
-            presenter.getPresenterViewState('runner', 'd-flex').state$,
-            (viewState: ViewState) => viewState.classes,
-        ),
+        id: 'runner_view',
+        class: 'd-flex w-100',
 
         children: [
             child$(appStore.appObservables.projectUpdated$, () => {

@@ -1,9 +1,8 @@
 /** @format */
 
 import { Connection, ModuleFlux } from '@youwol/flux-core'
-import { attr$, child$, VirtualDOM } from '@youwol/flux-view'
+import { child$, VirtualDOM } from '@youwol/flux-view'
 import { merge } from 'rxjs'
-import { PresenterUiState, ViewState } from '../../page'
 import { ProjectTreeView } from '../../page/views/project-tree.view'
 import { AppStore } from '../builder-state'
 import {
@@ -14,16 +13,10 @@ import { ModuleSettingsState, ModuleSettingsView } from './module-settings.view'
 import appStoreAsProjectManager = ProjectTreeView.appStoreAsProjectManager
 import ProjectManager = ProjectTreeView.ProjectManager
 
-export function builderView(
-    appStore: AppStore,
-    presenter: PresenterUiState,
-): VirtualDOM {
+export function factoryFlowBuilderView(appStore: AppStore): VirtualDOM {
     return {
-        id: 'builder-component',
-        class: attr$(
-            presenter.getPresenterViewState('flow-builder', 'd-flex').state$,
-            (viewState: ViewState) => viewState.classes,
-        ),
+        id: 'flow-builder_view',
+        class: 'd-flex w-100',
 
         children: [
             projectTreeView(appStore),
