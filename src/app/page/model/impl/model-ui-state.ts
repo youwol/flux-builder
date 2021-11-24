@@ -15,10 +15,10 @@ export class ImplUiState implements UiState {
     private readonly current: RenderViewName[] = []
 
     constructor(
-        private readonly defaultRendersViewsNames: RenderViewName[],
-        private numberPane: NumberPanes,
+        private readonly availableViewsNames: RenderViewName[],
+        initNumberPanes: NumberPanes,
     ) {
-        this.fillDisposition(numberPane)
+        this.fillDisposition(initNumberPanes)
     }
 
     getPosition(renderViewName: RenderViewName): RenderViewPosition {
@@ -92,17 +92,25 @@ export class ImplUiState implements UiState {
     private fillDisposition(numberPane: NumberPanes): void {
         log.debug('fill list with {0} panes', v(numberPane))
         let defaultRenderViewIndex = 0
-        for (let id = this.current.length; id < numberPane; id++) {
+        for (
+            let id = this.current.length;
+            id < numberPane && id < this.availableViewsNames.length;
+            id++
+        ) {
             let candidateRenderView =
-                this.defaultRendersViewsNames[defaultRenderViewIndex]
+                this.availableViewsNames[defaultRenderViewIndex]
             log.debug('testing {2} (default {0}) for position {1}', [
                 v(defaultRenderViewIndex),
                 v(id),
                 v(candidateRenderView),
             ])
             while (this.current.includes(candidateRenderView)) {
+                log.debug(
+                    'candidate {0} already in list',
+                    v(candidateRenderView),
+                )
                 candidateRenderView =
-                    this.defaultRendersViewsNames[++defaultRenderViewIndex]
+                    this.availableViewsNames[++defaultRenderViewIndex]
             }
             log.debug('inserting {0} at {1}', [v(candidateRenderView), v(id)])
             this.current[id] = candidateRenderView

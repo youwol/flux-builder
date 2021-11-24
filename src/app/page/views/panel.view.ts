@@ -12,6 +12,8 @@ import { PresenterUiState, PresenterViewState } from '../presenter'
 import { IconForRendersView } from './icon-for-renders-view'
 import { factoryRunnerView } from './factory-runner.view'
 
+type ButtonVisibility = 'visible' | 'hidden' | 'disabled'
+
 export function panelView(
     renderViewName: RenderViewName,
     appStore: AppStore,
@@ -33,24 +35,50 @@ export function panelView(
         children: [
             {
                 id: `panel_${renderViewName}_buttons`,
-                class: 'd-flex flex-column border-right fv-bg-background grapes-bg-color',
+                class: 'd-flex flex-column border-right fv-bg-background grapes-bg-color justify-content-between',
                 // style: { width: '36px' },
                 children: [
-                    ...presenterUiState.availableRendersViews.map(
-                        (availableRenderView) =>
-                            buttonRender(
-                                presenterViewState,
-                                renderViewName,
-                                availableRenderView,
+                    {
+                        children: [
+                            button(
+                                'fa-times',
+                                () => presenterViewState.close(),
+                                presenterUiState.uiState$.pipe(
+                                    map((uiState) =>
+                                        uiState.numberPanes === 1
+                                            ? 'hidden'
+                                            : 'visible',
+                                    ),
+                                ),
                             ),
-                    ),
-                    button(
-                        'fa-times',
-                        () => presenterViewState.close(),
-                        presenterUiState.uiState$.pipe(
-                            map((uiState) => uiState.numberPanes === 1),
+                        ],
+                    },
+                    {
+                        children: presenterUiState.availableRendersViews.map(
+                            (availableRenderView) =>
+                                buttonRender(
+                                    presenterViewState,
+                                    renderViewName,
+                                    availableRenderView,
+                                ),
                         ),
-                    ),
+                    },
+                    {
+                        children: [
+                            button(
+                                'fa-plus',
+                                () => presenterUiState.addPane(),
+                                presenterUiState.uiState$.pipe(
+                                    map(() =>
+                                        presenterUiState.hiddenRendersViews
+                                            .length !== 0
+                                            ? 'visible'
+                                            : 'hidden',
+                                    ),
+                                ),
+                            ),
+                        ],
+                    },
                 ],
             },
             panel,
@@ -71,18 +99,24 @@ const viewsFactories: Record<
 function button(
     iconClass: string,
     onclick: () => void,
-    disabled$: Observable<boolean>,
+    visibility$: Observable<ButtonVisibility>,
 ): VirtualDOM {
     return {
         // type: 'button',
         // tag: 'button',
         // class: 'panel-btn fv-btn fv-color-on-secondary fv-bg-secondary fv-pointer mb-1',
         class: attr$(
-            disabled$,
-            (bool) =>
-                bool
-                    ? 'fv-text-disabled'
-                    : 'fv-pointer fv-hover-text-secondary fv-text-focus',
+            visibility$,
+            (visibility: ButtonVisibility) => {
+                switch (visibility) {
+                    case 'visible':
+                        return 'fv-pointer fv-hover-text-secondary fv-text-focus'
+                    case 'hidden':
+                        return 'd-none'
+                    case 'disabled':
+                        return 'fv-text-disabled'
+                }
+            },
             {
                 wrapper: (dynClasses) =>
                     `w-100 px-1 text-center mx-auto ${dynClasses}`,
@@ -94,12 +128,15 @@ function button(
                 class: iconClass + ' fas',
             },
         ],
-        disabled: attr$(disabled$, (bool) => bool),
+        disabled: attr$(
+            visibility$,
+            (visibility: ButtonVisibility) => visibility === 'hidden',
+        ),
         // style: attr$(disabled$, (disabled) =>
         //     disabled ? { opacity: 0.5 } : { opacity: 1 },
         // ),
-        onclick: attr$(disabled$, (bool) =>
-            bool
+        onclick: attr$(visibility$, (visibility: ButtonVisibility) =>
+            visibility !== 'visible'
                 ? () => {
                       /*NOOP*/
                   }
@@ -116,7 +153,9 @@ function buttonRender(
     return button(
         IconForRendersView[otherRenderView],
         () => presenterViewState.change(otherRenderView),
-        of(renderViewName === otherRenderView),
+        of<ButtonVisibility>(
+            renderViewName === otherRenderView ? 'disabled' : 'visible',
+        ),
     )
 }
 

@@ -96,24 +96,6 @@ function getActions(appStore: AppStore, presenter: PresenterUiState) {
         ],
         layout: [
             {
-                name: 'two-panes',
-                class: 'fas fa-columns fa-rotate-90 n-resize',
-                visible: of(true),
-                enabled: presenter.uiState$.pipe(
-                    map((uiState) => uiState.numberPanes !== 2),
-                ),
-                onTriggered: () => presenter.setNumberPanes(2),
-            },
-            {
-                name: 'three-panes',
-                class: 'fas fa-bars n-resize',
-                visible: of(presenter.availableRendersViews.length > 2),
-                enabled: presenter.uiState$.pipe(
-                    map((uiState) => uiState.numberPanes !== 3),
-                ),
-                onTriggered: () => presenter.setNumberPanes(3),
-            },
-            {
                 name: 'builder-view',
                 class: 'fas fa-expand  ',
                 visible: of(true),

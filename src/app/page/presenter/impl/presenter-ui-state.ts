@@ -4,6 +4,7 @@ import { ReplaySubject } from 'rxjs'
 import { v } from '../../../externals_evolutions/logging'
 import { Conf, NumberPanes, RenderViewName, UiState } from '../../model'
 import { logFactory } from '..'
+import { numberPanes } from '../../model/model-ui-state'
 import { PresenterUiState } from '../presenter-ui-state'
 import { PresenterViewState } from './presenter-view-state'
 
@@ -27,6 +28,12 @@ export class ImplPresenterUiState implements PresenterUiState {
         return this.conf.availableRendersViews
     }
 
+    get hiddenRendersViews(): RenderViewName[] {
+        return this.conf.availableRendersViews.filter(
+            (candidate) => this.current.getPosition(candidate) === 'none',
+        )
+    }
+
     get alternateUrl(): string {
         return this.conf.altUrlQueryParams
     }
@@ -44,8 +51,12 @@ export class ImplPresenterUiState implements PresenterUiState {
         this.uiState$.next(this.current)
     }
 
-    setNumberPanes(numberPanes: NumberPanes): void {
-        this.current.numberPanes = numberPanes
+    addPane(): void {
+        const nextNumberPanes = this.current.numberPanes + 1
+        if (nextNumberPanes > numberPanes[numberPanes.length - 1]) {
+            throw new Error('Cannot add pane')
+        }
+        this.current.numberPanes = nextNumberPanes as NumberPanes
         this.uiState$.next(this.current)
     }
 }

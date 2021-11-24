@@ -4,7 +4,9 @@ import { RenderViewName } from './model-features'
 
 export type RenderViewPosition = 'top' | 'middle' | 'bottom' | 'none'
 
-export type NumberPanes = 1 | 2 | 3
+export const numberPanes = [1, 2, 3] as const
+
+export type NumberPanes = typeof numberPanes[number]
 
 export interface UiState {
     removeRenderView(renderViewName: RenderViewName): void
