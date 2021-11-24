@@ -14,8 +14,8 @@ export function factoryRunnerView(appStore: AppStore): VirtualDOM {
         children: [
             child$(appStore.appObservables.projectUpdated$, () => {
                 return {
-                    class: 'h-100 w-100 d-flex',
-                    id: Component.rootComponentId,
+                    class: 'h-100 w-100',
+                    id: 'runner_view_content',
                     connectedCallback: (contentDiv: HTMLDivElement) => {
                         const rootComponent =
                             appStore.project.workflow.modules.find(
