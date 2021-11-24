@@ -14,7 +14,7 @@ export function projectTreeView(presenter: PresenterTree): VirtualDOM {
     log.debug('factory')
     return {
         id: panelId,
-        class: 'd-flex grapes-bg-color fv-color-primary p-1 border border-dark text-left fv-text-primary',
+        class: 'd-flex p-1',
         style: {
             width: '300px',
             minHeight: '0px',

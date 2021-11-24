@@ -2,7 +2,8 @@
 
 import { Connection, ModuleFlux } from '@youwol/flux-core'
 import { child$, VirtualDOM } from '@youwol/flux-view'
-import { merge } from 'rxjs'
+import { BehaviorSubject, merge } from 'rxjs'
+import { resizablePanel } from '../../externals_evolutions/essentials/resizable-pane.view'
 import { ProjectTreeView } from '../../page/views/project-tree.view'
 import { AppStore } from '../builder-state'
 import {
@@ -14,14 +15,20 @@ import appStoreAsProjectManager = ProjectTreeView.appStoreAsProjectManager
 import ProjectManager = ProjectTreeView.ProjectManager
 
 export function factoryFlowBuilderView(appStore: AppStore): VirtualDOM {
+    const settingsPanelVisible$ = new BehaviorSubject(false)
     return {
         id: 'flow-builder_view',
         class: 'd-flex w-100',
 
         children: [
-            projectTreeView(appStore),
+            resizablePanel(projectTreeView(appStore), 'Project Tree'),
             svgCanvasView(),
-            settingsView(appStore),
+            resizablePanel(
+                settingsView(appStore, settingsPanelVisible$),
+                'Settings',
+                'right',
+                { visible$: settingsPanelVisible$, minWidth: 218 },
+            ),
         ],
     }
 }
@@ -33,7 +40,7 @@ function svgCanvasView() {
     }
 }
 
-function settingsView(appStore: AppStore) {
+function settingsView(appStore: AppStore, visible$: BehaviorSubject<boolean>) {
     const appObservables = appStore.appObservables
     const settingsFactory = [
         {
@@ -54,7 +61,7 @@ function settingsView(appStore: AppStore) {
 
     return {
         id: 'panel__right_builder',
-        class: 'd-flex flex-column grapes-bg-color fv-color-primary p-1 border border-dark text-left fv-text-primary',
+        class: 'd-flex flex-column p-1 text-left fv-text-primary',
         style: {
             width: '300px',
             minHeight: '0px',
@@ -72,8 +79,10 @@ function settingsView(appStore: AppStore) {
                         f.when(selection),
                     )
                     if (!factory) {
+                        visible$.next(false)
                         return {}
                     }
+                    visible$.next(true)
                     return factory.mapTo(selection)
                 },
             ),
@@ -90,9 +99,10 @@ function projectTreeView(appStore: AppStore) {
     )
     return {
         id: panelId,
-        class: 'd-flex flex-column grapes-bg-color fv-color-primary p-1 border border-dark text-left fv-text-primary',
+        class:
+            'd-flex w-100 flex-column p-1 border border-dark text-left' +
+            ' fv-text-primary',
         style: {
-            width: '300px',
             minHeight: '0px',
             fontSize: 'small',
         },

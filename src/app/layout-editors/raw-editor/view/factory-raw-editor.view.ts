@@ -5,6 +5,7 @@ import { share, tap } from 'rxjs/operators'
 import { install } from '@youwol/cdn-client'
 import { child$, VirtualDOM } from '@youwol/flux-view'
 import { AppStore } from '../../../builder-editor/builder-state'
+import { resizablePanel } from '../../../externals_evolutions/essentials/resizable-pane.view'
 import { PresenterUiState } from '../../../page'
 import { factoryPresenter } from '../presenter'
 import { logFactory } from '.'
@@ -24,7 +25,10 @@ export function factoryRawEditorView(
         class: 'd-flex w-100',
 
         children: [
-            projectTreeView(presenter.presenterTree),
+            resizablePanel(
+                projectTreeView(presenter.presenterTree),
+                'Project Tree',
+            ),
             {
                 class: 'h-100 d-flex flex-grow-1',
                 children: [
