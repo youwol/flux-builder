@@ -960,6 +960,11 @@
   resolved "https://registry.yarnpkg.com/@youwol/flux-core/-/flux-core-0.0.21.tgz#1710317b9d14946122ea187c4d8ec477e56e3f65"
   integrity sha512-hHn8ODizOwS1o0vZT7pYCPqdVPb466PZCVtVtGoT+tuv3NC6dJ12LXdYOhUfvruxTXZDoXS1PVJNca7MhcQFJw==
 
+"@youwol/flux-files@^0.0.5":
+  version "0.0.5"
+  resolved "https://registry.yarnpkg.com/@youwol/flux-files/-/flux-files-0.0.5.tgz#8a26386289717ff1674470d4a597644c20717c4e"
+  integrity sha512-gwLz0Y8RKPISS8byuQqEF7TZUbA6wP8dtr93jbfiXCMxiNJmBSFxdNANPycoU/lEHU7fQMpgGMP75nACyS+19Q==
+
 "@youwol/flux-svg-plots@~0.0.0":
   version "0.0.0"
   resolved "https://registry.yarnpkg.com/@youwol/flux-svg-plots/-/flux-svg-plots-0.0.0.tgz#a6c1a64d601fbfd744a22644b8a21b41daa9959f"
@@ -969,6 +974,11 @@
   version "0.0.10"
   resolved "https://registry.yarnpkg.com/@youwol/flux-view/-/flux-view-0.0.10.tgz#1108978e737af789b8bcaa8f95bd8f76f08e972c"
   integrity sha512-N0+xS7EPdVH3z4CxhmFHfPrH6mr865E/pdMS/3Np25mF4hJ55DuC+LgW3mWxopuh9C9g67EzTrRN5aVH+cuP2g==
+
+"@youwol/flux-youwol-essentials@~0.0.5":
+  version "0.0.5"
+  resolved "https://registry.yarnpkg.com/@youwol/flux-youwol-essentials/-/flux-youwol-essentials-0.0.5.tgz#56b5371b7a00bbe4b904a61e0a7342364a5c07d4"
+  integrity sha512-aPlWnZlFONrm2VYrJHBk6/CkvW12aYoz4227NEl2Z3HLu80tK+A1/D3N2EzAax2w026D07gji64p5vZh/SbBxQ==
 
 "@youwol/fv-button@~0.0.3":
   version "0.0.3"

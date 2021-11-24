@@ -28,8 +28,10 @@
     "dependencies": {
         "@youwol/cdn-client": "~0.0.9",
         "@youwol/flux-core": "~0.0.21",
+        "@youwol/flux-files": "^0.0.5",
         "@youwol/flux-svg-plots": "~0.0.0",
         "@youwol/flux-view": "~0.0.10",
+        "@youwol/flux-youwol-essentials": "~0.0.5",
         "@youwol/fv-button": "~0.0.3",
         "@youwol/fv-context-menu": "~0.0.0",
         "@youwol/fv-group": "~0.0.3",
