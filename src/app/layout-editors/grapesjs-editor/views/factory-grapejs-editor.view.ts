@@ -18,7 +18,7 @@ export function factoryGrapejsEditorView(): VirtualDOM {
                     resizablePanel(
                         {
                             id: 'panel__right_render',
-                            class: 'control-panel',
+                            class: 'flex-grow-1',
                             children: [
                                 {
                                     class: 'd-flex justify-content-between  flex-align-switch',
@@ -41,10 +41,6 @@ export function factoryGrapejsEditorView(): VirtualDOM {
                                             id: 'panel__render-panels-actions',
                                             class: 'd-block position-relative buttons-toolbox ',
                                         },
-                                        {
-                                            id: 'panel__render-show-actions',
-                                            class: 'd-block position-relative buttons-toolbox ',
-                                        },
                                     ],
                                 },
                                 {
@@ -52,7 +48,6 @@ export function factoryGrapejsEditorView(): VirtualDOM {
                                     class: 'overflow-auto  p-1 border border-dark panels-container',
                                     style: {
                                         height: 'calc(100% - 80px)',
-                                        width: '300px',
                                     },
                                     children: [
                                         {
@@ -76,6 +71,7 @@ export function factoryGrapejsEditorView(): VirtualDOM {
                         },
                         'Toolboxes',
                         'right',
+                        { minWidth: 195 },
                     ),
                 ],
             },
