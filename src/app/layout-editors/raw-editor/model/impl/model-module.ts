@@ -5,9 +5,9 @@ import {
     GroupModules,
     ModuleFlux,
     PluginFlux,
+    navigate,
 } from '@youwol/flux-core'
 import { AppStore } from '../../../../builder-editor/builder-state'
-import { navigate } from '../../../../externals_evolutions/core/navigation'
 import { logFactory, ModelModule, TypeModule } from '..'
 
 const log = logFactory().getChildLogger('Module')

@@ -1,7 +1,6 @@
 /** @format */
 
 import { ReplaySubject } from 'rxjs'
-import { v } from '../../../externals_evolutions/logging'
 import { Conf, NumberPanes, RenderViewName, UiState } from '../../model'
 import { logFactory } from '..'
 import { numberPanes } from '../../model/model-ui-state'
@@ -20,7 +19,7 @@ export class ImplPresenterUiState implements PresenterUiState {
     }
 
     public getPresenterViewState(view: RenderViewName): PresenterViewState {
-        log.debug('Returning PresenterViewState for {0}', v(view))
+        log.debug('Returning PresenterViewState for {0}', { value: view })
         return new PresenterViewState(this, view)
     }
 

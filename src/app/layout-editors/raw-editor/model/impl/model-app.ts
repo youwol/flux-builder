@@ -1,11 +1,9 @@
 /** @format */
 
-import { Component } from '@youwol/flux-core'
+import { Component, navigate } from '@youwol/flux-core'
 import { combineLatest, Observable } from 'rxjs'
 import { distinctUntilChanged, map, tap } from 'rxjs/operators'
 import { AppStore } from '../../../../builder-editor/builder-state'
-import { navigate } from '../../../../externals_evolutions/core/navigation'
-import { v } from '../../../../externals_evolutions/logging'
 import { logFactory, ModelApp, ModelComponent } from '..'
 import { ImplModelComponent } from './model-component'
 
@@ -18,14 +16,16 @@ export class ImplModelApp implements ModelApp {
 
     public get moduleIdSelected(): string {
         const selectedModuleId = this.appStore.getModuleSelected()?.moduleId
-        log.debug('Returning Selected ModuleId : {0}', v(selectedModuleId))
+        log.debug('Returning Selected ModuleId : {0}', {
+            value: selectedModuleId,
+        })
         return selectedModuleId
     }
 
     public set moduleIdSelected(moduleId: string) {
-        this.log.debug('Check if {0} not already selected', v(moduleId))
+        this.log.debug('Check if {0} not already selected', moduleId)
         if (this.appStore.getModuleSelected()?.moduleId !== moduleId) {
-            this.log.debug('Selecting {0}', v(moduleId))
+            this.log.debug('Selecting {0}', { value: moduleId })
             this.appStore.selectModule(moduleId, true)
         }
     }
@@ -44,7 +44,7 @@ export class ImplModelApp implements ModelApp {
             this.appStore.appObservables.activeLayerUpdated$,
         ]).pipe(
             tap(([_, { toLayerId }]) =>
-                _log.debug('Receive layerId {0}', v(toLayerId)),
+                _log.debug('Receive layerId {0}', { value: toLayerId }),
             ),
             distinctUntilChanged(
                 (
@@ -58,7 +58,7 @@ export class ImplModelApp implements ModelApp {
                 },
             ),
             tap(([_, { toLayerId }]) =>
-                _log.debug('new layerId {0}', v(toLayerId)),
+                _log.debug('new layerId {0}', { value: toLayerId }),
             ),
             map(([workUpdate, { toLayerId }]) => ({
                 workflowUpdate: workUpdate,
@@ -70,7 +70,9 @@ export class ImplModelApp implements ModelApp {
                     ).moduleId,
             })),
             tap(({ componentId }) =>
-                _log.debug('layerId matched to component {0}', v(componentId)),
+                _log.debug('layerId matched to component {0}', {
+                    value: componentId,
+                }),
             ),
             distinctUntilChanged(
                 (
@@ -88,7 +90,7 @@ export class ImplModelApp implements ModelApp {
                 },
             ),
             tap(({ componentId }) =>
-                _log.debug('new component {0}', v(componentId)),
+                _log.debug('new component {0}', { value: componentId }),
             ),
             map(
                 ({ componentId }) =>
@@ -106,9 +108,13 @@ export class ImplModelApp implements ModelApp {
         const _log = this.log.getChildLogger('PipingModuleIdSelected')
         return this.appStore.appObservables.moduleSelected$.pipe(
             map((mdle) => mdle.moduleId),
-            tap((moduleId) => _log.debug('Receive module Id {0}', v(moduleId))),
+            tap((moduleId) =>
+                _log.debug('Receive module Id {0}', { value: moduleId }),
+            ),
             distinctUntilChanged(),
-            tap((moduleId) => _log.debug('new module Id {0}', v(moduleId))),
+            tap((moduleId) =>
+                _log.debug('new module Id {0}', { value: moduleId }),
+            ),
         )
     }
 }

@@ -1,11 +1,11 @@
 /** @format */
 
+import { resizablePanel } from '@youwol/fv-group'
 import { from } from 'rxjs'
 import { share, tap } from 'rxjs/operators'
 import { install } from '@youwol/cdn-client'
 import { child$, VirtualDOM } from '@youwol/flux-view'
 import { AppStore } from '../../../builder-editor/builder-state'
-import { resizablePanel } from '../../../externals_evolutions/essentials/resizable-pane.view'
 import { PresenterUiState } from '../../../page'
 import { factoryPresenter } from '../presenter'
 import { logFactory } from '.'

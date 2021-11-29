@@ -4,7 +4,6 @@ import { BehaviorSubject, merge, Observable, of } from 'rxjs'
 import { map } from 'rxjs/operators'
 import { ModuleFlux } from '@youwol/flux-core'
 import { attr$, VirtualDOM } from '@youwol/flux-view'
-import { v } from '../../externals_evolutions/logging'
 import { AppStore } from '../../builder-editor/builder-state'
 import { PresenterUiState } from '../presenter'
 import { logFactory } from '..'
@@ -52,10 +51,11 @@ function getActions(appStore: AppStore, presenter: PresenterUiState) {
                         )
                     ) {
                         const href = presenter.alternateUrl
-                        log.debug('Redirecting from "{0}" to "{1}"', [
-                            v(document.location.href),
-                            v(href),
-                        ])
+                        log.debug(
+                            'Redirecting from "{0}" to "{1}"',
+                            { value: document.location.href },
+                            { value: href },
+                        )
                         document.location.href = `?${href}`
                     }
                 },

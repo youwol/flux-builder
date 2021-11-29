@@ -1,7 +1,7 @@
 /** @format */
 
 import { VirtualDOM } from '@youwol/flux-view'
-import { resizablePanel } from '../../../externals_evolutions/essentials/resizable-pane.view'
+import { resizablePanel } from '@youwol/fv-group'
 
 export function factoryGrapejsEditorView(): VirtualDOM {
     return {
@@ -21,15 +21,15 @@ export function factoryGrapejsEditorView(): VirtualDOM {
                             class: 'flex-grow-1',
                             children: [
                                 {
-                                    class: 'd-flex justify-content-between  flex-align-switch',
+                                    class: 'd-flex justify-content-between ',
                                     children: [
                                         {
                                             id: 'panel__layout-basic-actions',
-                                            class: 'd-block position-relative flex-align-switch buttons-toolbox',
+                                            class: 'd-block position-relative  buttons-toolbox',
                                         },
                                         {
                                             id: 'panel__layout-devices-actions',
-                                            class: 'd-block position-relative flex-align-switch buttons-toolbox',
+                                            class: 'd-block position-relative buttons-toolbox',
                                         },
                                     ],
                                 },

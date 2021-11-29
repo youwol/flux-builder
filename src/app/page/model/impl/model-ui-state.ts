@@ -1,6 +1,5 @@
 /** @format */
 
-import { v } from '../../../externals_evolutions/logging'
 import {
     logFactory,
     NumberPanes,
@@ -22,7 +21,7 @@ export class ImplUiState implements UiState {
     }
 
     getPosition(renderViewName: RenderViewName): RenderViewPosition {
-        log.debug('Get position for {0}', v(renderViewName))
+        log.debug('Get position for {0}', { value: renderViewName })
         switch (this.current.indexOf(renderViewName)) {
             case 0:
                 return 'top'
@@ -36,7 +35,7 @@ export class ImplUiState implements UiState {
     }
 
     removeRenderView(renderViewName: RenderViewName): void {
-        log.debug('Remove {0}', v(renderViewName))
+        log.debug('Remove {0}', { value: renderViewName })
         const renderIndex = this.current.indexOf(renderViewName)
         if (renderIndex < 0) {
             throw new Error(
@@ -44,17 +43,18 @@ export class ImplUiState implements UiState {
             )
         }
         this.current.splice(renderIndex, 1)
-        log.debug('final list : {0}', v(this.current))
+        log.debug('final list : {0}', { value: this.current })
     }
 
     switchRenderView(
         currentRenderView: RenderViewName,
         otherRenderView: RenderViewName,
     ): void {
-        log.debug('switch {0} to {1}', [
-            v(currentRenderView),
-            v(otherRenderView),
-        ])
+        log.debug(
+            'switch {0} to {1}',
+            { value: currentRenderView },
+            { value: otherRenderView },
+        )
         const currentIndex = this.current.indexOf(currentRenderView)
         const otherIndex = this.current.indexOf(otherRenderView)
         if (currentIndex < 0) {
@@ -66,14 +66,14 @@ export class ImplUiState implements UiState {
         if (otherIndex >= 0) {
             this.current[otherIndex] = currentRenderView
         }
-        log.debug('final list : {0}', v(this.current))
+        log.debug('final list : {0}', { value: this.current })
     }
 
     set numberPanes(numberPane: NumberPanes) {
-        log.debug('set number of panes to {0}', v(numberPane))
+        log.debug('set number of panes to {0}', { value: numberPane })
         this.fillDisposition(numberPane)
         this.current.splice(numberPane)
-        log.debug('final list : {0}', v(this.current))
+        log.debug('final list : {0}', { value: this.current })
     }
 
     get numberPanes(): NumberPanes {
@@ -90,7 +90,7 @@ export class ImplUiState implements UiState {
     }
 
     private fillDisposition(numberPane: NumberPanes): void {
-        log.debug('fill list with {0} panes', v(numberPane))
+        log.debug('fill list with {0} panes', { value: numberPane })
         let defaultRenderViewIndex = 0
         for (
             let id = this.current.length;
@@ -99,22 +99,26 @@ export class ImplUiState implements UiState {
         ) {
             let candidateRenderView =
                 this.availableViewsNames[defaultRenderViewIndex]
-            log.debug('testing {2} (default {0}) for position {1}', [
-                v(defaultRenderViewIndex),
-                v(id),
-                v(candidateRenderView),
-            ])
+            log.debug(
+                'testing {2} (default {0}) for position {1}',
+                { value: defaultRenderViewIndex },
+                { value: id },
+                { value: candidateRenderView },
+            )
             while (this.current.includes(candidateRenderView)) {
-                log.debug(
-                    'candidate {0} already in list',
-                    v(candidateRenderView),
-                )
+                log.debug('candidate {0} already in list', {
+                    value: candidateRenderView,
+                })
                 candidateRenderView =
                     this.availableViewsNames[++defaultRenderViewIndex]
             }
-            log.debug('inserting {0} at {1}', [v(candidateRenderView), v(id)])
+            log.debug(
+                'inserting {0} at {1}',
+                { value: candidateRenderView },
+                { value: id },
+            )
             this.current[id] = candidateRenderView
         }
-        log.debug('final list : {0}', v(this.current))
+        log.debug('final list : {0}', { value: this.current })
     }
 }

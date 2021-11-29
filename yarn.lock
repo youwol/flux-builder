@@ -955,10 +955,10 @@
   resolved "https://registry.yarnpkg.com/@youwol/cdn-client/-/cdn-client-0.0.9.tgz#e774db81217f3eff06b54eb37357e053213e701d"
   integrity sha512-aEmdQ6KQm7cZhegg07FxrHFvUCI5ogR8yK6nZRZk3kuXXJFyKfgs3fK36Zu4dOmeIL41BKQvAyPWKbnOAaOx4A==
 
-"@youwol/flux-core@~0.0.21":
-  version "0.0.21"
-  resolved "https://registry.yarnpkg.com/@youwol/flux-core/-/flux-core-0.0.21.tgz#1710317b9d14946122ea187c4d8ec477e56e3f65"
-  integrity sha512-hHn8ODizOwS1o0vZT7pYCPqdVPb466PZCVtVtGoT+tuv3NC6dJ12LXdYOhUfvruxTXZDoXS1PVJNca7MhcQFJw==
+"@youwol/flux-core@~0.0.22":
+  version "0.0.22"
+  resolved "https://registry.yarnpkg.com/@youwol/flux-core/-/flux-core-0.0.22.tgz#73c317ba150a04b71abfb3a03317c1f5ec673380"
+  integrity sha512-Rd/oKuCfyxmJaNymPlID2oGbWOfkyDKJltGXEZ/UeYpklK74bv53h3wO4+KiZaYSC9PzHDR+pSePk7OBfQFxOg==
 
 "@youwol/flux-files@^0.0.5":
   version "0.0.5"
@@ -990,10 +990,10 @@
   resolved "https://registry.yarnpkg.com/@youwol/fv-context-menu/-/fv-context-menu-0.0.0.tgz#3196b10155190e50ffb837e2e62fabb467e59969"
   integrity sha512-pCEAam0e1lQs4do4xdeXd9VEhVfvY2Gd7OBbJBMVA7mEbTsurTg0meJrVOVTbTyk9a4fbk1WLNgkEo8E86bwFA==
 
-"@youwol/fv-group@~0.0.3":
-  version "0.0.3"
-  resolved "https://registry.yarnpkg.com/@youwol/fv-group/-/fv-group-0.0.3.tgz#d033a4004a2737540ab98c6596ac29a3f64217ce"
-  integrity sha512-IX/6VNhWcqDabunNTqP2bxWhOv0n4Mungk+15h1BQi58OCQYvDnukHaDhJNF+HBhX6q5bGnRr7eX7HdhhvKIwg==
+"@youwol/fv-group@~0.0.4-next":
+  version "0.0.4"
+  resolved "https://registry.yarnpkg.com/@youwol/fv-group/-/fv-group-0.0.4.tgz#c2f0569fe4a2b8f008c2ec4224a59a1ab84f51e3"
+  integrity sha512-hkHwJP/zoQfGPkdtLAOAhw10wA26gqhxCPBEXcx2uDAHYyHkCSuf3j08rqPDt54jncYlsOWxiopd8D+XewIaDw==
 
 "@youwol/fv-input@~0.0.5":
   version "0.0.5"

@@ -2,7 +2,6 @@
 
 import { Observable } from 'rxjs'
 import { map } from 'rxjs/operators'
-import { v } from '../../../externals_evolutions/logging'
 import {
     NumberPanes,
     RenderViewName,
@@ -28,7 +27,7 @@ export class PresenterViewState {
             map((uiState: UiState) => {
                 log.getChildLogger('uiState$').debug(
                     'returning viewState for view {0}',
-                    v(view),
+                    { value: view },
                 )
                 return {
                     position: uiState.getPosition(view),

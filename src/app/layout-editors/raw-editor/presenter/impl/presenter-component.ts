@@ -1,7 +1,7 @@
 /** @format */
 
+import { Logger } from '@youwol/logging'
 import { Subscription } from 'rxjs'
-import { Logger, v } from '../../../../externals_evolutions/logging'
 import { ModelApp } from '../../model'
 import { logFactory, PresenterComponent } from '..'
 import { ImplPresenterDoc } from './presenter-doc'
@@ -40,27 +40,24 @@ export class ImplPresenterComponent implements PresenterComponent {
                     modelComponent,
                     true,
                 )
-                logActiveComponent.debug(
-                    'get component {0}',
-                    v(presenterComponent.id),
-                )
+                logActiveComponent.debug('get component {0}', {
+                    value: presenterComponent.id,
+                })
                 this.modules = presenterComponent.descendantsHavingRenderView
                 this.css.loadComponentContent(modelComponent)
                 this.html.loadComponentContent(modelComponent)
                 this.presenterTree.load(presenterComponent)
 
                 const moduleIdSelected = this.modelApp.moduleIdSelected
-                logActiveComponent.debug(
-                    'selecting moduleId {0}',
-                    v(moduleIdSelected),
-                )
+                logActiveComponent.debug('selecting moduleId {0}', {
+                    value: moduleIdSelected,
+                })
                 this.select(moduleIdSelected)
             }),
             this.modelApp.moduleIdSelected$.subscribe((moduleIdSelected) => {
-                logModuleIdSelected.debug(
-                    'selecting moduleId {0}',
-                    v(moduleIdSelected),
-                )
+                logModuleIdSelected.debug('selecting moduleId {0}', {
+                    value: moduleIdSelected,
+                })
                 this.select(moduleIdSelected)
             }),
         ]
@@ -73,7 +70,7 @@ export class ImplPresenterComponent implements PresenterComponent {
     }
 
     private select(moduleId: string) {
-        this.log.debug('select {0}', v(moduleId))
+        this.log.debug('select {0}', { value: moduleId })
         this.modules.forEach((mdle) => (mdle.selected = mdle.id === moduleId))
     }
 }

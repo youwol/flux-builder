@@ -1,8 +1,8 @@
 /** @format */
 
 import { Component, ModuleConfiguration } from '@youwol/flux-core'
+import { Logger } from '@youwol/logging'
 import { AppStore } from '../../../../builder-editor/builder-state'
-import { v } from '../../../../externals_evolutions/logging'
 import { logFactory, ModelComponent } from '..'
 import { ImplModelModule } from './model-module'
 
@@ -12,7 +12,7 @@ export class ImplModelComponent
     extends ImplModelModule
     implements ModelComponent
 {
-    private readonly ownLog
+    private readonly ownLog: Logger
 
     constructor(
         private readonly component: Component.Module,
@@ -24,7 +24,11 @@ export class ImplModelComponent
     }
 
     public set contentHtml(content: string) {
-        this.ownLog.debug('set HTML content to {0}', v(content))
+        this.ownLog.debug('set HTML content', {
+            value: content,
+            placeHolder: false,
+            dump: true,
+        })
         const htmlDivElement = this.component.getOuterHTML()
             ? this.component.getOuterHTML()
             : document.createElement('div')
@@ -46,12 +50,20 @@ export class ImplModelComponent
 
     public get contentHtml(): string {
         const content = this.component.getOuterHTML()?.innerHTML ?? ''
-        this.ownLog.debug('get HTML content {0}', v(content))
+        this.ownLog.debug('get HTML content', {
+            value: content,
+            placeHolder: false,
+            dump: true,
+        })
         return content
     }
 
     public set contentCss(content: string) {
-        this.ownLog.debug('set CSS content to {0}', v(content))
+        this.ownLog.debug('set CSS content', {
+            value: content,
+            placeHolder: false,
+            dump: true,
+        })
         this.appStore.updateModule(
             this.component,
             new ModuleConfiguration({
@@ -70,7 +82,11 @@ export class ImplModelComponent
 
     public get contentCss(): string {
         const content = this.component.getOuterCSS()?.toString() ?? ''
-        this.ownLog.debug('get CSS content {0}', v(content))
+        this.ownLog.debug('get CSS content', {
+            value: content,
+            dump: true,
+            placeHolder: false,
+        })
         return content
     }
 }

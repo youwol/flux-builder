@@ -1,8 +1,8 @@
 /** @format */
 
 import { ImmutableTree } from '@youwol/fv-tree'
+import { Logger } from '@youwol/logging'
 import { ReplaySubject } from 'rxjs'
-import { Logger, v } from '../../../../externals_evolutions/logging'
 import { ModelModule, TypeDoc, TypeModule } from '../../model'
 import {
     equal,
@@ -79,7 +79,7 @@ export class ImplPresenterModule
 
     public set selected(selected: boolean) {
         if (this.isSelected != selected) {
-            this.log.debug('set selected : {0}', v(selected))
+            this.log.debug('set selected : {0}', { value: selected })
             this.isSelected = selected
             this.selected$.next(selected)
         }
@@ -95,7 +95,7 @@ export class ImplPresenterModule
             this.currentPositionIn[typeDoc] === undefined ||
             !equal(position, this.currentPositionIn[typeDoc])
         ) {
-            _log.debug('setting position for {0}', v(typeDoc))
+            _log.debug('setting position for {0}', { value: typeDoc })
             this.currentPositionIn[typeDoc] = position
             this.positionIn[typeDoc + '$'].next(position)
         }
@@ -106,7 +106,7 @@ export class ImplPresenterModule
     }
 
     public get descendantsHavingRenderView(): ImplPresenterModule[] {
-        this.log.debug('Returning children for {0}', v(this.id))
+        this.log.debug('Returning children for {0}', { value: this.id })
         return [
             ...(this.presentersChildren ?? []),
             ...(this.presentersChildren?.flatMap(

@@ -3,7 +3,6 @@
 import CodeMirror from 'codemirror'
 import js_beautify from 'js-beautify'
 import { ReplaySubject } from 'rxjs'
-import { v } from '../../../../externals_evolutions/logging'
 import { ModelComponent, TypeDoc } from '../../model'
 import {
     ignore,
@@ -37,17 +36,19 @@ export class ImplPresenterDoc<typeDoc extends TypeDoc> implements PresenterDoc {
     public insert(doc: CodeMirror.Doc): void {
         const _log = this.log.getChildLogger('onInsert')
         const selectedId = this.presenter.modelApp.moduleIdSelected
-        _log.debug('considering selectedId {0} for insertion', v(selectedId))
+        _log.debug('considering selectedId {0} for insertion', {
+            value: selectedId,
+        })
         const id = this.presenter.modules.find(
             (mdle) =>
                 mdle.id === selectedId &&
                 mdle.getPositionIn(this.typeDoc) === missing,
         )?.id
         if (id !== undefined) {
-            _log.debug('Inserting id {0}', v(id))
+            _log.debug('Inserting id {0}', { value: id })
             insertModuleId[this.typeDoc](id, doc)
         } else {
-            _log.debug('Not Inserting id {0}', v(selectedId))
+            _log.debug('Not Inserting id {0}', { value: selectedId })
         }
     }
 
@@ -73,7 +74,7 @@ export class ImplPresenterDoc<typeDoc extends TypeDoc> implements PresenterDoc {
             .filter((mdle) => mdle.getPositionIn(this.typeDoc) !== ignore)
             .forEach((mdle) => {
                 const modulePosition = this.findModulePosition(mdle)
-                _log.debug('module {0} is not ignored', v(mdle.id))
+                _log.debug('module {0} is not ignored', { value: mdle.id })
                 mdle.setPosition(this.typeDoc, modulePosition)
             })
         this.positions$.next(

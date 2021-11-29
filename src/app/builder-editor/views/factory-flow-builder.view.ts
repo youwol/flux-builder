@@ -1,9 +1,9 @@
 /** @format */
 
+import { BehaviorSubject, merge } from 'rxjs'
 import { Connection, ModuleFlux } from '@youwol/flux-core'
 import { child$, VirtualDOM } from '@youwol/flux-view'
-import { BehaviorSubject, merge } from 'rxjs'
-import { resizablePanel } from '../../externals_evolutions/essentials/resizable-pane.view'
+import { resizablePanel } from '@youwol/fv-group'
 import { ProjectTreeView } from '../../page/views/project-tree.view'
 import { AppStore } from '../builder-state'
 import {

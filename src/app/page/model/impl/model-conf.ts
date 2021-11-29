@@ -1,6 +1,5 @@
 /** @format */
 
-import { v } from '../../../externals_evolutions/logging'
 import {
     Conf,
     Feature,
@@ -47,9 +46,9 @@ function featuresSetFromString(featuresParam: string): {
             } else {
                 availableRendersViews.push(feature)
             }
-            log.debug('{0} => {1}', [v(letter), v(feature)])
+            log.debug('{0} => {1}', { value: letter }, { value: feature })
         } else {
-            log.warning('Unknown one letter feature : {0}', v(letter))
+            log.warning('Unknown one letter feature : {0}', { value: letter })
         }
     }
     if (defaultNumberPanes === undefined) {
@@ -63,17 +62,17 @@ function featuresSetFromString(featuresParam: string): {
 
 export function factoryConf(): Conf {
     const urlQueryParams = new URLSearchParams(document.location.search)
-    log.debug('UrlQueryParams: "{0}"', v(urlQueryParams))
+    log.debug('UrlQueryParams: "{0}"', { value: urlQueryParams })
     const featuresParam = urlQueryParams.get('features') ?? defaultFeaturesParam
-    log.debug('FeaturesParam : {0}', v(featuresParam))
+    log.debug('FeaturesParam : {0}', { value: featuresParam })
     const altFeaturesParam =
         urlQueryParams.get('alt_features') ?? defaultAltFeaturesParam
-    log.debug('AltFeaturesParam : {0}', v(altFeaturesParam))
+    log.debug('AltFeaturesParam : {0}', { value: altFeaturesParam })
     const features = featuresSetFromString(featuresParam)
     urlQueryParams.set('features', altFeaturesParam)
     urlQueryParams.set('alt_features', featuresParam)
     const altUrlQueryParams = urlQueryParams.toString()
-    log.debug('altUrlQueryParams: "{0}"', v(altUrlQueryParams))
+    log.debug('altUrlQueryParams: "{0}"', { value: altUrlQueryParams })
     return {
         altUrlQueryParams,
         ...features,

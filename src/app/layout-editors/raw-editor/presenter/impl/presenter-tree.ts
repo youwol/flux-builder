@@ -1,10 +1,9 @@
 /** @format */
 
 import { ImmutableTree } from '@youwol/fv-tree'
+import { Logger } from '@youwol/logging'
 import { Subscription } from 'rxjs'
 import { filter, map } from 'rxjs/operators'
-import { Logger, v } from '../../../../externals_evolutions/logging'
-import { selectNodeAndExpand } from '../../../../externals_evolutions/fv-tree/immutable-tree'
 import { logFactory, PresenterTreeNode } from '..'
 import { ImplPresenterComponent } from './presenter-component'
 import { ImplPresenterModule } from './presenter-module'
@@ -44,11 +43,13 @@ export class PresenterTree extends ImmutableTree.State<PresenterTreeNode> {
                     map((node) => node.id),
                 )
                 .subscribe((id) => {
-                    logSelectedNode.debug('Node selected: {0}', v(id))
+                    logSelectedNode.debug('Node selected: {0}', { value: id })
                     this.presenter.modelApp.moduleIdSelected = id
                 }),
             this.presenter.modelApp.moduleIdSelected$.subscribe((id) => {
-                logModuleIdSelected.debug('moduleId selected {0}', v(id))
+                logModuleIdSelected.debug('moduleId selected {0}', {
+                    value: id,
+                })
                 this.maybeSelect(id)
             }),
         )
@@ -56,11 +57,11 @@ export class PresenterTree extends ImmutableTree.State<PresenterTreeNode> {
 
     private maybeSelect(id: string) {
         if (this.getNode(id)) {
-            this.log.debug('Selecting {0}', v(id))
-            selectNodeAndExpand(this, this.getNode(id))
+            this.log.debug('Selecting {0}', { value: id })
+            this.selectNodeAndExpand(this.getNode(id))
         } else {
-            this.log.debug('Id {0} not found', v(id))
-            selectNodeAndExpand(this, this.getNode(this.rootId))
+            this.log.debug('Id {0} not found', { value: id })
+            this.selectNodeAndExpand(this.getNode(this.rootId))
         }
     }
 
