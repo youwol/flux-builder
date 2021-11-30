@@ -7,7 +7,7 @@ import {
     defaultUserMenu,
     defaultYouWolMenu,
     YouwolBannerState,
-} from '@youwol/flux-youwol-essentials'
+} from '@youwol/platform-essentials'
 import { from, Observable } from 'rxjs'
 import { map } from 'rxjs/operators'
 import { AppStore } from '../../builder-editor/builder-state'
@@ -48,7 +48,6 @@ export function mainView(
 }
 
 class TopBannerView extends YouwolBannerView {
-    public readonly class = 'd-flex flex-grow-l grapes-bg-color p-1'
 
     constructor(
         appStore: AppStore,
@@ -56,6 +55,7 @@ class TopBannerView extends YouwolBannerView {
         youwolBannerState: YouwolBannerState,
     ) {
         super({
+            class: 'grapes-bg-color p-1',
             state: youwolBannerState,
             customActionsView: topBanner(appStore, presenter),
             userMenuView: defaultUserMenu(youwolBannerState),
@@ -63,7 +63,7 @@ class TopBannerView extends YouwolBannerView {
             signedIn$: from(
                 fetch(new Request('/api/assets-gateway/healthz')),
             ).pipe(map((resp) => resp.status == 200)),
-        })
+        } as any)
     }
 }
 
