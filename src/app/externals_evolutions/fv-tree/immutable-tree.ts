@@ -1,39 +1,6 @@
 /** @format */
 
 import { Component, ModuleFlux } from '@youwol/flux-core'
-import { ImmutableTree } from '@youwol/fv-tree'
-
-export function selectNodeAndExpand<T extends ImmutableTree.Node>(
-    state: ImmutableTree.State<T>,
-    node: T,
-): void {
-    state.selectedNode$.next(node)
-
-    // Expand tree to show this node. This could (should ?) be implemented in immutable-tree.view.ts
-    const ensureExpanded: string[] = [node.id]
-
-    // Ensure parents nodes are also expanded
-    let parent = state.getParent(node.id)
-    while (parent != undefined) {
-        ensureExpanded.push(parent.id)
-        parent = state.getParent(parent.id)
-    }
-    // Put parents at the begin
-    ensureExpanded.reverse()
-
-    // Currently expanded nodes
-    const actualExpanded = state.expandedNodes$.getValue()
-
-    // One-liner for filtering unique values of an array
-    const arrayUniq = (v, i, s) => s.indexOf(v) === i
-    // What we want
-    const expectedExpanded = actualExpanded
-        .concat(ensureExpanded)
-        .filter(arrayUniq)
-
-    // Update tree expanded nodes
-    state.expandedNodes$.next(expectedExpanded)
-}
 
 /**
  * Functions returning the id of a {@link ModuleNode|node} representing a {@link ModuleFlux|module}; this string
@@ -42,7 +9,6 @@ export function selectNodeAndExpand<T extends ImmutableTree.Node>(
  * Shall be instantiate with {@link nodeIdBuilderForUniq}.
  *
  * @category Nodes Id
- *
  */
 export interface NodeIdBuilder {
     /**

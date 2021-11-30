@@ -1,15 +1,19 @@
 /** @format */
 
-import { RenderViewName } from './model-common'
-export type UiState = UiStateMono | UiStateSplit
+import { RenderViewName } from './model-features'
 
-export interface UiStateMono {
-    kind: 'mono'
-    view: RenderViewName
-}
+export type RenderViewPosition = 'top' | 'middle' | 'bottom' | 'none'
 
-export interface UiStateSplit {
-    kind: 'split'
-    topView: RenderViewName
-    bottomView: RenderViewName
+export const numberPanes = [1, 2, 3] as const
+
+export type NumberPanes = typeof numberPanes[number]
+
+export interface UiState {
+    removeRenderView(renderViewName: RenderViewName): void
+    getPosition(renderViewName: RenderViewName): RenderViewPosition
+    switchRenderView(
+        currentRenderView: RenderViewName,
+        otherRenderView: RenderViewName,
+    ): void
+    numberPanes: NumberPanes
 }

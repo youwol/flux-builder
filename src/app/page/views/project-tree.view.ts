@@ -1,4 +1,6 @@
 /** @format */
+import { Observable, Subscription } from 'rxjs'
+import { filter, map } from 'rxjs/operators'
 import {
     Component,
     GroupModules,
@@ -9,13 +11,11 @@ import {
 } from '@youwol/flux-core'
 import { VirtualDOM } from '@youwol/flux-view'
 import { ImmutableTree } from '@youwol/fv-tree'
-import { Observable, Subscription } from 'rxjs'
-import { filter, map } from 'rxjs/operators'
+
 import { AppStore } from '../../builder-editor/builder-state'
 import {
     NodeIdBuilder,
     nodeIdBuilderForUniq,
-    selectNodeAndExpand,
 } from '../../externals_evolutions/fv-tree/immutable-tree'
 
 export namespace ProjectTreeView {
@@ -390,8 +390,7 @@ export namespace ProjectTreeView {
          *
          */
         private selectNodeRepresentingModule(mdle: ModuleFlux) {
-            selectNodeAndExpand(
-                this,
+            this.selectNodeAndExpand(
                 this.getNode(this.nodeIdBuilder.buildForModule(mdle)),
             )
         }

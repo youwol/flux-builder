@@ -1,12 +1,14 @@
 /** @format */
 
-import { ModuleFlux } from '@youwol/flux-core'
-import { attr$, VirtualDOM } from '@youwol/flux-view'
 import { BehaviorSubject, merge, Observable, of } from 'rxjs'
 import { map } from 'rxjs/operators'
+import { ModuleFlux } from '@youwol/flux-core'
+import { attr$, VirtualDOM } from '@youwol/flux-view'
 import { AppStore } from '../../builder-editor/builder-state'
-import { ViewState } from '../model'
 import { PresenterUiState } from '../presenter'
+import { logFactory } from '..'
+
+const log = logFactory().getChildLogger('TopBannerView')
 
 interface Action {
     name: string
@@ -21,7 +23,7 @@ export function topBanner(
 ): VirtualDOM {
     const actions = getActions(appStore, uiStatePresenter)
     return {
-        class: 'd-flex grapes-bg-color py-1  fv-color-primary justify-content-around',
+        class: 'd-flex w-100 justify-content-around',
         children: [
             groupActionsView(actions.features),
             groupActionsView(actions.main),
@@ -38,28 +40,9 @@ function getActions(appStore: AppStore, presenter: PresenterUiState) {
         features: [
             {
                 name: 'main',
-                class: 'fas fa-palette',
-                visible: of(presenter.features !== 'main'),
-                enabled: of(presenter.features !== 'main'),
-                onTriggered: () => {
-                    if (
-                        confirm(
-                            'This page will be redirected. All unsaved changes will be lost.\n' +
-                                'Do you confirm  ?',
-                        )
-                    ) {
-                        document.location.href = document.location.href.replace(
-                            '&features=beta',
-                            '',
-                        )
-                    }
-                },
-            },
-            {
-                name: 'beta',
                 class: 'fas fa-code',
-                visible: of(presenter.features !== 'beta'),
-                enabled: of(presenter.features !== 'beta'),
+                visible: of(true),
+                enabled: of(true),
                 onTriggered: () => {
                     if (
                         confirm(
@@ -67,8 +50,13 @@ function getActions(appStore: AppStore, presenter: PresenterUiState) {
                                 'Do you confirm  ?',
                         )
                     ) {
-                        document.location.href =
-                            document.location + '&features=beta'
+                        const href = presenter.alternateUrl
+                        log.debug(
+                            'Redirecting from "{0}" to "{1}"',
+                            { value: document.location.href },
+                            { value: href },
+                        )
+                        document.location.href = `?${href}`
                     }
                 },
             },
@@ -107,133 +95,6 @@ function getActions(appStore: AppStore, presenter: PresenterUiState) {
             },
         ],
         layout: [
-            {
-                name: 'builder-view',
-                class: 'fas fa-project-diagram n-resize',
-                visible: of(true),
-                enabled: presenter
-                    .getPresenterViewState('builder')
-                    .state$.pipe(
-                        map(
-                            (viewState: ViewState) =>
-                                viewState.display !== 'top' &&
-                                viewState.display !== 'mono',
-                        ),
-                    ),
-                onTriggered: () => presenter.toggleView('builder'),
-            },
-            {
-                name: 'grapejs-view',
-                class: 'fas fa-palette n-resize',
-                visible: of(presenter.features === 'main'),
-                enabled: presenter
-                    .getPresenterViewState('grapejs')
-                    .state$.pipe(
-                        map(
-                            (viewState: ViewState) =>
-                                viewState.display !== 'top' &&
-                                viewState.display !== 'mono',
-                        ),
-                    ),
-                onTriggered: () => presenter.toggleView('grapejs'),
-            },
-            {
-                name: 'editor-view',
-                class: 'fas fa-code n-resize',
-                visible: of(presenter.features === 'beta'),
-                enabled: presenter
-                    .getPresenterViewState('editor')
-                    .state$.pipe(
-                        map(
-                            (viewState: ViewState) =>
-                                viewState.display !== 'top' &&
-                                viewState.display !== 'mono',
-                        ),
-                    ),
-                onTriggered: () => presenter.toggleView('editor'),
-            },
-            {
-                name: 'runner-view',
-                class: 'fas fa-eye n-resize',
-                visible: of(presenter.features === 'beta'),
-                enabled: presenter
-                    .getPresenterViewState('runner')
-                    .state$.pipe(
-                        map(
-                            (viewState: ViewState) =>
-                                viewState.display !== 'top' &&
-                                viewState.display !== 'mono',
-                        ),
-                    ),
-                onTriggered: () => presenter.toggleView('runner'),
-            },
-            {
-                name: 'builder-view',
-                class: 'fas fa-columns fa-rotate-90',
-                visible: presenter.split$,
-                enabled: of(true),
-                onTriggered: () => presenter.toggleSplit(),
-            },
-            {
-                name: 'builder-view',
-                class: 'fas fa-project-diagram s-resize',
-                visible: of(true),
-                enabled: presenter
-                    .getPresenterViewState('builder')
-                    .state$.pipe(
-                        map(
-                            (viewState: ViewState) =>
-                                viewState.display !== 'bottom' &&
-                                viewState.display !== 'mono',
-                        ),
-                    ),
-                onTriggered: () => presenter.toggleView('builder', 'bottom'),
-            },
-            {
-                name: 'grapejs-view',
-                class: 'fas fa-palette s-resize',
-                visible: of(presenter.features === 'main'),
-                enabled: presenter
-                    .getPresenterViewState('grapejs')
-                    .state$.pipe(
-                        map(
-                            (viewState: ViewState) =>
-                                viewState.display !== 'bottom' &&
-                                viewState.display !== 'mono',
-                        ),
-                    ),
-                onTriggered: () => presenter.toggleView('grapejs', 'bottom'),
-            },
-            {
-                name: 'editor-view',
-                class: 'fas fa-code s-resize',
-                visible: of(presenter.features === 'beta'),
-                enabled: presenter
-                    .getPresenterViewState('editor')
-                    .state$.pipe(
-                        map(
-                            (viewState: ViewState) =>
-                                viewState.display !== 'bottom' &&
-                                viewState.display !== 'mono',
-                        ),
-                    ),
-                onTriggered: () => presenter.toggleView('editor', 'bottom'),
-            },
-            {
-                name: 'runner-view',
-                class: 'fas fa-eye s-resize',
-                visible: of(presenter.features === 'beta'),
-                enabled: presenter
-                    .getPresenterViewState('runner')
-                    .state$.pipe(
-                        map(
-                            (viewState: ViewState) =>
-                                viewState.display !== 'bottom' &&
-                                viewState.display !== 'mono',
-                        ),
-                    ),
-                onTriggered: () => presenter.toggleView('runner', 'bottom'),
-            },
             {
                 name: 'builder-view',
                 class: 'fas fa-expand  ',

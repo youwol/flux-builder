@@ -2,33 +2,44 @@
 
 import { Observable } from 'rxjs'
 import { map } from 'rxjs/operators'
-import { v } from '../../../externals_evolutions/logging'
 import {
-    factoryViewState,
+    NumberPanes,
     RenderViewName,
+    RenderViewPosition,
     UiState,
-    ViewState,
 } from '../../model'
-import { logFactory } from '../'
+import { logFactory } from '..'
+import { ImplPresenterUiState } from './presenter-ui-state'
 
 const log = logFactory().getChildFactory('ViewState')
 
 export class PresenterViewState {
-    public readonly state$: Observable<ViewState>
+    public readonly state$: Observable<{
+        position: RenderViewPosition
+        numberPanes: NumberPanes
+    }>
 
     constructor(
-        uiState$: Observable<UiState>,
+        private readonly presenterUiState: ImplPresenterUiState,
         private readonly view: RenderViewName,
-        private readonly additionalClasses: string = '',
     ) {
-        this.state$ = uiState$.pipe(
+        this.state$ = presenterUiState.uiState$.pipe(
             map((uiState: UiState) => {
                 log.getChildLogger('uiState$').debug(
                     'returning viewState for view {0}',
-                    v(view),
+                    { value: view },
                 )
-                return factoryViewState(view, uiState, additionalClasses)
+                return {
+                    position: uiState.getPosition(view),
+                    numberPanes: uiState.numberPanes,
+                }
             }),
         )
+    }
+    close() {
+        this.presenterUiState.remove(this.view)
+    }
+    change(otherViewName: RenderViewName) {
+        this.presenterUiState.switch(this.view, otherViewName)
     }
 }

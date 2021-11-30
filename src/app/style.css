@@ -1,36 +1,45 @@
 @import url('style-svg.css');
 
-html, body { height: 100%; }
-body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
-.CodeMirror { height: 100% !important; }
+html, body {
+    height: 100%;
+}
 
-.grapes-bg-color{
+body {
+    margin: 0;
+    font-family: Roboto, "Helvetica Neue", sans-serif;
+}
+
+.CodeMirror {
+    height: 100% !important;
+}
+
+.grapes-bg-color {
     background-color: #444;
 }
 
-#loading-screen{
-    top:0px;
-    left:0px;
-    position: absolute ;
+#loading-screen {
+    top: 0;
+    left: 0;
+    position: absolute;
     z-index: 10;
-    height:100vh;
-    width:100vw;
+    height: 100vh;
+    width: 100vw;
     background-color: white;
     background-repeat: no-repeat;
     background-position: center;
 }
 
-#notifications-container{
+#notifications-container {
     border-radius: 0.25em;
     position: absolute;
     width: 300px;
-    top:50px;
-    margin:10px;
-    max-height:80vh;
+    top: 50px;
+    margin: 10px;
+    max-height: 80vh;
     overflow-y: auto;
     font-size: small;
-    z-index:100;
-    background-color: rgba(54,55,55,0.7);
+    z-index: 100;
+    background-color: rgba(54, 55, 55, 0.7);
 }
 
 
@@ -40,58 +49,126 @@ Scroll Bar Definition
 /* width */
 ::-webkit-scrollbar {
     width: 5px;
-  }
+}
 
 /* Track */
 ::-webkit-scrollbar-track {
-background: #f1f1f1;
+    background: #f1f1f1;
 }
 
 /* Handle */
 ::-webkit-scrollbar-thumb {
-background: #888;
-border-radius: 10px;
+    background: #888;
+    border-radius: 10px;
 }
 
 /* Handle on hover */
 ::-webkit-scrollbar-thumb:hover {
-background: #555;
+    background: #555;
 }
+
 /* End Scroll bar*/
 
 
-.collapsed > #panel__layout-managers-actions > #panel__render-panels-actions{
-    display: none!important;
+.collapsed > #panel__layout-managers-actions > #panel__render-panels-actions {
+    display: none !important;
 }
-.collapsed > #panel__layout-managers-actions > #panel__render-panels-actions{
-    display: none!important;
+
+.collapsed > #panel__layout-managers-actions > #panel__render-panels-actions {
+    display: none !important;
 }
-.panels-container{
+
+.panels-container {
     display: block
 }
-.panels-container.collapsed{
+
+.panels-container.collapsed {
     display: none
 }
 
 
-
-#editor-container{
+#editor-container {
     display: flex;
     flex-direction: column;
-    height:100%
-  }
-
-.gjs-cv-canvas {
-    top: 0px !important;
-    height: 100% !important;
-    width: 100%  !important;
+    height: 100%
 }
 
-#gjs{
-    flex:auto;
+.gjs-cv-canvas {
+    top: 0 !important;
+    height: 100% !important;
+    width: 100% !important;
+}
+
+#gjs {
+    flex: auto;
 }
 
 
 .cm-module-widget-selected {
     color: #ffbb00;
+}
+
+.h-33 {
+    height: 33.33% !important;
+}
+
+button.panel-btn {
+    padding: 0 2px 0 2px;
+}
+
+.resizable-panel-left-collapsed {
+    text-align: center;
+    cursor: e-resize;
+    writing-mode: vertical-rl;
+    transform: scale(-1);
+    user-select: none;
+}
+
+.resizable-panel-right-collapsed {
+    text-align: center;
+    cursor: w-resize;
+    writing-mode: vertical-rl;
+    user-select: none;
+}
+
+.resizable-panel-left-handle {
+    right: 0;
+    cursor: col-resize;
+    z-index: 1;
+    opacity: 0;
+    position: absolute;
+    width: 5px;
+    height: 100%;
+}
+
+.resizable-panel-right-handle {
+    left: 0;
+    cursor: col-resize;
+    z-index: 1;
+    opacity: 0;
+    position: absolute;
+    width: 5px;
+    height: 100%;
+}
+
+.resizable-panel-left-handle:hover {
+    right: 0;
+    cursor: col-resize;
+    z-index: 1;
+    opacity: 1;
+    background: black;
+    position: absolute;
+    width: 5px;
+    height: 100%;
+}
+
+.resizable-panel-right-handle:hover {
+    left: 0;
+    cursor: col-resize;
+    z-index: 1;
+    opacity: 1;
+    background: black;
+    position: absolute;
+    width: 5px;
+    height: 100%;
 }

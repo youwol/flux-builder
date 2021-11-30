@@ -1,19 +1,34 @@
-import { ErrorLog, GroupModules, ModuleError, ModuleFlux, Process, ProcessMessage, ProcessMessageKind } from '@youwol/flux-core';
-import { attr$, HTMLElement$, render, Stream$, VirtualDOM } from '@youwol/flux-view';
-import { Observable } from 'rxjs';
-import { delay, filter, take } from 'rxjs/operators';
-import { WorkflowPlotter } from './builder-editor/builder-plots';
-import { AppStore } from './builder-editor/builder-state';
-import { ContextView } from './builder-editor/views/context.view';
+/** @format */
 
+import { Observable } from 'rxjs'
+import { delay, filter, take } from 'rxjs/operators'
+import {
+    ErrorLog,
+    GroupModules,
+    ModuleError,
+    ModuleFlux,
+    Process,
+    ProcessMessage,
+    ProcessMessageKind,
+} from '@youwol/flux-core'
+import {
+    attr$,
+    HTMLElement$,
+    render,
+    Stream$,
+    VirtualDOM,
+} from '@youwol/flux-view'
+import { WorkflowPlotter } from './builder-editor/builder-plots'
+import { AppStore } from './builder-editor/builder-state'
+import { ContextView } from './builder-editor'
 
 /**
- * Focus a module in the workflow by toggeling a provided class on the module's svg group element for 
- * a provided duration. Focusing means: 
+ * Focus a module in the workflow by toggeling a provided class on the module's svg group element for
+ * a provided duration. Focusing means:
  * -    the active layer is changed to the mdoule's containing layer if need be
  * -    the builder canvas is translated such that the module is located at its center
  * -    if styles are associated to the toggeling class, those are applied during the specified duration
- * 
+ *
  * @param mdle module to focus
  * @param appStore reference to the appStore of the application
  * @param workflowPlotter reference to the workflow plotter of the application
@@ -21,77 +36,101 @@ import { ContextView } from './builder-editor/views/context.view';
  * @param duration duration of the focus
  */
 function focusAction(
-    mdle: ModuleFlux, 
-    appStore: AppStore, 
+    mdle: ModuleFlux,
+    appStore: AppStore,
     workflowPlotter: WorkflowPlotter,
     toggledClass: string,
-    duration = 5000 ) {
-     
+    duration = 5000,
+) {
     const root = appStore.getRootComponent()
-    const layer = appStore.project.workflow.modules
-    .find((mdle) => mdle instanceof GroupModules.Module && mdle.getModuleIds().includes(mdle.moduleId) )
+    const layer = appStore.project.workflow.modules.find(
+        (mdle) =>
+            mdle instanceof GroupModules.Module &&
+            mdle.getModuleIds().includes(mdle.moduleId),
+    )
     appStore.selectActiveGroup(layer.moduleId)
-    
-    setTimeout( () => {
+
+    setTimeout(() => {
         const g = document.getElementById(mdle.moduleId)
         const bBox = g.getBoundingClientRect()
-        workflowPlotter.drawingArea.lookAt( 0.5*(bBox.left + bBox.right),  0.5*(bBox.top + bBox.bottom))
+        workflowPlotter.drawingArea.lookAt(
+            0.5 * (bBox.left + bBox.right),
+            0.5 * (bBox.top + bBox.bottom),
+        )
         g.classList.toggle(toggledClass)
-        setTimeout( () => g.classList.toggle(toggledClass), duration )
-    }, 0 )
+        setTimeout(() => g.classList.toggle(toggledClass), duration)
+    }, 0)
 }
 
 /**
  * Plug the notification system to the application environment.
  * For now, only module's errors (ModuleError in flux-core) are handled.
- * 
+ *
  * @param appStore reference to the appStore of the application
  * @param workflowPlotter reference to the workflow plotter of the application
  */
 export function plugNotifications(
     appStore: AppStore,
-    workflowPlotter: WorkflowPlotter){
-
-    appStore.environment.errors$.pipe(
-        filter(  (log:ErrorLog) => log.error instanceof ModuleError )
-    ).subscribe(
-        (log:ErrorLog<ModuleError>) => Notifier.error({ 
-            message: log.error.message, 
-            title:  log.error.module.Factory.id, 
-            actions: [
-                {
-                    name: 'focus', 
-                    exe: () => focusAction(log.error.module, appStore, workflowPlotter, "error") 
-                },
-                {
-                    name: 'report',
-                    exe: () => ContextView.reportContext(log.context, log.id)
-                }
-            ]
-        })
-    )
-    appStore.environment.processes$.subscribe( (p: Process)=> {
-        
+    workflowPlotter: WorkflowPlotter,
+) {
+    appStore.environment.errors$
+        .pipe(filter((log: ErrorLog) => log.error instanceof ModuleError))
+        .subscribe((log: ErrorLog<ModuleError>) =>
+            Notifier.error({
+                message: log.error.message,
+                title: log.error.module.Factory.id,
+                actions: [
+                    {
+                        name: 'focus',
+                        exe: () =>
+                            focusAction(
+                                log.error.module,
+                                appStore,
+                                workflowPlotter,
+                                'error',
+                            ),
+                    },
+                    {
+                        name: 'report',
+                        exe: () =>
+                            ContextView.reportContext(log.context, log.id),
+                    },
+                ],
+            }),
+        )
+    appStore.environment.processes$.subscribe((p: Process) => {
         const classesIcon = {
-            [ProcessMessageKind.Scheduled]: "fas fa-clock px-2",
-            [ProcessMessageKind.Started]: "fas fa-cog fa-spin px-2",
-            [ProcessMessageKind.Succeeded]: "fas fa-check fv-text-success px-2",
-            [ProcessMessageKind.Failed]: "fas fa-times fv-text-error px-2",
-            [ProcessMessageKind.Log]: "fas fa-cog fa-spin px-2",
+            [ProcessMessageKind.Scheduled]: 'fas fa-clock px-2',
+            [ProcessMessageKind.Started]: 'fas fa-cog fa-spin px-2',
+            [ProcessMessageKind.Succeeded]: 'fas fa-check fv-text-success px-2',
+            [ProcessMessageKind.Failed]: 'fas fa-times fv-text-error px-2',
+            [ProcessMessageKind.Log]: 'fas fa-cog fa-spin px-2',
         }
-        const doneMessages = [ProcessMessageKind.Succeeded, ProcessMessageKind.Failed]
-        const actions = p.context 
-            ? [{
-                name: 'report',
-                exe: () => ContextView.reportContext(p.context)
-                }]
+        const doneMessages = [
+            ProcessMessageKind.Succeeded,
+            ProcessMessageKind.Failed,
+        ]
+        const actions = p.context
+            ? [
+                  {
+                      name: 'report',
+                      exe: () => ContextView.reportContext(p.context),
+                  },
+              ]
             : []
         Notifier.notify({
             title: p.title,
-            message: attr$(p.messages$, (step: ProcessMessage)=> step.text),
-            classIcon:  attr$(p.messages$, (step: ProcessMessage)=> classesIcon[step.kind]),
+            message: attr$(p.messages$, (step: ProcessMessage) => step.text),
+            classIcon: attr$(
+                p.messages$,
+                (step: ProcessMessage) => classesIcon[step.kind],
+            ),
             actions,
-            timeout:p.messages$.pipe(filter( m => doneMessages.includes(m.kind)), take(1),delay(1000))
+            timeout: p.messages$.pipe(
+                filter((m) => doneMessages.includes(m.kind)),
+                take(1),
+                delay(1000),
+            ),
         })
     })
 }
@@ -99,131 +138,166 @@ export function plugNotifications(
 /**
  * Interface for notifier's action
  */
-export interface INotifierAction{
-
+export interface INotifierAction {
     /**
      * displayed name of the action
      */
-    name : string
+    name: string
 
     /**
-     * execution function 
+     * execution function
      */
-    exe : () => void
+    exe: () => void
 }
 
 /**
- * This class provides a notification system that popups message in the 
+ * This class provides a notification system that popups message in the
  * HTML document.
- * 
+ *
  * For now, only module's errors (ModuleError in flux-core) are handled.
- * 
+ *
  * Notification can be associated to custom [[INotifierAction | action]]
  */
-export class Notifier{
-
-    static classesIcon={
-        4: "fas fa-2x fa-exclamation-circle text-danger px-2 mt-auto mb-auto",
-        3: "fas fa-2x fa-exclamation text-warning px-2 mt-auto mb-auto",
+export class Notifier {
+    static classesIcon = {
+        4: 'fas fa-2x fa-exclamation-circle text-danger px-2 mt-auto mb-auto',
+        3: 'fas fa-2x fa-exclamation text-warning px-2 mt-auto mb-auto',
     }
-    static classesBorder={
-        4: "border-danger",
-        3: "border-warning",
+    static classesBorder = {
+        4: 'border-danger',
+        3: 'border-warning',
     }
 
-    constructor( public readonly appStore: AppStore){
-
-    }
+    constructor(public readonly appStore: AppStore) {}
     /**
      * Popup a notification with level=='Info'
-     * 
+     *
      * @param message content
      * @param title title
      * @param actions available actions
      */
-    static notify({message, title, classIcon, actions, timeout}:{
-        message?: string | Stream$<unknown, string>,
-        classIcon: string | Stream$<unknown, string>,
-        title: string,
-        actions: INotifierAction[],
+    static notify({
+        message,
+        title,
+        classIcon,
+        actions,
+        timeout,
+    }: {
+        message?: string | Stream$<unknown, string>
+        classIcon: string | Stream$<unknown, string>
+        title: string
+        actions: INotifierAction[]
         timeout?: Observable<any>
-    }){
-        Notifier.popup( { message, title, actions, classIcon, timeout, classBorder:"" } )
+    }) {
+        Notifier.popup({
+            message,
+            title,
+            actions,
+            classIcon,
+            timeout,
+            classBorder: '',
+        })
     }
     /**
      * Popup a notification with level=='Error'
-     * 
+     *
      * @param message content
      * @param title title
      * @param actions available actions
      */
-    static error( {message, title, actions}:{
-        message: string,
+    static error({
+        message,
+        title,
+        actions,
+    }: {
+        message: string
         title: string
         actions: INotifierAction[]
-    }){
-
-        Notifier.popup( { message, title, actions, classIcon:Notifier.classesIcon[4], classBorder:Notifier.classesBorder[4] } )
+    }) {
+        Notifier.popup({
+            message,
+            title,
+            actions,
+            classIcon: Notifier.classesIcon[4],
+            classBorder: Notifier.classesBorder[4],
+        })
     }
     /**
      * Popup a notification with level=='Warning'
-     * 
+     *
      * @param message content
      * @param title title
      * @param actions available actions
      */
-    static warning( {message, title, actions}:{
-        message: string,
+    static warning({
+        message,
+        title,
+        actions,
+    }: {
+        message: string
         title: string
         actions: INotifierAction[]
-    }){
-
-        Notifier.popup( { message, title, actions, classIcon:Notifier.classesIcon[3], classBorder:Notifier.classesBorder[3] } )
+    }) {
+        Notifier.popup({
+            message,
+            title,
+            actions,
+            classIcon: Notifier.classesIcon[3],
+            classBorder: Notifier.classesBorder[3],
+        })
     }
 
-    private static popup( { message, title, actions, classIcon, classBorder, timeout } :{
-        message?: string | Stream$<unknown, string>,
+    private static popup({
+        message,
+        title,
+        actions,
+        classIcon,
+        classBorder,
+        timeout,
+    }: {
+        message?: string | Stream$<unknown, string>
         title: string
-        actions: INotifierAction[],
-        classIcon: string | Stream$<unknown, string>,
-        classBorder: string,
+        actions: INotifierAction[]
+        classIcon: string | Stream$<unknown, string>
+        classBorder: string
         timeout?: Observable<any>
-    }){
-
-        const view : VirtualDOM = {
-            class:"m-2 p-2 my-1 bg-white rounded " + classBorder,
-            style: {border:'solid'},
-            children:[
+    }) {
+        const view: VirtualDOM = {
+            class: 'm-2 p-2 my-1 bg-white rounded ' + classBorder,
+            style: { border: 'solid' },
+            children: [
                 {
-                    class:"fas fa-times",
-                    style:{float:'right',cursor:'pointer'},
-                    onclick: (event)=> {
+                    class: 'fas fa-times',
+                    style: { float: 'right', cursor: 'pointer' },
+                    onclick: (event) => {
                         event.target.parentElement.remove()
-                    } 
+                    },
                 },
                 {
-                    class:'d-flex py-2 align-items-center',
-                    children:[
-                        {tag:'i', class: classIcon },
-                        {tag:'span', class:'d-block',innerText:title}
-                    ]
+                    class: 'd-flex py-2 align-items-center',
+                    children: [
+                        { tag: 'i', class: classIcon },
+                        { tag: 'span', class: 'd-block', innerText: title },
+                    ],
                 },
-                message ? {tag:'span', class:'d-block px-2', innerText:message} : {},
+                message
+                    ? { tag: 'span', class: 'd-block px-2', innerText: message }
+                    : {},
                 {
-                    class:'d-flex align-space-around mt-2 fv-pointer',
-                    children: actions.map( action => ({
-                        tag:'span', 
-                        class:"mx-2 p-2 fv-bg-background-alt rounded fv-hover-bg-background fv-hover-text-focus fv-text-primary", 
-                        innerText: action.name, 
-                        onclick: ()=>action.exe()
-                    }))
-                }
+                    class: 'd-flex align-space-around mt-2 fv-pointer',
+                    children: actions.map((action) => ({
+                        tag: 'span',
+                        class: 'mx-2 p-2 fv-bg-background-alt rounded fv-hover-bg-background fv-hover-text-focus fv-text-primary',
+                        innerText: action.name,
+                        onclick: () => action.exe(),
+                    })),
+                },
             ],
             connectedCallback: (elem: HTMLElement$) => {
-                timeout && timeout.subscribe( () => elem.remove())
-            }
+                timeout && timeout.subscribe(() => elem.remove())
+            },
         }
         const div = render(view)
-        document.getElementById("notifications-container").appendChild(div)
+        document.getElementById('notifications-container').appendChild(div)
     }
 }
