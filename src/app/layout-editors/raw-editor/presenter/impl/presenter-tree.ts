@@ -56,7 +56,7 @@ export class PresenterTree extends ImmutableTree.State<PresenterTreeNode> {
     }
 
     private maybeSelect(id: string) {
-        if (this.getNode(id)) {
+        if (id && this.getNode(id)) {
             this.log.debug('Selecting {0}', { value: id })
             this.selectNodeAndExpand(this.getNode(id))
         } else {
