@@ -21,7 +21,7 @@ includeYouWolLogoView()
 const stylesFutures = fetchStyleSheets([
     'bootstrap#4.4.1~bootstrap.min.css',
     'fontawesome#5.12.1~css/all.min.css',
-    '@youwol/fv-widgets#0.0.3~dist/assets/styles/style.youwol.css',
+    '@youwol/fv-widgets#latest~dist/assets/styles/style.youwol.css',
     'grapes#0.17.26~css/grapes.min.css',
     'codemirror#5.52.0~codemirror.min.css',
     'codemirror#5.52.0~theme/blackboard.min.css',
@@ -40,6 +40,7 @@ const bundlesFutures = fetchBundles(
         '@youwol/fv-tabs': 'latest',
         '@youwol/fv-input': 'latest',
         '@youwol/fv-context-menu': 'latest',
+        '@youwol/platform-essentials': 'latest',
         rxjs: '6.5.5',
     },
     window,
