@@ -16,16 +16,14 @@ export class ImplModelApp implements ModelApp {
 
     public get moduleIdSelected(): string {
         const selectedModuleId = this.appStore.getModuleSelected()?.moduleId
-        log.debug('Returning Selected ModuleId : {0}', {
-            value: selectedModuleId,
-        })
+        log.debug('Returning Selected ModuleId : {0}', selectedModuleId)
         return selectedModuleId
     }
 
     public set moduleIdSelected(moduleId: string) {
         this.log.debug('Check if {0} not already selected', moduleId)
         if (this.appStore.getModuleSelected()?.moduleId !== moduleId) {
-            this.log.debug('Selecting {0}', { value: moduleId })
+            this.log.debug('Selecting {0}', moduleId)
             this.appStore.selectModule(moduleId, true)
         }
     }

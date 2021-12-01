@@ -26,7 +26,6 @@ export class ImplModelComponent
     public set contentHtml(content: string) {
         this.ownLog.debug('set HTML content', {
             value: content,
-            placeHolder: false,
             dump: true,
         })
         const htmlDivElement = this.component.getOuterHTML()
@@ -52,7 +51,6 @@ export class ImplModelComponent
         const content = this.component.getOuterHTML()?.innerHTML ?? ''
         this.ownLog.debug('get HTML content', {
             value: content,
-            placeHolder: false,
             dump: true,
         })
         return content
@@ -61,7 +59,6 @@ export class ImplModelComponent
     public set contentCss(content: string) {
         this.ownLog.debug('set CSS content', {
             value: content,
-            placeHolder: false,
             dump: true,
         })
         this.appStore.updateModule(
@@ -85,7 +82,6 @@ export class ImplModelComponent
         this.ownLog.debug('get CSS content', {
             value: content,
             dump: true,
-            placeHolder: false,
         })
         return content
     }

@@ -43,13 +43,11 @@ export class PresenterTree extends ImmutableTree.State<PresenterTreeNode> {
                     map((node) => node.id),
                 )
                 .subscribe((id) => {
-                    logSelectedNode.debug('Node selected: {0}', { value: id })
+                    logSelectedNode.debug('Node selected: {0}', id)
                     this.presenter.modelApp.moduleIdSelected = id
                 }),
             this.presenter.modelApp.moduleIdSelected$.subscribe((id) => {
-                logModuleIdSelected.debug('moduleId selected {0}', {
-                    value: id,
-                })
+                logModuleIdSelected.debug('moduleId selected {0}', id)
                 this.maybeSelect(id)
             }),
         )
@@ -60,7 +58,7 @@ export class PresenterTree extends ImmutableTree.State<PresenterTreeNode> {
             this.log.debug('Selecting {0}', { value: id })
             this.selectNodeAndExpand(this.getNode(id))
         } else {
-            this.log.debug('Id {0} not found', { value: id })
+            this.log.debug('Id {0} not found', id)
             this.selectNodeAndExpand(this.getNode(this.rootId))
         }
     }

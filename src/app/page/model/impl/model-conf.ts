@@ -46,7 +46,7 @@ function featuresSetFromString(featuresParam: string): {
             } else {
                 availableRendersViews.push(feature)
             }
-            log.debug('{0} => {1}', { value: letter }, { value: feature })
+            log.debug('{0} => {1}', letter, feature)
         } else {
             log.warning('Unknown one letter feature : {0}', { value: letter })
         }
@@ -62,17 +62,17 @@ function featuresSetFromString(featuresParam: string): {
 
 export function factoryConf(): Conf {
     const urlQueryParams = new URLSearchParams(document.location.search)
-    log.debug('UrlQueryParams: "{0}"', { value: urlQueryParams })
+    log.debug('UrlQueryParams: "{0}"', () => urlQueryParams.toString())
     const featuresParam = urlQueryParams.get('features') ?? defaultFeaturesParam
-    log.debug('FeaturesParam : {0}', { value: featuresParam })
+    log.debug('FeaturesParam : {0}', featuresParam)
     const altFeaturesParam =
         urlQueryParams.get('alt_features') ?? defaultAltFeaturesParam
-    log.debug('AltFeaturesParam : {0}', { value: altFeaturesParam })
+    log.debug('AltFeaturesParam : {0}', altFeaturesParam)
     const features = featuresSetFromString(featuresParam)
     urlQueryParams.set('features', altFeaturesParam)
     urlQueryParams.set('alt_features', featuresParam)
     const altUrlQueryParams = urlQueryParams.toString()
-    log.debug('altUrlQueryParams: "{0}"', { value: altUrlQueryParams })
+    log.debug('altUrlQueryParams: "{0}"', altUrlQueryParams)
     return {
         altUrlQueryParams,
         ...features,

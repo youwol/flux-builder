@@ -79,7 +79,7 @@ export class ImplPresenterModule
 
     public set selected(selected: boolean) {
         if (this.isSelected != selected) {
-            this.log.debug('set selected : {0}', { value: selected })
+            this.log.debug('set selected : {0}', selected)
             this.isSelected = selected
             this.selected$.next(selected)
         }
@@ -95,7 +95,7 @@ export class ImplPresenterModule
             this.currentPositionIn[typeDoc] === undefined ||
             !equal(position, this.currentPositionIn[typeDoc])
         ) {
-            _log.debug('setting position for {0}', { value: typeDoc })
+            _log.debug('setting position for {0}', typeDoc)
             this.currentPositionIn[typeDoc] = position
             this.positionIn[typeDoc + '$'].next(position)
         }
@@ -106,7 +106,7 @@ export class ImplPresenterModule
     }
 
     public get descendantsHavingRenderView(): ImplPresenterModule[] {
-        this.log.debug('Returning children for {0}', { value: this.id })
+        this.log.debug('Returning children for {0}', this.id)
         return [
             ...(this.presentersChildren ?? []),
             ...(this.presentersChildren?.flatMap(

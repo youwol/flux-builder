@@ -27,7 +27,7 @@ export class PresenterViewState {
             map((uiState: UiState) => {
                 log.getChildLogger('uiState$').debug(
                     'returning viewState for view {0}',
-                    { value: view },
+                    view,
                 )
                 return {
                     position: uiState.getPosition(view),

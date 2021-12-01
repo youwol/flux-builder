@@ -40,24 +40,27 @@ export class ImplPresenterComponent implements PresenterComponent {
                     modelComponent,
                     true,
                 )
-                logActiveComponent.debug('get component {0}', {
-                    value: presenterComponent.id,
-                })
+                logActiveComponent.debug(
+                    'get component {0}',
+                    presenterComponent.id,
+                )
                 this.modules = presenterComponent.descendantsHavingRenderView
                 this.css.loadComponentContent(modelComponent)
                 this.html.loadComponentContent(modelComponent)
                 this.presenterTree.load(presenterComponent)
 
                 const moduleIdSelected = this.modelApp.moduleIdSelected
-                logActiveComponent.debug('selecting moduleId {0}', {
-                    value: moduleIdSelected,
-                })
+                logActiveComponent.debug(
+                    'selecting moduleId {0}',
+                    moduleIdSelected,
+                )
                 this.select(moduleIdSelected)
             }),
             this.modelApp.moduleIdSelected$.subscribe((moduleIdSelected) => {
-                logModuleIdSelected.debug('selecting moduleId {0}', {
-                    value: moduleIdSelected,
-                })
+                logModuleIdSelected.debug(
+                    'selecting moduleId {0}',
+                    moduleIdSelected,
+                )
                 this.select(moduleIdSelected)
             }),
         ]
@@ -70,7 +73,7 @@ export class ImplPresenterComponent implements PresenterComponent {
     }
 
     private select(moduleId: string) {
-        this.log.debug('select {0}', { value: moduleId })
+        this.log.debug('select {0}', moduleId)
         this.modules.forEach((mdle) => (mdle.selected = mdle.id === moduleId))
     }
 }

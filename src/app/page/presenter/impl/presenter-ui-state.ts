@@ -19,7 +19,7 @@ export class ImplPresenterUiState implements PresenterUiState {
     }
 
     public getPresenterViewState(view: RenderViewName): PresenterViewState {
-        log.debug('Returning PresenterViewState for {0}', { value: view })
+        log.debug('Returning PresenterViewState for {0}', view)
         return new PresenterViewState(this, view)
     }
 

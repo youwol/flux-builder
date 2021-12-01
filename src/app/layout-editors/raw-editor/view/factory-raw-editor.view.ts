@@ -65,7 +65,7 @@ function fetchCDN$() {
             window,
         ),
     ).pipe(
-        tap(() => log.getChildLogger('PipingCdn').debug('')),
+        tap(() => log.getChildLogger('PipingCdn').debug('piping fetchCDN')),
         share(),
     )
 }
