@@ -1,5 +1,5 @@
 /** @format */
-
+import { Logger } from '@youwol/logging'
 import CodeMirror from 'codemirror'
 import js_beautify from 'js-beautify'
 import { ReplaySubject } from 'rxjs'
@@ -12,6 +12,7 @@ import {
     present,
     PresenterDoc,
     PresenterPosition,
+    TypeInDoc,
 } from '..'
 import { ImplPresenterComponent } from './presenter-component'
 import { ImplPresenterModule } from './presenter-module'
@@ -19,12 +20,14 @@ import { ImplPresenterModule } from './presenter-module'
 const log = logFactory().getChildFactory('Doc')
 
 export class ImplPresenterDoc<typeDoc extends TypeDoc> implements PresenterDoc {
-    private log
+    private log: Logger
     modelComponent: ModelComponent
     currentContent: string
+    private codeMirrorDoc: CodeMirror.Doc
 
     content$: ReplaySubject<string> = new ReplaySubject(1)
     positions$: ReplaySubject<PresenterPosition[]> = new ReplaySubject(1)
+    showModule$: ReplaySubject<string> = new ReplaySubject(1)
 
     constructor(
         private readonly typeDoc: typeDoc,
@@ -33,23 +36,47 @@ export class ImplPresenterDoc<typeDoc extends TypeDoc> implements PresenterDoc {
         this.log = log.getChildLogger(`${this.typeDoc}`)
     }
 
-    public insert(doc: CodeMirror.Doc): void {
+    public setCodeMirrorDoc(doc: CodeMirror.Doc) {
+        this.codeMirrorDoc = doc
+    }
+
+    public showSelectedModule() {
+        this.showModule(this.getSelectedId('present'))
+    }
+
+    public showModule(moduleId: string) {
+        if (moduleId !== undefined) {
+            this.log.debug('showing module {0}', moduleId)
+            this.showModule$.next(moduleId)
+        }
+    }
+
+    public insert(): void {
         const _log = this.log.getChildLogger('onInsert')
-        const selectedId = this.presenter.modelApp.moduleIdSelected
-        _log.debug('considering selectedId {0} for insertion', {
-            value: selectedId,
-        })
-        const id = this.presenter.modules.find(
-            (mdle) =>
-                mdle.id === selectedId &&
-                mdle.getPositionIn(this.typeDoc) === missing,
-        )?.id
+        if (this.codeMirrorDoc === undefined) {
+            throw new Error('insert called without codeMirrorDoc configured')
+        }
+        const id = this.getSelectedId('missing')
         if (id !== undefined) {
             _log.debug('Inserting id {0}', { value: id })
-            insertModuleId[this.typeDoc](id, doc)
+            insertModuleId[this.typeDoc](id, this.codeMirrorDoc)
         } else {
-            _log.debug('Not Inserting id {0}', { value: selectedId })
+            _log.debug('Selected id not missing in doc')
         }
+    }
+
+    private getSelectedId(typeInDoc: TypeInDoc) {
+        const selectedId = this.presenter.modelApp.moduleIdSelected
+        this.log.debug(
+            'considering selectedId {0} with typeInDoc {1}',
+            selectedId,
+            typeInDoc,
+        )
+        return this.presenter.modules.find(
+            (mdle) =>
+                mdle.id === selectedId &&
+                mdle.getPositionIn(this.typeDoc).typeInDoc === typeInDoc,
+        )?.id
     }
 
     public save(): void {
@@ -109,10 +136,10 @@ const insertModuleId: Record<
     (moduleId: string, doc: CodeMirror.Doc) => void
 > = {
     css: (moduleId: string, doc: CodeMirror.Doc): void =>
-        doc.replaceRange(`#${moduleId} {\n}`, doc.getCursor()),
+        doc.replaceRange(`#${moduleId} {\n}\n`, doc.getCursor()),
     html: (moduleId: string, doc: CodeMirror.Doc): void =>
         doc.replaceRange(
-            `<div id="${moduleId}" class="flux-element"></div>`,
+            `<div id="${moduleId}" class="flux-element"></div>\n`,
             doc.getCursor(),
         ),
 }

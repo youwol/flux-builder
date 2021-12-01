@@ -25,10 +25,7 @@ export function factoryRawEditorView(
         class: 'd-flex w-100',
 
         children: [
-            resizablePanel(
-                projectTreeView(presenter.presenterTree),
-                'Project Tree',
-            ),
+            resizablePanel(projectTreeView(presenter), 'Project Tree'),
             {
                 class: 'h-100 d-flex flex-grow-1',
                 children: [

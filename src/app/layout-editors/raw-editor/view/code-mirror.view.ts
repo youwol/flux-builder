@@ -1,14 +1,15 @@
 /** @format */
 
 import { VirtualDOM } from '@youwol/flux-view'
+import CodeMirror from 'codemirror'
 import { Subscription } from 'rxjs'
 import { PresenterUiState } from '../../../page'
 import { TypeDoc } from '../model'
 import { PresenterDoc } from '../presenter'
-import { markDocument } from './text-marker.view'
+import { markDocument, showMark } from './text-marker.view'
 
 export function codeMirrorView<typeDoc extends TypeDoc>(
-    typeDoc: TypeDoc,
+    typeDocValue: typeDoc,
     presenter: PresenterDoc,
     presenterUiState: PresenterUiState,
 ): VirtualDOM {
@@ -17,8 +18,12 @@ export function codeMirrorView<typeDoc extends TypeDoc>(
         class: 'h-100 w-50 d-flex',
         connectedCallback: (element: HTMLElement) => {
             const marksSubscriptions: Subscription[] = []
+            const marksByModuleId = new Map<
+                string,
+                CodeMirror.TextMarker<CodeMirror.MarkerRange>
+            >()
             const cmEditor = window['CodeMirror'](element as ParentNode, {
-                mode: typeDoc === 'html' ? 'htmlmixed' : 'css',
+                mode: typeDocValue === 'html' ? 'htmlmixed' : 'css',
                 lineNumbers: true,
                 theme: 'blackboard',
                 lineWrapping: true,
@@ -26,11 +31,12 @@ export function codeMirrorView<typeDoc extends TypeDoc>(
                     'Ctrl-Enter': (_editor) => {
                         presenter.save()
                     },
-                    'Alt-Tab': (editor) => {
-                        presenter.insert(editor.getDoc())
+                    'Ctrl-Space': (_editor) => {
+                        presenter.insert()
                     },
                 },
             })
+            presenter.setCodeMirrorDoc(cmEditor.getDoc())
             cmEditor.on('changes', (editor) =>
                 presenter.change(editor.getDoc().getValue()),
             )
@@ -39,7 +45,15 @@ export function codeMirrorView<typeDoc extends TypeDoc>(
                     cmEditor.setValue(content)
                 }),
                 presenter.positions$.subscribe(
-                    markDocument(typeDoc, cmEditor, marksSubscriptions),
+                    markDocument(
+                        typeDocValue,
+                        cmEditor,
+                        marksSubscriptions,
+                        marksByModuleId,
+                    ),
+                ),
+                presenter.showModule$.subscribe((moduleId) =>
+                    showMark(cmEditor, marksByModuleId.get(moduleId)),
                 ),
                 presenterUiState
                     .getPresenterViewState('raw-editor')

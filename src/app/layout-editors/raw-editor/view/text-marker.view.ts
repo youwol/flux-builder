@@ -13,8 +13,13 @@ export const markDocument =
         typeDoc: TypeDoc,
         cmEditor: CodeMirror.Editor,
         marksSubscriptions: Subscription[],
+        marksByModuleId: Map<
+            string,
+            CodeMirror.TextMarker<CodeMirror.MarkerRange>
+        >,
     ) =>
-    (modulesPositions: PresenterPosition[]) => {
+    (modulesPositions: PresenterPosition[]): void => {
+        marksByModuleId.clear()
         marksSubscriptions.forEach((subscription) => subscription.unsubscribe())
         cmEditor
             .getDoc()
@@ -43,9 +48,17 @@ export const markDocument =
                             : unfocusElement(htmlSpanElement)
                     }),
                 )
+                marksByModuleId.set(modulePosition.id, mark)
             }
         })
     }
+
+export const showMark = (
+    cmEditor: CodeMirror.Editor,
+    mark: CodeMirror.TextMarker<CodeMirror.MarkerRange>,
+): void => {
+    cmEditor.scrollIntoView(mark.find(), 250)
+}
 
 const factoryTextMarker = (
     presenterModule: PresenterPosition,
@@ -105,10 +118,9 @@ export function focusElement(marker: TextMarker, _cmEditor: CodeMirror.Editor) {
         currentClasses.find((className) => className === 'fv-text-focus') ===
         undefined
     ) {
+        _log.debug('Focus !')
         currentClasses.push('fv-text-focus')
         element.className = currentClasses.join(' ')
-        _log.debug('Focus !')
-        // cmEditor.scrollIntoView(marker.find(), 250)
     }
 }
 
