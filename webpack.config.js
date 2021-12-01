@@ -58,7 +58,8 @@ module.exports = {
             '@youwol/fv-button': "window['@youwol/fv-button']",
             '@youwol/fv-tabs': "window['@youwol/fv-tabs']",
             '@youwol/fv-context-menu': "window['@youwol/fv-context-menu']",
-            '@youwol/platform-essentials': "window['@youwol/platform-essentials']",
+            '@youwol/platform-essentials':
+                "window['@youwol/platform-essentials']",
             '@youwol/logging': 'window["@youwol/logging"]',
             codemirror: "window['codemirror']",
             js_beautify: "window['js_beautify']",

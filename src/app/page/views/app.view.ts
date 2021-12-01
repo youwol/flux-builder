@@ -48,7 +48,6 @@ export function mainView(
 }
 
 class TopBannerView extends YouwolBannerView {
-
     constructor(
         appStore: AppStore,
         presenter: PresenterUiState,
@@ -63,7 +62,7 @@ class TopBannerView extends YouwolBannerView {
             signedIn$: from(
                 fetch(new Request('/api/assets-gateway/healthz')),
             ).pipe(map((resp) => resp.status == 200)),
-        } as any)
+        } as never)
     }
 }
 
