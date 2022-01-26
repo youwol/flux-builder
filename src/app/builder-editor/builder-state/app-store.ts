@@ -326,7 +326,7 @@ export class AppStore {
     projectURI$(): Observable<string> {
         return this.projectSchema$().pipe(
             map((project) => {
-                return `/ui/flux-builder/?uri=${toProjectURI(project)}`
+                return `/applications/@youwol/flux-builder/latest/?uri=${toProjectURI(project)}`
             }),
         )
     }
