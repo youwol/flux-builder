@@ -12,3 +12,5 @@ yarn-error.log
 /.idea/
 /flux-builder.iml
 .scannerwork
+__pycache__/
+cdn.zip
