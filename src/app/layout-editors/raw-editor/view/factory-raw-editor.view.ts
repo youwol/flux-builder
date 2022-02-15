@@ -57,10 +57,7 @@ function fetchCDN$() {
         'js-beautify#1.14.0~lang/html.min.js',
     ]
     return from(
-        install(
-            { modules: ['codemirror', 'js-beautify'], scripts: urls },
-            window,
-        ),
+        install({ modules: ['codemirror', 'js-beautify'], scripts: urls }),
     ).pipe(
         tap(() => log.getChildLogger('PipingCdn').debug('piping fetchCDN')),
         share(),
