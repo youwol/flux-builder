@@ -50,6 +50,7 @@ module.exports = {
             d3: "window['d3']",
             rxjs: "window['rxjs']",
             'rxjs/operators': "window['rxjs']['operators']",
+            '@youwol/http-clients': "window['@youwol/http-clients']",
             '@youwol/cdn-client': "window['@youwol/cdn-client']",
             '@youwol/flux-core': "window['@youwol/flux-core']",
             '@youwol/flux-svg-plots': "window['@youwol/flux-svg-plots']",
