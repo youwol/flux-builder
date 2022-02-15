@@ -2,12 +2,7 @@
 
 import { install } from '@youwol/cdn-client'
 import { VirtualDOM } from '@youwol/flux-view'
-import {
-    YouwolBannerView,
-    defaultUserMenu,
-    defaultYouWolMenu,
-    YouwolBannerState,
-} from '@youwol/platform-essentials'
+import { TopBanner } from '@youwol/platform-essentials'
 import { from, Observable } from 'rxjs'
 import { map } from 'rxjs/operators'
 import { AppStore } from '../../builder-editor/builder-state'
@@ -25,7 +20,7 @@ export function mainView(
     appStore: AppStore,
     presenterUiState: PresenterUiState,
 ): VirtualDOM {
-    const youwolBannerState = new YouwolBannerState({
+    const youwolBannerState = new TopBanner.YouwolBannerState({
         cmEditorModule$: fetchCodeMirror$(),
     })
     return {
@@ -47,18 +42,18 @@ export function mainView(
     }
 }
 
-class TopBannerView extends YouwolBannerView {
+class TopBannerView extends TopBanner.YouwolBannerView {
     constructor(
         appStore: AppStore,
         presenter: PresenterUiState,
-        youwolBannerState: YouwolBannerState,
+        youwolBannerState: TopBanner.YouwolBannerState,
     ) {
         super({
             class: 'grapes-bg-color p-1',
             state: youwolBannerState,
             customActionsView: topBanner(appStore, presenter),
-            userMenuView: defaultUserMenu(youwolBannerState),
-            youwolMenuView: defaultYouWolMenu(youwolBannerState),
+            userMenuView: TopBanner.defaultUserMenu(youwolBannerState),
+            youwolMenuView: TopBanner.defaultYouWolMenu(youwolBannerState),
             signedIn$: from(
                 fetch(new Request('/api/assets-gateway/healthz')),
             ).pipe(map((resp) => resp.status == 200)),
