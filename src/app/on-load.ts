@@ -43,10 +43,10 @@ import {
     replaceTemplateElements,
     updateElementsInLayout,
 } from './layout-editors/grapesjs-editor/flux-rendering-components'
-import { loadingLibView, loadingProjectView } from './loading.views'
 
 import { plugNotifications } from './notification'
 import { factoryPresenterUiState, mainView, PresenterUiState } from './page'
+import { CdnMessageEvent, Client, LoadingScreenView } from '@youwol/cdn-client'
 
 const log = logFactory().getChildLogger('on-load')
 
@@ -60,6 +60,13 @@ debugSingleton.workflowViewEnabled = defaultLog
 debugSingleton.WorkflowBuilderEnabled = defaultLog
 debugSingleton.renderTopicEnabled = defaultLog
 debugSingleton.workflowView$Enabled = defaultLog
+
+/**
+ * This instance has been initialized in the main.ts file;
+ * the loading screen is used here to display the '2nd' part of the loading process
+ * (the dynamic dependencies of the flux-project)
+ */
+const loadingScreen: LoadingScreenView = Client['initialLoadingScreen']
 
 const environment = new Environment({
     console /*: noConsole as Console*/,
@@ -99,7 +106,7 @@ if (presenter.availableRendersViews.includes('grapejs-editor')) {
     )
 } else {
     appStore.appObservables.packagesLoaded$.subscribe(() =>
-        document.getElementById('loading-screen').remove(),
+        loadingScreen.done(),
     )
 }
 
@@ -110,15 +117,12 @@ function loadProject(appStore: AppStore) {
     const uri = new URLSearchParams(window.location.search).get('uri')
 
     if (projectId) {
-        const loadingDiv = document.getElementById(
-            'content-loading-screen',
-        ) as HTMLDivElement
-        const divProjectLoading = loadingProjectView(loadingDiv)
         appStore.environment.getProject(projectId).subscribe((project) => {
-            divProjectLoading.innerText = `> project loaded`
-            divProjectLoading.style.setProperty('color', 'green')
+            loadingScreen.next(
+                new CdnMessageEvent('project-loaded', 'Project loaded'),
+            )
             appStore.loadProject(projectId, project, (event) => {
-                loadingLibView(event, loadingDiv)
+                loadingScreen.next(event)
             })
         })
     } else if (uri) {
