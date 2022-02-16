@@ -65,7 +65,7 @@ module.exports = {
                 "window['@youwol/platform-essentials']",
             '@youwol/logging': 'window["@youwol/logging"]',
             codemirror: "window['codemirror']",
-            js_beautify: "window['js_beautify']",
+            'js-beautify': "window['js_beautify']",
         },
     ],
     module: {
