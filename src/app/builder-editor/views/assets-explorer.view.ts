@@ -154,7 +154,7 @@ export namespace AssetsExplorerView {
                         tag: 'i',
                         class: attr$(
                             state.selectionBuffer$,
-                            (buffer: Array<ModuleItemNode>) =>
+                            (buffer: Array<ModuleItemNode>): string =>
                                 buffer.includes(node) ? 'fv-text-focus' : '',
                             {
                                 wrapper: (d) =>

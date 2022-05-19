@@ -107,7 +107,7 @@ function button(
         // class: 'panel-btn fv-btn fv-color-on-secondary fv-bg-secondary fv-pointer mb-1',
         class: attr$(
             visibility$,
-            (visibility: ButtonVisibility) => {
+            (visibility: ButtonVisibility): string => {
                 switch (visibility) {
                     case 'visible':
                         return 'fv-pointer fv-hover-text-secondary fv-text-focus'

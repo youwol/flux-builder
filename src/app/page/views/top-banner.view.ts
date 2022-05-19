@@ -199,10 +199,14 @@ function actionView(action: Action): VirtualDOM {
         tag: 'button',
         type: 'button',
         disabled: attr$(enabled$, (enabled) => !enabled),
-        class: attr$(visible$, (visible) => (visible ? 'd-block' : 'd-none'), {
-            wrapper: (classes) =>
-                classes + ' fv-btn fv-btn-secondary mx-1 fv-pointer',
-        }),
+        class: attr$(
+            visible$,
+            (visible): string => (visible ? 'd-block' : 'd-none'),
+            {
+                wrapper: (classes) =>
+                    classes + ' fv-btn fv-btn-secondary mx-1 fv-pointer',
+            },
+        ),
         style: attr$(enabled$, (enabled) =>
             enabled ? { opacity: 1 } : { opacity: 0.5 },
         ),

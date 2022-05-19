@@ -74,7 +74,7 @@ function settingsView(appStore: AppStore, visible$: BehaviorSubject<boolean>) {
                     appObservables.moduleSelected$,
                     appObservables.connectionSelected$,
                 ),
-                (selection) => {
+                (selection: ModuleFlux | Connection) => {
                     const factory = settingsFactory.find((f) =>
                         f.when(selection),
                     )
@@ -83,7 +83,7 @@ function settingsView(appStore: AppStore, visible$: BehaviorSubject<boolean>) {
                         return {}
                     }
                     visible$.next(true)
-                    return factory.mapTo(selection)
+                    return factory.mapTo(selection as any)
                 },
             ),
         ],
