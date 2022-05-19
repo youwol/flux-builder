@@ -86,7 +86,7 @@ export async function createLayoutEditor(): grapesjs.Editor {
     const youwolCss = document.getElementById('youwol-css')
     if (!youwolCss) {
         console.error(
-            "Fontawesome css needs to be included in host application with id 'fontawesome-css' ",
+            "Youwol css needs to be included in host application with id 'youwol-css' ",
         )
     }
 
@@ -99,7 +99,7 @@ export async function createLayoutEditor(): grapesjs.Editor {
 
         const node = document.createElement('style')
         node.innerHTML = `.mw-50px{ min-width:50px}.w-5{width:5%};.w-10{width:10%}.w-15{width:15%}.w-20{width:20%}.w-30{width:30%}.w-40{width:40%}.w-60{width:60%}.w-70{width:70%}.w-80{width:80%}.w-90{width:90%}.zindex-1{z-index:1}
-    .flux-component{min-height:50px;} .preview .gjs-hovered{outline:0px !important} .preview .gjs-selected{outline:0px !important} 
+    .flux-component{min-height:50px;} .preview .gjs-hovered{outline:0px !important} .preview .gjs-selected{outline:0px !important}
     .flux-builder-only{opacity:0.5} .flux-builder-only.preview{ display:none !important}
     .flux-fill-parent{width:100%; height:100%}`
         document.body.appendChild(node)
