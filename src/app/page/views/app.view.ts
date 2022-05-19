@@ -1,10 +1,7 @@
 /** @format */
 
-import { install } from '@youwol/cdn-client'
 import { VirtualDOM } from '@youwol/flux-view'
 import { TopBanner } from '@youwol/platform-essentials'
-import { from, Observable } from 'rxjs'
-import { map } from 'rxjs/operators'
 import { AppStore } from '../../builder-editor/builder-state'
 import { PresenterUiState } from '../presenter'
 import { panelView } from './panel.view'
@@ -20,14 +17,11 @@ export function mainView(
     appStore: AppStore,
     presenterUiState: PresenterUiState,
 ): VirtualDOM {
-    const youwolBannerState = new TopBanner.YouwolBannerState({
-        cmEditorModule$: fetchCodeMirror$(),
-    })
     return {
         id: 'main-container',
         class: 'h-100 w-100 d-flex flex-column',
         children: [
-            new TopBannerView(appStore, presenterUiState, youwolBannerState),
+            new TopBannerView(appStore, presenterUiState),
             {
                 id: 'main-panels',
                 class: 'flex-grow-1 d-flex flex-column',
@@ -42,34 +36,10 @@ export function mainView(
     }
 }
 
-class TopBannerView extends TopBanner.YouwolBannerView {
-    constructor(
-        appStore: AppStore,
-        presenter: PresenterUiState,
-        youwolBannerState: TopBanner.YouwolBannerState,
-    ) {
+class TopBannerView extends TopBanner.TopBannerView {
+    constructor(appStore: AppStore, presenter: PresenterUiState) {
         super({
-            class: 'grapes-bg-color p-1',
-            state: youwolBannerState,
-            customActionsView: topBanner(appStore, presenter),
-            userMenuView: TopBanner.defaultUserMenu(youwolBannerState),
-            youwolMenuView: TopBanner.defaultYouWolMenu(youwolBannerState),
-            signedIn$: from(
-                fetch(new Request('/api/assets-gateway/healthz')),
-            ).pipe(map((resp) => resp.status == 200)),
+            innerView: topBanner(appStore, presenter),
         } as never)
     }
-}
-
-function fetchCodeMirror$(): Observable<Window> {
-    return from(
-        install({
-            modules: ['codemirror'],
-            scripts: ['codemirror#5.52.0~mode/javascript.min.js'],
-            css: [
-                'codemirror#5.52.0~codemirror.min.css',
-                'codemirror#5.52.0~theme/blackboard.min.css',
-            ],
-        }),
-    )
 }

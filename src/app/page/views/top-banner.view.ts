@@ -23,7 +23,7 @@ export function topBanner(
 ): VirtualDOM {
     const actions = getActions(appStore, uiStatePresenter)
     return {
-        class: 'd-flex w-100 justify-content-around',
+        class: 'd-flex w-100 justify-content-around py-1',
         children: [
             groupActionsView(actions.features),
             groupActionsView(actions.main),
