@@ -1,6 +1,6 @@
 from youwol.environment.forward_declaration import YouwolEnvironment
 from youwol.environment.models import IPipelineFactory
-from youwol.environment.models_project import BrowserApp, Execution, FromAsset
+from youwol.environment.models_project import BrowserApp, Execution, BrowserAppGraphics, OpenWith
 from youwol.pipelines.pipeline_typescript_weback_npm import pipeline, PipelineConfig
 from youwol_utils.context import Context
 
@@ -14,17 +14,28 @@ class PipelineFactory(IPipelineFactory):
         config = PipelineConfig(
             with_tags=["flux"],
             target=BrowserApp(
-                icon={"class": "fas fa-tools"},
                 displayName="Flux builder",
                 execution=Execution(
                     standalone=False,
                     parametrized=[
-                        FromAsset(
+                        OpenWith(
                             match={"kind": "flux-project"},
                             parameters={"id": 'rawId'}
                         )
                     ]
-                )
+                ),
+                graphics=BrowserAppGraphics(
+                    appIcon={'class': 'fas fa-tools fa-2x'},
+                    fileIcon={},
+                    background={
+                        "style": {
+                            "width": '100%',
+                            "height": '100%',
+                            "opacity": 0.3,
+                            "z-index": -1,
+                        }
+                    }
+                ),
             )
         )
         return await pipeline(config, context)
