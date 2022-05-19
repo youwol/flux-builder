@@ -53,6 +53,7 @@ export namespace ModalView {
                                 ].filter((d) => d),
                             },
                         ],
+                        onclick: (ev) => ev.stopPropagation(),
                     }
                 },
                 connectedCallback: (elem) => {
