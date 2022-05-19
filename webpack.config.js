@@ -98,10 +98,10 @@ module.exports = {
     },
     devtool: 'cheap-module-source-map',
     devServer: {
-        contentBase: path.resolve(__dirname, './src'),
-        historyApiFallback: true,
-        inline: true,
-        open: false,
+        static: {
+            directory: path.join(__dirname, './src'),
+        },
+        compress: true,
         port: 3005,
     },
 }
