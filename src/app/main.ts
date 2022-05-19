@@ -9,7 +9,6 @@ export {}
 
 const loadingScreen = new LoadingScreenView({
     container: document.body,
-    mode: 'svg',
 })
 loadingScreen.render()
 
@@ -33,28 +32,22 @@ await install(
         css: [
             {
                 resource: 'bootstrap#4.4.1~bootstrap.min.css',
-                domId: 'bootstrap-css',
             },
             {
                 resource: 'fontawesome#5.12.1~css/all.min.css',
-                domId: 'fontawesome-css',
             },
             {
                 resource:
                     '@youwol/fv-widgets#latest~dist/assets/styles/style.youwol.css',
-                domId: 'youwol-css',
             },
             {
-                resource: 'grapes#0.17.26~css/grapes.min.css',
-                domId: 'grapes-css',
+                resource: 'grapes#latest~css/grapes.min.css',
             },
             {
                 resource: 'codemirror#5.52.0~codemirror.min.css',
-                domId: 'codemirror-css',
             },
             {
                 resource: 'codemirror#5.52.0~theme/blackboard.min.css',
-                domId: 'codemirror-blackboard-css',
             },
         ],
     },
@@ -62,6 +55,16 @@ await install(
         onEvent: (ev) => loadingScreen.next(ev),
     },
 )
+const links = document.querySelectorAll('head link')
+
+;[...links].find((l) => l.getAttribute('href').includes(btoa('bootstrap'))).id =
+    'bootstrap-css'
+;[...links].find((l) =>
+    l.getAttribute('href').includes(btoa('fontawesome')),
+).id = 'fontawesome-css'
+;[...links].find((l) =>
+    l.getAttribute('href').includes(btoa('@youwol/fv-widgets')),
+).id = 'youwol-css'
 Client['initialLoadingScreen'] = loadingScreen
 
 await import('./on-load')
