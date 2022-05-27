@@ -26,7 +26,7 @@ class PipelineFactory(IPipelineFactory):
                 ),
                 graphics=BrowserAppGraphics(
                     appIcon={'class': 'fas fa-tools fa-2x'},
-                    fileIcon={},
+                    fileIcon={'class': 'fas fa-tools'},
                     background={
                         "style": {
                             "width": '100%',
