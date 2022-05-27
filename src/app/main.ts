@@ -26,7 +26,7 @@ await install(
             '@youwol/fv-tabs',
             '@youwol/fv-input',
             '@youwol/fv-context-menu',
-            '@youwol/platform-essentials',
+            '@youwol/os-top-banner',
             'rxjs',
         ],
         css: [

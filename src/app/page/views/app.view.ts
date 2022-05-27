@@ -1,7 +1,7 @@
 /** @format */
 
 import { VirtualDOM } from '@youwol/flux-view'
-import { TopBanner } from '@youwol/platform-essentials'
+import { TopBannerView } from '@youwol/os-top-banner'
 import { AppStore } from '../../builder-editor/builder-state'
 import { PresenterUiState } from '../presenter'
 import { panelView } from './panel.view'
@@ -21,7 +21,7 @@ export function mainView(
         id: 'main-container',
         class: 'h-100 w-100 d-flex flex-column',
         children: [
-            new TopBannerView(appStore, presenterUiState),
+            new FluxTopBanner(appStore, presenterUiState),
             {
                 id: 'main-panels',
                 class: 'flex-grow-1 d-flex flex-column',
@@ -36,7 +36,7 @@ export function mainView(
     }
 }
 
-class TopBannerView extends TopBanner.TopBannerView {
+class FluxTopBanner extends TopBannerView {
     constructor(appStore: AppStore, presenter: PresenterUiState) {
         super({
             innerView: topBanner(appStore, presenter),
