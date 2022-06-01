@@ -16,12 +16,14 @@ import { Subject } from 'rxjs'
 import { take } from 'rxjs/operators'
 
 import * as grapesjs from 'grapesjs'
+import { get_gjs_prefixes } from './utils'
 
 export async function createLayoutEditor(): grapesjs.Editor {
-    localStorage.setItem('gjs-components', '')
-    localStorage.setItem('gjs-html', '')
-    localStorage.setItem('gjs-css', '')
-    localStorage.setItem('gjs-styles', '')
+    const prefixes = get_gjs_prefixes()
+    localStorage.setItem(prefixes.components, '')
+    localStorage.setItem(prefixes.html, '')
+    localStorage.setItem(prefixes.css, '')
+    localStorage.setItem(prefixes.styles, '')
 
     const debugSingleton = AppDebugEnvironment.getInstance()
     debugSingleton.debugOn &&
@@ -66,6 +68,12 @@ export async function createLayoutEditor(): grapesjs.Editor {
         },
         layerManager: { appendTo: '#layers' },
         traitManager: { appendTo: '#traits' },
+        storageManager: {
+            id: prefixes.common,
+            type: 'local',
+            autosave: false,
+            autoload: false,
+        },
     })
 
     editor.dynamicModulesId = []

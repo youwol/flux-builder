@@ -25,3 +25,15 @@ export function getAllComponentsRec(editor, component = undefined) {
     const rList = getAllComponents(component)
     return rList.reduce((acc, e) => Object.assign({}, acc, { [e.ccid]: e }), {})
 }
+
+export function get_gjs_prefixes() {
+    const projectId = new URLSearchParams(window.location.search).get('id')
+    const common = `gjs-${projectId}-`
+    return {
+        common,
+        html: `${common}html`,
+        components: `${common}components`,
+        css: `${common}css`,
+        styles: `${common}styles`,
+    }
+}

@@ -7,7 +7,7 @@ import {
     AppDebugEnvironment,
     AppStore,
 } from '../../builder-editor/builder-state'
-import { cleanCss, privateClasses } from './utils'
+import { cleanCss, get_gjs_prefixes, privateClasses } from './utils'
 import { buildCodePanel } from './code-editors'
 import { setDynamicComponentsBlocks } from './flux-blocks'
 import { replaceTemplateElements } from './flux-rendering-components'
@@ -17,9 +17,9 @@ let cachedCSS = ''
 
 export function plugCommands(editor: any, appStore: AppStore) {
     const debugSingleton = AppDebugEnvironment.getInstance()
-
+    const prefixes = get_gjs_prefixes()
     editor.on('change', (element: any) => {
-        const html = localStorage.getItem('gjs-html')
+        const html = localStorage.getItem(prefixes.html)
         if (html != cachedHTML && html != '') {
             debugSingleton.debugOn &&
                 debugSingleton.logRenderTopic({
@@ -31,10 +31,10 @@ export function plugCommands(editor: any, appStore: AppStore) {
                         newLayout: html,
                     },
                 })
-            appStore.setRenderingLayout(localStorage.getItem('gjs-html'))
+            appStore.setRenderingLayout(localStorage.getItem(prefixes.html))
             cachedHTML = html
         }
-        const css = cleanCss(localStorage.getItem('gjs-css'))
+        const css = cleanCss(localStorage.getItem(prefixes.css))
         if (css != cachedCSS && css != '') {
             debugSingleton.debugOn &&
                 debugSingleton.logRenderTopic({
