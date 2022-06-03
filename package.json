@@ -1,7 +1,7 @@
 {
     "name": "@youwol/flux-builder",
-    "version": "0.0.15-wip",
-    "description": "Front end side of the Flux builder application",
+    "version": "0.0.15",
+    "description": "Low code application for YouWol platform",
     "author": "greinisch@youwol.com",
     "main": "dist/index.html",
     "scripts": {
