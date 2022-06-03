@@ -71,8 +71,8 @@ export async function createLayoutEditor(): grapesjs.Editor {
         storageManager: {
             id: prefixes.common,
             type: 'local',
-            autosave: false,
-            autoload: false,
+            autosave: true,
+            autoload: true,
         },
     })
 
@@ -99,7 +99,7 @@ export async function createLayoutEditor(): grapesjs.Editor {
     }
 
     editor.on('load', function () {
-        const document = editor.Canvas.getDocument() as HTMLDocument
+        const document = editor.Canvas.getDocument() as Document
         const headElement = document.head
         headElement.appendChild(bootstrapCss.cloneNode())
         headElement.appendChild(fontawesomeCss.cloneNode())
