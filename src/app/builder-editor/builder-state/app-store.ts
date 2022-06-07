@@ -326,7 +326,9 @@ export class AppStore {
     projectURI$(): Observable<string> {
         return this.projectSchema$().pipe(
             map((project) => {
-                return `/applications/@youwol/flux-builder/latest/?uri=${toProjectURI(project)}`
+                return `/applications/@youwol/flux-builder/latest/?uri=${toProjectURI(
+                    project,
+                )}`
             }),
         )
     }
@@ -911,7 +913,6 @@ export class AppStore {
         this.updateProject(project)
     }
 
-
     setRenderingLayout(layout, asNewState = true) {
         const project = setRenderingLayout(layout, this.project)
         this.updateProject(project, asNewState)
@@ -1034,7 +1035,7 @@ export class AppStore {
         if (
             !updatesDone.modulesView &&
             this.project.builderRendering.modulesView !==
-            oldProject.builderRendering.modulesView
+                oldProject.builderRendering.modulesView
         ) {
             const delta = getCollectionsDelta(
                 oldProject.builderRendering.modulesView,
@@ -1056,11 +1057,11 @@ export class AppStore {
             ]
             updates.length > 0
                 ? this.appBuildViewObservables.modulesViewUpdated$.next(
-                    this.getActiveModulesView(),
-                )
+                      this.getActiveModulesView(),
+                  )
                 : this.appObservables.connectionsUpdated$.next(
-                    this.project.workflow.connections,
-                )
+                      this.project.workflow.connections,
+                  )
             if (updates.length > 0) {
                 updatesDone.modulesView = true
             }
@@ -1071,9 +1072,9 @@ export class AppStore {
                 this.project.workflow.modules.find(
                     (m) => m.moduleId == this.rootComponentId,
                 ) !=
-                oldProject.workflow.modules.find(
-                    (m) => m.moduleId == this.rootComponentId,
-                ))
+                    oldProject.workflow.modules.find(
+                        (m) => m.moduleId == this.rootComponentId,
+                    ))
         ) {
             if (!updatesDone.modulesView) {
                 this.appBuildViewObservables.modulesViewUpdated$.next(
@@ -1092,7 +1093,7 @@ export class AppStore {
         if (
             !updatesDone.descriptionBox &&
             this.project.builderRendering.descriptionsBoxes !==
-            oldProject.builderRendering.descriptionsBoxes
+                oldProject.builderRendering.descriptionsBoxes
         ) {
             this.appObservables.descriptionsBoxesUpdated$.next(
                 this.project.builderRendering.descriptionsBoxes,
