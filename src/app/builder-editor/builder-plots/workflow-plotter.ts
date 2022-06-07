@@ -20,6 +20,7 @@ import { plugLayersTransition_noTransition } from './drawing-utils'
 import { BuilderRenderingAPI } from './extension'
 
 export class WorkflowPlotter {
+    static backgroundLayerClass = 'workspace-background'
     debugSingleton = AppDebugEnvironment.getInstance()
 
     modulesPlotter: ModulesPlotter = undefined
@@ -83,11 +84,14 @@ export class WorkflowPlotter {
         this.appObservables.activeLayerUpdated$.subscribe((activeLayer) => {
             activeLayer.toLayerId != appStore.rootComponentId
                 ? drawingArea.svgCanvas
-                      .select('.workspace-background')
-                      .attr('class', 'workspace-background child-layer')
+                      .select(`.${WorkflowPlotter.backgroundLayerClass}`)
+                      .attr(
+                          'class',
+                          `${WorkflowPlotter.backgroundLayerClass} child-layer`,
+                      )
                 : drawingArea.svgCanvas
-                      .select('.workspace-background')
-                      .attr('class', 'workspace-background')
+                      .select(`.${WorkflowPlotter.backgroundLayerClass}`)
+                      .attr('class', `${WorkflowPlotter.backgroundLayerClass}`)
         })
 
         this.plugEvents()
@@ -118,7 +122,11 @@ export class WorkflowPlotter {
                     this.boxSelectorPlotter.finishSelection(getPosition(event)),
             )
             .on('click', (event) => {
-                if (!event.target.classList.contains('workspace-background')) {
+                if (
+                    !event.target.classList.contains(
+                        WorkflowPlotter.backgroundLayerClass,
+                    )
+                ) {
                     return
                 }
                 !event.ctrlKey && this.appStore.unselect()
