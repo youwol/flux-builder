@@ -95,35 +95,34 @@ export class WorkflowPlotter {
     }
 
     plugEvents() {
-        // We should use here the d3 global event (usually d3.event when global d3 is installed)
-        // 'event' is actually part of d3-selection : import { event } from 'd3-selection'
-        // However:
-        // 'be aware that the value of d3.event changes during an event! An import of d3.event must be a live binding'
-        // https://stackoverflow.com/questions/40012016/importing-d3-event-into-a-custom-build-using-rollup
-        // => the global window.event is used
-
-        const event = () => window.event as MouseEvent
-        const getPosition = () => [
-            event().offsetX || event().clientX,
-            event().offsetY || event().clientY,
+        const getPosition = (event) => [
+            event.offsetX || event.clientX,
+            event.offsetY || event.clientY,
         ]
 
         this.drawingArea.svgCanvas
-            .on('mousedown', () =>
-                this.boxSelectorPlotter.startSelection(getPosition()),
+            .on('mousedown', (event) =>
+                this.boxSelectorPlotter.startSelection(getPosition(event)),
             )
-            .on('mousemove', () => {
-                event().ctrlKey
-                    ? this.boxSelectorPlotter.moveTo(getPosition())
-                    : this.plottersObservables.mouseMoved$.next(getPosition())
+            .on('mousemove', (event) => {
+                event.ctrlKey
+                    ? this.boxSelectorPlotter.moveTo(getPosition(event))
+                    : this.plottersObservables.mouseMoved$.next(
+                          getPosition(event),
+                      )
             })
             .on(
                 'mouseup',
-                () =>
-                    event().ctrlKey &&
-                    this.boxSelectorPlotter.finishSelection(getPosition()),
+                (event) =>
+                    event.ctrlKey &&
+                    this.boxSelectorPlotter.finishSelection(getPosition(event)),
             )
-            .on('click', () => !event().ctrlKey && this.appStore.unselect())
+            .on('click', (event) => {
+                if (!event.target.classList.contains('workspace-background')) {
+                    return
+                }
+                !event.ctrlKey && this.appStore.unselect()
+            })
 
         window.onkeydown = (event) => {
             if (
