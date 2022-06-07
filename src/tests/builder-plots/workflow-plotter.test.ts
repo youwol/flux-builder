@@ -45,8 +45,10 @@ test('load simple project', (done) => {
         expect(selectedModules).toHaveLength(1)
         expect(selectedModules[0].moduleId).toBe('module0')
 
-        const drawingDiv = document.getElementById(div.id + '-drawing-area')
-        const eventClick = new MouseEvent('click', { button: 0 })
+        const drawingDiv = document.querySelector(
+            `.${WorkflowPlotter.backgroundLayerClass}`,
+        )
+        const eventClick = new MouseEvent('click', { button: 0, bubbles: true })
 
         drawingDiv.dispatchEvent(eventClick)
 
@@ -58,6 +60,7 @@ test('load simple project', (done) => {
             ctrlKey: true,
             clientX: 0,
             clientY: 0,
+            bubbles: true,
         })
         drawingDiv.dispatchEvent(eventMouseDown)
 
@@ -67,6 +70,7 @@ test('load simple project', (done) => {
             ctrlKey: true,
             clientX: 55,
             clientY: 100,
+            bubbles: true,
         })
         drawingDiv.dispatchEvent(eventMouseMove)
         let highlighteds = document.querySelectorAll('.highlighted')
@@ -78,6 +82,7 @@ test('load simple project', (done) => {
                 ctrlKey: true,
                 clientX: 100,
                 clientY: 100,
+                bubbles: true,
             }),
         )
         highlighteds = document.querySelectorAll('.highlighted')
@@ -90,6 +95,7 @@ test('load simple project', (done) => {
                 ctrlKey: true,
                 clientX: 100,
                 clientY: 100,
+                bubbles: true,
             }),
         )
 
