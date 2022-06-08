@@ -1153,20 +1153,20 @@
   resolved "https://registry.yarnpkg.com/@youwol/fv-tree/-/fv-tree-0.1.4.tgz#50aac4850a604371abd1edfbb3b94377471801a5"
   integrity sha512-HCBFjq8a6wgeOXFuJ7QeLojOYWdXjhwE5GG3BHAmf2p3wMKJF4gNJNpX6Qnwk69xDuC7ibs3kQFeKmq+TC9evg==
 
-"@youwol/http-clients@^0.1.9":
-  version "0.1.9"
-  resolved "https://registry.yarnpkg.com/@youwol/http-clients/-/http-clients-0.1.9.tgz#9ef7a0e51ca983f22989aaea813866baf8eb6583"
-  integrity sha512-PRcV5FxObaNbBf75X/Y9OoRnN5nomPOnWImHorU4QpRMmGIWgEugRmXkduK2dFBCDnrnyGX0CFCoQkCdVLmRjQ==
+"@youwol/http-clients@^0.1.10":
+  version "0.1.10"
+  resolved "https://registry.yarnpkg.com/@youwol/http-clients/-/http-clients-0.1.10.tgz#cea933f1ffdc89b0a6cd459aeb4de070d21d9893"
+  integrity sha512-DOp3F6JyFwxS6smeYa6m+swvyRNAxMgg5bFHW82wHrgeVa1mcpft6OakWZmNLY2N2ZkTCS2Yu/jsV0/Z/Nc89w==
 
 "@youwol/logging@^0.0.2":
   version "0.0.2"
   resolved "https://registry.yarnpkg.com/@youwol/logging/-/logging-0.0.2.tgz#50515dd16af5115e033f0c47cab22753d8d22c36"
   integrity sha512-OVCOP7a4KPKrFiKiQcTKap5oGLlXvcz/CtxD4PdS7Cg4lgy75vsOCF0d2w7T3KX9y9ir7V/zu1w7HL6Jvu6P3w==
 
-"@youwol/os-core@^0.0.1":
-  version "0.0.1"
-  resolved "https://registry.yarnpkg.com/@youwol/os-core/-/os-core-0.0.1.tgz#ba8ed3330ea32351df4b2a203872cff3bd836edf"
-  integrity sha512-Wl5UHWv599WITWHVsV/fMiRZwcm3K6ywgXL+i9dEZLUjpywrxMyHXavKZrWvJAsqSIqhCZRzAxMLsPPQe4K/vQ==
+"@youwol/os-core@^0.0.2":
+  version "0.0.2"
+  resolved "https://registry.yarnpkg.com/@youwol/os-core/-/os-core-0.0.2.tgz#94fa815517a03c75e8425e9a55a09ab12904a203"
+  integrity sha512-z+Cqdc4LBG6M/f2pWUc3Zw3SMHa7UT44bi3KTjyKakJrb4a489Gh3WHBbo9BKg9yvMsNXUcMzY20SDUOqMQxTA==
 
 "@youwol/os-top-banner@^0.0.1":
   version "0.0.1"
