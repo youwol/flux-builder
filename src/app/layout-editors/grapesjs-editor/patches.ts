@@ -1,29 +1,6 @@
 /** @format */
 
 export function applyPatches(editor: any) {
-    /**
-     * This patch is to switch between old fontawesome icons to corresponding new ones
-     */
-    const toolbarDiv = document
-        .getElementById('gjs-tools')
-        .querySelector('.gjs-toolbar') as HTMLDivElement
-    const callback = function (mutationsList: any, observer: any) {
-        if (toolbarDiv.children.length > 0) {
-            toolbarDiv
-                .querySelector('.fa-arrows')
-                .classList.add('fas', 'fa-arrows-alt')
-            toolbarDiv
-                .querySelector('.fa-trash-o')
-                .classList.add('fas', 'fa-trash')
-        }
-    }
-    const observer = new MutationObserver(callback)
-    observer.observe(toolbarDiv, {
-        attributes: true,
-        childList: true,
-        subtree: false,
-    })
-
     /** the default move command is patched such that it is allow to drag only  if
      * the dedicated 'move' icon is used. Mixing dragging inside the component w/ layout change + internal
      * component behavior was causing problem
