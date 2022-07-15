@@ -15,19 +15,17 @@ loadingScreen.render()
 await install(
     {
         modules: [
-            'lodash',
-            'grapes',
-            '@youwol/flux-core',
-            '@youwol/flux-svg-plots',
-            '@youwol/flux-view',
-            '@youwol/fv-group',
-            '@youwol/fv-button',
-            '@youwol/fv-tree',
-            '@youwol/fv-tabs',
-            '@youwol/fv-input',
-            '@youwol/fv-context-menu',
-            '@youwol/os-top-banner',
-            'rxjs',
+            { name: 'lodash', version: '4.x' },
+            { name: 'grapes', version: '0.x' },
+            { name: '@youwol/flux-core', version: '0.x' },
+            { name: '@youwol/flux-svg-plots', version: '0.x' },
+            { name: '@youwol/fv-group', version: '0.x' },
+            { name: '@youwol/fv-button', version: '0.x' },
+            { name: '@youwol/fv-tree', version: '0.x' },
+            { name: '@youwol/fv-tabs', version: '0.x' },
+            { name: '@youwol/fv-input', version: '0.x' },
+            { name: '@youwol/fv-context-menu', version: '0.x' },
+            { name: '@youwol/os-top-banner', version: '0.x' },
         ],
         css: [
             {
