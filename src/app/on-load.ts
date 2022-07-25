@@ -172,9 +172,7 @@ export async function connectStreams(
 ) {
     let loading = true
     const appObservables = appStore.appObservables
-    appObservables.packagesLoaded$.subscribe(() =>
-        document.getElementById('loading-screen').remove(),
-    )
+    appObservables.packagesLoaded$.subscribe(() => loadingScreen.done())
 
     await appObservables.renderingLoaded$
         .pipe(take(1))
