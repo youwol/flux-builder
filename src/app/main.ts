@@ -12,57 +12,48 @@ const loadingScreen = new LoadingScreenView({
 })
 loadingScreen.render()
 
-await install(
-    {
-        modules: [
-            { name: 'lodash', version: '4.x' },
-            { name: 'grapes', version: '0.x' },
-            { name: '@youwol/flux-core', version: '0.x' },
-            { name: '@youwol/flux-svg-plots', version: '0.x' },
-            { name: '@youwol/fv-group', version: '0.x' },
-            { name: '@youwol/fv-button', version: '0.x' },
-            { name: '@youwol/fv-tree', version: '0.x' },
-            { name: '@youwol/fv-tabs', version: '0.x' },
-            { name: '@youwol/fv-input', version: '0.x' },
-            { name: '@youwol/fv-context-menu', version: '0.x' },
-            { name: '@youwol/os-top-banner', version: '0.x' },
-        ],
-        css: [
-            {
-                resource: 'bootstrap#4.4.1~bootstrap.min.css',
+await install({
+    modules: [
+        'lodash#4.x',
+        'grapes#0.x',
+        '@youwol/flux-core#0.x',
+        '@youwol/flux-svg-plots#0.x',
+        '@youwol/fv-group#0.x',
+        '@youwol/fv-button#0.x',
+        '@youwol/fv-tree#0.x',
+        '@youwol/fv-tabs#0.x',
+        '@youwol/fv-input#0.x',
+        '@youwol/fv-context-menu#0.x',
+        '@youwol/os-top-banner#0.x',
+    ],
+    css: [
+        {
+            location: 'bootstrap#4.4.1~bootstrap.min.css',
+            sideEffects: ({ htmlLinkElement }) => {
+                htmlLinkElement.id = 'bootstrap-css'
             },
-            {
-                resource: 'fontawesome#5.12.1~css/all.min.css',
+        },
+        {
+            location: 'fontawesome#5.12.1~css/all.min.css',
+            sideEffects: ({ htmlLinkElement }) => {
+                htmlLinkElement.id = 'fontawesome-css'
             },
-            {
-                resource:
-                    '@youwol/fv-widgets#latest~dist/assets/styles/style.youwol.css',
+        },
+        {
+            location:
+                '@youwol/fv-widgets#latest~dist/assets/styles/style.youwol.css',
+            sideEffects: ({ htmlLinkElement }) => {
+                htmlLinkElement.id = 'youwol-css'
             },
-            {
-                resource: 'grapes#latest~css/grapes.min.css',
-            },
-            {
-                resource: 'codemirror#5.52.0~codemirror.min.css',
-            },
-            {
-                resource: 'codemirror#5.52.0~theme/blackboard.min.css',
-            },
-        ],
-    },
-    {
-        onEvent: (ev) => loadingScreen.next(ev),
-    },
-)
-const links = document.querySelectorAll('head link')
+        },
+        '@youwol/fv-widgets#latest~dist/assets/styles/style.youwol.css',
+        'grapes#latest~css/grapes.min.css',
+        'codemirror#5.52.0~codemirror.min.css',
+        'codemirror#5.52.0~theme/blackboard.min.css',
+    ],
+    onEvent: (ev) => loadingScreen.next(ev),
+})
 
-;[...links].find((l) => l.getAttribute('href').includes(btoa('bootstrap'))).id =
-    'bootstrap-css'
-;[...links].find((l) =>
-    l.getAttribute('href').includes(btoa('fontawesome')),
-).id = 'fontawesome-css'
-;[...links].find((l) =>
-    l.getAttribute('href').includes(btoa('@youwol/fv-widgets')),
-).id = 'youwol-css'
 Client['initialLoadingScreen'] = loadingScreen
 
 await import('./on-load')
