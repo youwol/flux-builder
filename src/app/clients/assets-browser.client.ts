@@ -3,7 +3,7 @@
 import { createObservableFromFetch } from '@youwol/flux-core'
 import { from, Observable, of } from 'rxjs'
 import { map, mergeMap, tap } from 'rxjs/operators'
-import { install } from '@youwol/cdn-client'
+import { installModules } from '@youwol/cdn-client'
 import { AppStore } from '../builder-editor/builder-state'
 
 export interface AssetResp {
@@ -156,15 +156,13 @@ export class AssetsBrowserClient {
                     ...{ [targetLibrary.name]: targetLibrary.versions[0] },
                 } as { [key: string]: string }
 
-                const fetchPromise = install(
-                    {
-                        modules: Object.entries(libraries).map(([k, v]) => ({
-                            name: k,
-                            version: v,
-                        })),
-                    },
-                    { executingWindow: window },
-                )
+                const fetchPromise = installModules({
+                    modules: Object.entries(libraries).map(([k, v]) => ({
+                        name: k,
+                        version: v,
+                    })),
+                    executingWindow: window,
+                })
 
                 return from(fetchPromise).pipe(
                     map((loadingGraph) => {
