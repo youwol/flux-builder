@@ -90,11 +90,7 @@
         "webpack-dev-server": "^4.7.4"
     },
     "youwol": {
-        "type": "application",
-        "pipeline": {
-            "name": "yw_pipeline_webpack_ts",
-            "version": "0.0.0"
-        }
+        "type": "application"
     },
     "prettier": {
         "printWidth": 80,
