@@ -53,8 +53,9 @@ function fetchCDN$() {
         'codemirror#5.52.0~mode/xml.min.js',
         'codemirror#5.52.0~mode/htmlmixed.min.js',
         'codemirror#5.52.0~mode/css.min.js',
-        'js-beautify#1.14.0~lang/css.min.js',
-        'js-beautify#1.14.0~lang/html.min.js',
+        // Those two seems not required
+        //'js-beautify#1.14.6~lang/css.min.js',
+        //'js-beautify#1.14.6~lang/html.min.js',
     ]
     return from(
         install({ modules: ['codemirror', 'js-beautify'], scripts: urls }),

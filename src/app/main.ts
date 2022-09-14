@@ -3,9 +3,33 @@
 // Following import is to include style.css in the dist directory (using MiniCssExtractPlugin)
 require('./style.css')
 
-import { Client, install, LoadingScreenView } from '@youwol/cdn-client'
+import { setup } from '../auto-generated'
+import { Client, install, LoadingScreenView, State } from '@youwol/cdn-client'
 
 export {}
+
+/**
+ * Those next patches & dependencies are required if the project loaded is old and refers old resources
+ * that are moved to better place
+ */
+const urlPatches = {
+    'three.min.js': 'dist/three.js',
+    'three-trackballcontrols.min.js': 'dist/three-trackballcontrols.js',
+}
+
+function patchUrl(url, name) {
+    const patched = url.replace(name, urlPatches[name])
+    console.warn(`The url ${url} requires a patch: ${patched}`)
+    return patched
+}
+State.registerUrlPatcher(({ url }: { url: string }) => {
+    const match = Object.keys(urlPatches).find((name) => url.includes(name))
+    return match ? patchUrl(url, match) : url
+})
+
+/**
+ * Done backward compatibility patching
+ */
 
 const loadingScreen = new LoadingScreenView({
     container: document.body,
@@ -13,19 +37,11 @@ const loadingScreen = new LoadingScreenView({
 loadingScreen.render()
 
 await install({
-    modules: [
-        'lodash#4.x',
-        'grapes#0.x',
-        '@youwol/flux-core#0.x',
-        '@youwol/flux-svg-plots#0.x',
-        '@youwol/fv-group#0.x',
-        '@youwol/fv-button#0.x',
-        '@youwol/fv-tree#0.x',
-        '@youwol/fv-tabs#0.x',
-        '@youwol/fv-input#0.x',
-        '@youwol/fv-context-menu#0.x',
-        '@youwol/os-top-banner#0.x',
-    ],
+    modules: Object.entries(setup.runTimeDependencies.load)
+        .filter(
+            ([k]) => !setup.runTimeDependencies.includedInBundle.includes(k),
+        )
+        .map(([k, v]) => `${k}#${v}`),
     css: [
         {
             location: 'bootstrap#4.4.1~bootstrap.min.css',
@@ -47,7 +63,7 @@ await install({
             },
         },
         '@youwol/fv-widgets#latest~dist/assets/styles/style.youwol.css',
-        'grapes#latest~css/grapes.min.css',
+        'grapesjs#0.18.3~css/grapes.min.css',
         'codemirror#5.52.0~codemirror.min.css',
         'codemirror#5.52.0~theme/blackboard.min.css',
     ],

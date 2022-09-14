@@ -3,7 +3,7 @@
 import { child$, VirtualDOM } from '@youwol/flux-view'
 import CodeMirror from 'codemirror'
 import { BehaviorSubject, from } from 'rxjs'
-import { mergeMap } from 'rxjs/operators'
+import { install } from '@youwol/cdn-client'
 
 export namespace CodeEditorView {
     export class State {
@@ -69,7 +69,7 @@ export namespace CodeEditorView {
                             class: 'w-100 h-100',
                             connectedCallback: (elem) => {
                                 const editor: CodeMirror.Editor = window[
-                                    'CodeMirror'
+                                    'CodeMirror#5'
                                 ](elem as ParentNode, configuration)
                                 editor.on('changes', () => {
                                     state.content$.next(editor.getValue())
@@ -82,8 +82,6 @@ export namespace CodeEditorView {
         }
 
         fetchCodeMirror$(mode: string) {
-            const cdn = window['@youwol/cdn-client']
-
             const urlsMode = {
                 javascript: 'codemirror#5.52.0~mode/javascript.min.js',
                 python: 'codemirror#5.52.0~mode/python.min.js',
@@ -91,18 +89,7 @@ export namespace CodeEditorView {
                 xml: 'codemirror#5.52.0~mode/xml.min.js',
                 html: 'codemirror#5.52.0~mode/htmlmixed.min.js',
             }
-            return from(
-                cdn.fetchBundles({ codemirror: { version: '5.52.0' } }, window),
-            ).pipe(
-                mergeMap(() => {
-                    const urls = Array.isArray(urlsMode[mode])
-                        ? urlsMode[mode]
-                        : [urlsMode[mode]]
-
-                    const promise = cdn.fetchJavascriptAddOn(urls, window)
-                    return from(promise)
-                }),
-            )
+            return from(install({modules:['codemirror#5'],scripts:[urlsMode[mode]]}))
         }
     }
 }

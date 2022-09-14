@@ -1,7 +1,7 @@
 /** @format */
 import { Logger } from '@youwol/logging'
 import CodeMirror from 'codemirror'
-import js_beautify from 'js-beautify'
+import { css, html } from 'js-beautify'
 import { ReplaySubject } from 'rxjs'
 import { ModelComponent, TypeDoc } from '../../model'
 import {
@@ -148,8 +148,6 @@ const formatContent: Record<
     TypeDoc,
     (modelComponent: ModelComponent) => string
 > = {
-    css: (modelComponent) =>
-        js_beautify.css_beautify(modelComponent.contentCss),
-    html: (modelComponent) =>
-        js_beautify.html_beautify(modelComponent.contentHtml),
+    css: (modelComponent) => css(modelComponent.contentCss),
+    html: (modelComponent) => html(modelComponent.contentHtml),
 }
