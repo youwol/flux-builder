@@ -69,7 +69,7 @@ export namespace CodeEditorView {
                             class: 'w-100 h-100',
                             connectedCallback: (elem) => {
                                 const editor: CodeMirror.Editor = window[
-                                    'CodeMirror#5'
+                                    'CodeMirror_APIv5'
                                 ](elem as ParentNode, configuration)
                                 editor.on('changes', () => {
                                     state.content$.next(editor.getValue())
@@ -89,7 +89,7 @@ export namespace CodeEditorView {
                 xml: 'codemirror#5.52.0~mode/xml.min.js',
                 html: 'codemirror#5.52.0~mode/htmlmixed.min.js',
             }
-            return from(install({modules:['codemirror#5'],scripts:[urlsMode[mode]]}))
+            return from(install({modules:['codemirror#^5.52.0'],scripts:[urlsMode[mode]]}))
         }
     }
 }
