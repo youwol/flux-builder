@@ -150,7 +150,7 @@ const entries = {
 export const setup = {
     name:'@youwol/flux-builder',
         assetId:'QHlvdXdvbC9mbHV4LWJ1aWxkZXI=',
-    version:'0.1.1-wip',
+    version:'0.1.1',
     shortDescription:"Low code application for YouWol platform",
     developerDocumentation:'https://platform.youwol.com/applications/@youwol/cdn-explorer/latest?package=@youwol/flux-builder',
     npmPackage:'https://www.npmjs.com/package/@youwol/flux-builder',
@@ -185,7 +185,7 @@ export const setup = {
         const parameters = installParameters || {}
         const scripts = [
             ...(parameters.scripts || []),
-            `@youwol/flux-builder#0.1.1-wip~dist/@youwol/flux-builder/${entry.name}.js`
+            `@youwol/flux-builder#0.1.1~dist/@youwol/flux-builder/${entry.name}.js`
         ]
         const modules = [
             ...(parameters.modules || []),
