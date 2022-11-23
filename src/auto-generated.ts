@@ -1,6 +1,7 @@
 
 const runTimeDependencies = {
-    "load": {
+    "externals": {
+        "codemirror": "^5.52.0",
         "@youwol/flux-svg-plots": "^0.0.1",
         "js-beautify": "^1.14.6",
         "@youwol/fv-tree": "^0.2.3",
@@ -16,23 +17,17 @@ const runTimeDependencies = {
         "@youwol/fv-input": "^0.2.1",
         "@youwol/flux-core": "^0.2.1",
         "@youwol/fv-context-menu": "^0.1.1",
-        "rxjs": "^6.5.5",
+        "rxjs": "^6.5.5"
+    },
+    "includedInBundle": {
         "d3-selection": "^3.0.0",
         "d3-drag": "^3.0.0",
         "d3-scale": "^4.0.2",
         "d3-zoom": "^3.0.0"
-    },
-    "differed": {
-        "codemirror": "^5.52.0"
-    },
-    "includedInBundle": [
-        "d3-selection",
-        "d3-drag",
-        "d3-scale",
-        "d3-zoom"
-    ]
+    }
 }
 const externals = {
+    "codemirror": "window['CodeMirror_APIv5']",
     "@youwol/flux-svg-plots": "window['@youwol/flux-svg-plots_APIv001']",
     "js-beautify": "window['js_beautify_APIv1']",
     "@youwol/fv-tree": "window['@youwol/fv-tree_APIv02']",
@@ -49,10 +44,13 @@ const externals = {
     "@youwol/flux-core": "window['@youwol/flux-core_APIv02']",
     "@youwol/fv-context-menu": "window['@youwol/fv-context-menu_APIv01']",
     "rxjs": "window['rxjs_APIv6']",
-    "codemirror": "window['CodeMirror_APIv5']",
     "rxjs/operators": "window['rxjs_APIv6']['operators']"
 }
 const exportedSymbols = {
+    "codemirror": {
+        "apiKey": "5",
+        "exportedSymbol": "CodeMirror"
+    },
     "@youwol/flux-svg-plots": {
         "apiKey": "001",
         "exportedSymbol": "@youwol/flux-svg-plots"
@@ -116,16 +114,43 @@ const exportedSymbols = {
     "rxjs": {
         "apiKey": "6",
         "exportedSymbol": "rxjs"
-    },
-    "codemirror": {
-        "apiKey": "5",
-        "exportedSymbol": "CodeMirror"
     }
+}
+
+// eslint-disable-next-line @typescript-eslint/ban-types -- allow to allow no secondary entries
+const mainEntry : Object = {
+    "entryFile": "./index.ts",
+    "loadDependencies": [
+        "codemirror",
+        "@youwol/flux-svg-plots",
+        "js-beautify",
+        "@youwol/fv-tree",
+        "grapesjs",
+        "@youwol/fv-group",
+        "@youwol/flux-view",
+        "@youwol/fv-button",
+        "lodash",
+        "@youwol/logging",
+        "@youwol/cdn-client",
+        "@youwol/os-top-banner",
+        "@youwol/fv-tabs",
+        "@youwol/fv-input",
+        "@youwol/flux-core",
+        "@youwol/fv-context-menu",
+        "rxjs"
+    ]
+}
+
+// eslint-disable-next-line @typescript-eslint/ban-types -- allow to allow no secondary entries
+const secondaryEntries : Object = {}
+const entries = {
+     '@youwol/flux-builder': './index.ts',
+    ...Object.values(secondaryEntries).reduce( (acc,e) => ({...acc, [`@youwol/flux-builder/${e.name}`]:e.entryFile}), {})
 }
 export const setup = {
     name:'@youwol/flux-builder',
         assetId:'QHlvdXdvbC9mbHV4LWJ1aWxkZXI=',
-    version:'0.1.0',
+    version:'0.1.1',
     shortDescription:"Low code application for YouWol platform",
     developerDocumentation:'https://platform.youwol.com/applications/@youwol/cdn-explorer/latest?package=@youwol/flux-builder',
     npmPackage:'https://www.npmjs.com/package/@youwol/flux-builder',
@@ -135,7 +160,46 @@ export const setup = {
     runTimeDependencies,
     externals,
     exportedSymbols,
+    entries,
     getDependencySymbolExported: (module:string) => {
         return `${exportedSymbols[module].exportedSymbol}_APIv${exportedSymbols[module].apiKey}`
+    },
+
+    installMainModule: ({cdnClient, installParameters}:{cdnClient, installParameters?}) => {
+        const parameters = installParameters || {}
+        const scripts = parameters.scripts || []
+        const modules = [
+            ...(parameters.modules || []),
+            ...mainEntry['loadDependencies'].map( d => `${d}#${runTimeDependencies.externals[d]}`)
+        ]
+        return cdnClient.install({
+            ...parameters,
+            modules,
+            scripts,
+        }).then(() => {
+            return window[`@youwol/flux-builder_APIv01`]
+        })
+    },
+    installAuxiliaryModule: ({name, cdnClient, installParameters}:{name: string, cdnClient, installParameters?}) => {
+        const entry = secondaryEntries[name]
+        const parameters = installParameters || {}
+        const scripts = [
+            ...(parameters.scripts || []),
+            `@youwol/flux-builder#0.1.1~dist/@youwol/flux-builder/${entry.name}.js`
+        ]
+        const modules = [
+            ...(parameters.modules || []),
+            ...entry.loadDependencies.map( d => `${d}#${runTimeDependencies.externals[d]}`)
+        ]
+        if(!entry){
+            throw Error(`Can not find the secondary entry '${name}'. Referenced in template.py?`)
+        }
+        return cdnClient.install({
+            ...parameters,
+            modules,
+            scripts,
+        }).then(() => {
+            return window[`@youwol/flux-builder/${entry.name}_APIv01`]
+        })
     }
 }
