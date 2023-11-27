@@ -10,4 +10,4 @@ export const rendersViewsNames = [
     'runner',
 ] as const
 
-export type RenderViewName = typeof rendersViewsNames[number]
+export type RenderViewName = (typeof rendersViewsNames)[number]

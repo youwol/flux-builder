@@ -89,7 +89,12 @@ export namespace CodeEditorView {
                 xml: 'codemirror#5.52.0~mode/xml.min.js',
                 html: 'codemirror#5.52.0~mode/htmlmixed.min.js',
             }
-            return from(install({modules:['codemirror#^5.52.0'],scripts:[urlsMode[mode]]}))
+            return from(
+                install({
+                    modules: ['codemirror#^5.52.0'],
+                    scripts: [urlsMode[mode]],
+                }),
+            )
         }
     }
 }

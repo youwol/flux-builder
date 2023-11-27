@@ -1,93 +1,113 @@
-import { Workflow, Component} from '@youwol/flux-core';
-    
-import { AppDebugEnvironment, LogLevel } from './app-debug.environment';
-import { updateComponent } from './app-store-modules-group';
-import { clonePluginsForNewParents } from './app-store-modules';
+import { Workflow, Component } from '@youwol/flux-core'
 
+import { AppDebugEnvironment, LogLevel } from './app-debug.environment'
+import { updateComponent } from './app-store-modules-group'
+import { clonePluginsForNewParents } from './app-store-modules'
 
 const toHtml = (content: string) => {
-    const template = document.createElement('div');
-    template.innerHTML = (content as any).trim();
+    const template = document.createElement('div')
+    template.innerHTML = (content as any).trim()
     return template as HTMLDivElement
 }
 
-
-export function applyHtmlLayout( 
-    workflow: Workflow,
-    html: string 
-    ) : Workflow {
-    
+export function applyHtmlLayout(workflow: Workflow, html: string): Workflow {
     const debugSingleton = AppDebugEnvironment.getInstance()
 
     const htmlDiv = toHtml(html)
-    if(!htmlDiv)
-        {return workflow}
+    if (!htmlDiv) {
+        return workflow
+    }
 
-    const componentsDiv = Array.from(htmlDiv.querySelectorAll(".flux-component"))
-    .reduce( (acc,e) => {
-       return {...acc, ...{[e.id]:e.cloneNode(true)}}
+    const componentsDiv = Array.from(
+        htmlDiv.querySelectorAll('.flux-component'),
+    ).reduce((acc, e) => {
+        return { ...acc, ...{ [e.id]: e.cloneNode(true) } }
     }, {})
 
     const componentIds = Object.keys(componentsDiv)
     // we only update the components that are part of the html layout
     // others will keep they previous layout (desired)
-    const componentsToEventuallyUpdate = componentIds
-    .map( (componentId) => workflow.modules.find( mdle => mdle.moduleId==componentId))
+    const componentsToEventuallyUpdate = componentIds.map((componentId) =>
+        workflow.modules.find((mdle) => mdle.moduleId == componentId),
+    )
 
-    const newComponents = componentsToEventuallyUpdate.map( (component: Component.Module) => {
-        const deepHtml = componentsDiv[component.moduleId]
-        if(!deepHtml)
-            {return undefined}
+    const newComponents = componentsToEventuallyUpdate
+        .map((component: Component.Module) => {
+            const deepHtml = componentsDiv[component.moduleId]
+            if (!deepHtml) {
+                return undefined
+            }
 
-        component.getDirectChildren(workflow)
-        .filter( child => child instanceof Component.Module)
-        .forEach( (childComponent: Component.Module) => {
-            const childComponentDiv = deepHtml.querySelector(`#${childComponent.moduleId}`)
-            if(childComponentDiv)
-                {childComponentDiv.innerHTML = ''} 
+            component
+                .getDirectChildren(workflow)
+                .filter((child) => child instanceof Component.Module)
+                .forEach((childComponent: Component.Module) => {
+                    const childComponentDiv = deepHtml.querySelector(
+                        `#${childComponent.moduleId}`,
+                    )
+                    if (childComponentDiv) {
+                        childComponentDiv.innerHTML = ''
+                    }
+                })
+            const html = deepHtml.outerHTML
+            if (
+                html ==
+                component.getPersistentData<Component.PersistentData>().html
+            ) {
+                return undefined
+            }
+
+            const newComponent = updateComponent(component, { html })
+            return newComponent
         })
-        const html = deepHtml.outerHTML
-        if(html == component.getPersistentData<Component.PersistentData>().html)
-            {return undefined}
+        .filter((d) => d)
 
-        const newComponent = updateComponent(component, {html})
-        return newComponent
-    })
-    .filter( d => d)
+    debugSingleton.debugOn &&
+        debugSingleton.logWorkflowBuilder({
+            level: LogLevel.Info,
+            message: 'apply html layout',
+            object: {
+                newComponents,
+                eventualUpdateNeeded: componentIds,
+            },
+        })
 
-    debugSingleton.debugOn && 
-    debugSingleton.logWorkflowBuilder( {  
-        level : LogLevel.Info, 
-        message: "apply html layout", 
-        object:{    
-            newComponents, eventualUpdateNeeded: componentIds
-        }
-    })
-
-    const newPluginsReplaced = clonePluginsForNewParents(newComponents, workflow)
+    const newPluginsReplaced = clonePluginsForNewParents(
+        newComponents,
+        workflow,
+    )
 
     const newWorkflow = new Workflow({
         ...workflow,
         modules: workflow.modules
-        .filter( mdle => ! newComponents.find( component => component.moduleId == mdle.moduleId))
-        .concat(...newComponents),
+            .filter(
+                (mdle) =>
+                    !newComponents.find(
+                        (component) => component.moduleId == mdle.moduleId,
+                    ),
+            )
+            .concat(...newComponents),
         plugins: workflow.plugins
-        .filter( mdle => ! newPluginsReplaced.find( plugin => plugin.moduleId == mdle.moduleId))
-        .concat(...newPluginsReplaced)
+            .filter(
+                (mdle) =>
+                    !newPluginsReplaced.find(
+                        (plugin) => plugin.moduleId == mdle.moduleId,
+                    ),
+            )
+            .concat(...newPluginsReplaced),
     })
     return newWorkflow
 }
 
-export function applyHtmlCss( 
+export function applyHtmlCss(
     rootComponent: Component.Module,
     workflow: Workflow,
-    css: string 
-    ) : Workflow {
-
+    css: string,
+): Workflow {
     const debugSingleton = AppDebugEnvironment.getInstance()
 
     const wrapDiv = (html) => {
-        // the html of the current layer is appended to a wrapper div such that 
+        // the html of the current layer is appended to a wrapper div such that
         // 'querySelectorAll' will also account for the 'Component_xxx' (root DOM) of 'html'
         const wrapperDiv = document.createElement('div')
         wrapperDiv.appendChild(html)
@@ -95,88 +115,101 @@ export function applyHtmlCss(
     }
 
     const toCss = (content: string) => {
-
         const styleSheet = new CSSStyleSheet()
-        content.split('}')
-        .filter( rule => rule!="")
-        .map( rule => (rule+"}").trim())
-        .forEach( rule => {
-            styleSheet.insertRule(rule) 
-        })
-        return styleSheet; 
+        content
+            .split('}')
+            .filter((rule) => rule != '')
+            .map((rule) => (rule + '}').trim())
+            .forEach((rule) => {
+                styleSheet.insertRule(rule)
+            })
+        return styleSheet
     }
-    const isEquivalent = (oldRules: string[], newRules:string[]) => {
-        oldRules = oldRules.filter( d => d!= "")
-        newRules = newRules.filter( d => d!= "")
-        if(oldRules.length!=newRules.length)
-            {return false}
-        const founds = oldRules.map( oldRule => newRules.includes(oldRule))
-        return founds.reduce( (acc,e)=> acc && e, true)
+    const isEquivalent = (oldRules: string[], newRules: string[]) => {
+        oldRules = oldRules.filter((d) => d != '')
+        newRules = newRules.filter((d) => d != '')
+        if (oldRules.length != newRules.length) {
+            return false
+        }
+        const founds = oldRules.map((oldRule) => newRules.includes(oldRule))
+        return founds.reduce((acc, e) => acc && e, true)
     }
     const styleSheet = toCss(css)
     const htmlRoot = wrapDiv(rootComponent.getFullHTML(workflow))
 
-    if(!htmlRoot)
-        {return workflow}
+    if (!htmlRoot) {
+        return workflow
+    }
 
-    
     const newComponents = workflow.modules
-    .filter( mdle => mdle instanceof Component.Module)
-    // do not update the style if the element is not actually in the view 
-    // (required by grapes: if a component is removed all its styles too - we style want to keep them if it is re-inserted)
-    .filter( mdle => htmlRoot.querySelector(`#${mdle.moduleId}`) != undefined)
-    // fetch all the rules that applies for the component
-    .map( (component: Component.Module) => {
-        const html = component.getOuterHTML()
-        const wrapperDiv = wrapDiv(html)
-        const cssRules = new Set<string>()
+        .filter((mdle) => mdle instanceof Component.Module)
+        // do not update the style if the element is not actually in the view
+        // (required by grapes: if a component is removed all its styles too - we style want to keep them if it is re-inserted)
+        .filter(
+            (mdle) => htmlRoot.querySelector(`#${mdle.moduleId}`) != undefined,
+        )
+        // fetch all the rules that applies for the component
+        .map((component: Component.Module) => {
+            const html = component.getOuterHTML()
+            const wrapperDiv = wrapDiv(html)
+            const cssRules = new Set<string>()
 
+            for (let i = 0; i < styleSheet.rules.length; i++) {
+                const cssRule = styleSheet.rules[i] as any
+                const elements = Array.from(
+                    wrapperDiv.querySelectorAll(cssRule.selectorText),
+                )
+                    // The style of child components belong to the child, not the parent
+                    .filter((element) => {
+                        const childrenComponentId = component
+                            .getDirectChildren(workflow)
+                            .filter((c) => c instanceof Component.Module)
+                            .map((child) => child.moduleId)
+                        return !childrenComponentId.includes(element.id)
+                    })
+                if (elements.length > 0) {
+                    cssRules.add(cssRule.cssText)
+                }
+            }
+            const oldCssRules = component
+                .getPersistentData<Component.PersistentData>()
+                .css.split('\n')
 
-        for(let i=0; i<styleSheet.rules.length;i++) {
-            const cssRule = styleSheet.rules[i] as any
-            const elements =  Array
-            .from(wrapperDiv.querySelectorAll(cssRule.selectorText))
-            // The style of child components belong to the child, not the parent
-            .filter( element => {
-                const childrenComponentId = component
-                .getDirectChildren(workflow)
-                .filter( c => c instanceof Component.Module)
-                .map(child => child.moduleId)
-                return !childrenComponentId.includes(element.id) 
-            })
-            if(elements.length>0 )
-                {cssRules.add(cssRule.cssText)}
-        }
-        const oldCssRules = component.getPersistentData<Component.PersistentData>().css.split("\n")
+            if (isEquivalent(oldCssRules, [...cssRules])) {
+                return undefined
+            }
 
-        if(isEquivalent(oldCssRules, [...cssRules] ))
-            {return undefined}
+            const css: string = [...cssRules].reduce(
+                (acc: string, e: string) => acc + '\n' + e,
+                '',
+            )
 
-        const css : string = [...cssRules].reduce((acc: string,e: string) => acc+"\n"+e, ""); 
-       
-        const newComponent = updateComponent(component, {css})
-        return newComponent
-    })
-    .filter( d => d)
-    if(newComponents.length==0){
-        debugSingleton.debugOn && 
-        debugSingleton.logWorkflowBuilder( {  
-            level : LogLevel.Info, 
-            message: "no changes in css", 
-            object:{}
+            const newComponent = updateComponent(component, { css })
+            return newComponent
         })
+        .filter((d) => d)
+    if (newComponents.length == 0) {
+        debugSingleton.debugOn &&
+            debugSingleton.logWorkflowBuilder({
+                level: LogLevel.Info,
+                message: 'no changes in css',
+                object: {},
+            })
         return workflow
     }
     const newWorkflow = new Workflow({
         ...workflow,
         modules: workflow.modules
-        .filter( mdle => ! newComponents.find( component => component.moduleId == mdle.moduleId))
-        .concat(...newComponents)
+            .filter(
+                (mdle) =>
+                    !newComponents.find(
+                        (component) => component.moduleId == mdle.moduleId,
+                    ),
+            )
+            .concat(...newComponents),
     })
     return newWorkflow
 }
-
-
 
 /*
 export function addRemoteComponent( component, modulesFactory, coors, project: Project , activeLayerId, 

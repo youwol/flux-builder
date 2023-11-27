@@ -37,7 +37,7 @@ const loadingScreen = new LoadingScreenView({
 loadingScreen.render()
 await setup.installMainModule({
     cdnClient,
-    installParameters:{
+    installParameters: {
         css: [
             {
                 location: 'bootstrap#4.4.1~bootstrap.min.css',
@@ -64,7 +64,7 @@ await setup.installMainModule({
             'codemirror#5.52.0~theme/blackboard.min.css',
         ],
         onEvent: (ev) => loadingScreen.next(ev),
-    }
+    },
 })
 /*
 await install({

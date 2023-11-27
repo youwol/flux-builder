@@ -1,12 +1,13 @@
 @import url('style-svg.css');
 
-html, body {
+html,
+body {
     height: 100%;
 }
 
 body {
     margin: 0;
-    font-family: Roboto, "Helvetica Neue", sans-serif;
+    font-family: Roboto, 'Helvetica Neue', sans-serif;
 }
 
 .CodeMirror {
@@ -43,7 +44,6 @@ body {
     background-color: rgba(54, 55, 55, 0.7);
 }
 
-
 /*
 Scroll Bar Definition
 */
@@ -70,7 +70,6 @@ Scroll Bar Definition
 
 /* End Scroll bar*/
 
-
 .collapsed > #panel__layout-managers-actions > #panel__render-panels-actions {
     display: none !important;
 }
@@ -80,18 +79,17 @@ Scroll Bar Definition
 }
 
 .panels-container {
-    display: block
+    display: block;
 }
 
 .panels-container.collapsed {
-    display: none
+    display: none;
 }
-
 
 #editor-container {
     display: flex;
     flex-direction: column;
-    height: 100%
+    height: 100%;
 }
 
 .gjs-cv-canvas {
@@ -103,7 +101,6 @@ Scroll Bar Definition
 #gjs {
     flex: auto;
 }
-
 
 .cm-module-widget-selected {
     color: #ffbb00;

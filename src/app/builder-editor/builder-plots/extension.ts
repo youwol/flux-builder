@@ -1,10 +1,7 @@
+export class BuilderRenderingAPI {
+    static workflowPlotter: any
 
-export class BuilderRenderingAPI{
-
-    static workflowPlotter : any
-
-    static initialize( wfPlotter){
+    static initialize(wfPlotter) {
         BuilderRenderingAPI.workflowPlotter = wfPlotter
-        
     }
 }
