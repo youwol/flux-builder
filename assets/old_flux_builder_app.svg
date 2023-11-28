@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 283.46 283.46">
+<defs>
+
+<style>.cls-1{fill:url(#linear-gradient);}.cls-2{fill:#fafafa;}
+#shadow {filter: drop-shadow(rgb(0, 0, 0) 5px 5px 5px);}
+</style>
+
+<linearGradient id="linear-gradient" x1="0.5" y1="-0.5" x2="283.5" y2="284.5" gradientUnits="userSpaceOnUse">
+<stop offset="0" stop-color="#934510"/>
+<stop offset="0.5" stop-color="#d3661c"/>
+<stop offset="1" stop-color="#fb7a23"/>
+</linearGradient>
+</defs>
+
+<title>OLD_FLUX_BUILDER</title>
+
+<g id="background_02" data-name="background 02">
+<rect class="cls-1" width="283.46" height="283.46"/>
+</g>
+
+<g id="old_flux_builder" data-name="old flux builder">
+<path id="shadow" class="cls-2" d="M230.77,193.47l-42.54-42.54a27,27,0,0,0-31-5.05l-38.72-38.72V84.6L72,49.72,48.73,73l34.87,46.5h22.56l38.73,38.73a27,27,0,0,0,5.05,31l42.54,42.54a13.49,13.49,0,0,0,19.14,0l19.15-19.14A13.59,13.59,0,0,0,230.77,193.47Zm-61.54-62a38.25,38.25,0,0,1,27.21,11.26l7,7.05a51.48,51.48,0,0,0,15.92-10.72,52.24,52.24,0,0,0,13.76-49.66,4.34,4.34,0,0,0-7.3-2l-27,27-24.66-4.1-4.11-24.67,27-27A4.38,4.38,0,0,0,195,51.29,52.3,52.3,0,0,0,145.4,65.05a51.46,51.46,0,0,0-15,37.64l29.82,29.82A39.69,39.69,0,0,1,169.23,131.46Zm-37.75,29.79-20.6-20.6-55.36,55.4A23.25,23.25,0,0,0,88.4,228.93L133.3,184A39,39,0,0,1,131.48,161.25ZM72,221.19a8.72,8.72,0,1,1,8.71-8.72A8.74,8.74,0,0,1,72,221.19Z" transform="translate(0)"/>
+</g>
+</svg>
