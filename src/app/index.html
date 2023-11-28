@@ -1,31 +1,24 @@
 <!doctype html>
 <html lang="en">
+    <head>
+        <meta charset="utf-8" />
+        <title>Flux</title>
+        <base href="<%= htmlWebpackPlugin.options.baseHref%>" />
 
-<head>
-    <meta charset="utf-8">
-    <title>Flux </title>
-    <base href='<%= htmlWebpackPlugin.options.baseHref%>' />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <link rel="icon" type="image/x-icon" href="favicon.ico" />
 
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="icon" type="image/x-icon" href="favicon.ico">
+        <script src="/api/assets-gateway/raw/package/QHlvdXdvbC9jZG4tY2xpZW50/1.x/dist/@youwol/cdn-client.js"></script>
 
-    <script
-        src='/api/assets-gateway/raw/package/QHlvdXdvbC9jZG4tY2xpZW50/1.x/dist/@youwol/cdn-client.js'></script>
-
-    <!--The following import is actually replaced at build time to insert hash in the name (for caching)
+        <!--The following import is actually replaced at build time to insert hash in the name (for caching)
         See file webpack.config.js and plugin MiniCssExtractPlugin
         <link rel="stylesheet" href="style.css" id='css-anchor'> -->
+    </head>
 
-</head>
-
-<body>
-
-
-    <!--
+    <body>
+        <!--
     The following import is actually replaced at build time to insert hash in the bundle name (for caching)
     See file webpack.config.js and plugin HtmlWebpackPlugin
     <script src="main.bundle.js"></script>
-    -->
-</body>
-
+    --></body>
 </html>

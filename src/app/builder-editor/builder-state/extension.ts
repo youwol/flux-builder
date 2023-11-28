@@ -1,11 +1,9 @@
 import { AppStore } from './app-store'
 
-export class BuilderStateAPI{
+export class BuilderStateAPI {
+    static appStore: AppStore
 
-    static appStore : AppStore 
-
-    static initialize( appStore : AppStore){
+    static initialize(appStore: AppStore) {
         BuilderStateAPI.appStore = appStore
     }
 }
-

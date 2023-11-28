@@ -1,90 +1,101 @@
+import { DrawingArea } from '@youwol/flux-svg-plots'
 
-import { DrawingArea } from '@youwol/flux-svg-plots';
+import {
+    AppStore,
+    AppBuildViewObservables,
+    AppObservables,
+    AppDebugEnvironment,
+} from '../builder-state/index'
 
-import { AppStore,AppBuildViewObservables, AppObservables,AppDebugEnvironment} 
-from '../builder-state/index';
+import { getBoundingBox } from './drawing-utils'
+import { ModulesPlotter } from './modules-plotter'
 
-import { getBoundingBox } from './drawing-utils';
-import { ModulesPlotter } from './modules-plotter';
-
-export class BoxSelectorPlotter{
-    
+export class BoxSelectorPlotter {
     debugSingleton = AppDebugEnvironment.getInstance()
-    
+
     start = undefined
     rect = undefined
-    constructor( public readonly drawingArea : DrawingArea,
+    constructor(
+        public readonly drawingArea: DrawingArea,
         public readonly plottersObservables: AppBuildViewObservables,
         public readonly appObservables: AppObservables,
-        public readonly appStore : AppStore,
-        public readonly modulesPlotter: ModulesPlotter){        
-            
-    }
+        public readonly appStore: AppStore,
+        public readonly modulesPlotter: ModulesPlotter,
+    ) {}
 
-    startSelection(coordinates){
-
+    startSelection(coordinates) {
         //this.appObservables.unselect$.next()
         coordinates = this.convert(coordinates)
         this.rect = this.drawingArea.drawingGroup
-        .append("rect")
-        .attr("class","rectangle-selector")
-        .attr("x", coordinates[0])
-        .attr("y", coordinates[1])
-        .attr("height", 0)
-        .attr("width", 0);
+            .append('rect')
+            .attr('class', 'rectangle-selector')
+            .attr('x', coordinates[0])
+            .attr('y', coordinates[1])
+            .attr('height', 0)
+            .attr('width', 0)
 
         this.start = coordinates
     }
-    finishSelection(coordinates){
-        
+    finishSelection(coordinates) {
         this.start = undefined
-        const modulesId = BoxSelectorPlotter.getSelectedModules(this.appStore.getActiveModulesView(), 
-            this.drawingArea,this.rect)
-        const finalRect = getBoundingBox(modulesId,10,this.drawingArea)
+        const modulesId = BoxSelectorPlotter.getSelectedModules(
+            this.appStore.getActiveModulesView(),
+            this.drawingArea,
+            this.rect,
+        )
+        const finalRect = getBoundingBox(modulesId, 10, this.drawingArea)
 
-        this.rect/*.transition()
+        this.rect /*.transition()
         .duration(500)
         .attr("x",finalRect.x)
         .attr("y",finalRect.y)
         .attr("width",finalRect.width)
         .attr("height",finalRect.height)*/
-        .remove()
+            .remove()
         this.appStore.select({
-            modulesId:modulesId, 
-            connectionsId:[]})
+            modulesId: modulesId,
+            connectionsId: [],
+        })
         //setTimeout(() => this.wfPlotter.setSelectionBox(modulesId), 500)
     }
-    moveTo(coordinates){
-        if( !this.start)
-            {return} 
+    moveTo(coordinates) {
+        if (!this.start) {
+            return
+        }
         coordinates = this.convert(coordinates)
-        this.rect.attr("width", Math.max(0, coordinates[0] - +this.rect.attr("x")))
-        .attr("height", Math.max(0, coordinates[1] - +this.rect.attr("y")));
+        this.rect
+            .attr('width', Math.max(0, coordinates[0] - +this.rect.attr('x')))
+            .attr('height', Math.max(0, coordinates[1] - +this.rect.attr('y')))
 
-        const highlighteds = BoxSelectorPlotter.getSelectedModules(this.appStore.getActiveModulesView(), 
-            this.drawingArea,this.rect)
-        this.modulesPlotter.highlight(highlighteds )
+        const highlighteds = BoxSelectorPlotter.getSelectedModules(
+            this.appStore.getActiveModulesView(),
+            this.drawingArea,
+            this.rect,
+        )
+        this.modulesPlotter.highlight(highlighteds)
     }
-    
-    static getSelectedModules(modulesView,drawingArea, rect) : Array<string> {
-        const coors = modulesView
-        .map(m => [
+
+    static getSelectedModules(modulesView, drawingArea, rect): Array<string> {
+        const coors = modulesView.map((m) => [
             m.moduleId,
-            drawingArea.hScale(m.xWorld), 
-            drawingArea.vScale(m.yWorld)])
+            drawingArea.hScale(m.xWorld),
+            drawingArea.vScale(m.yWorld),
+        ])
 
-        const x0 = Number(rect.attr("x"))
-        const y0 = Number(rect.attr("y"))
-        const x1 = x0 + Number(rect.attr("width"))
-        const y1 = y0 + Number(rect.attr("height"))
+        const x0 = Number(rect.attr('x'))
+        const y0 = Number(rect.attr('y'))
+        const x1 = x0 + Number(rect.attr('width'))
+        const y1 = y0 + Number(rect.attr('height'))
         return coors
-        .filter( ([_,x,y]) =>  x > x0  &&  x < x1 && y > y0 &&  y < y1)
-        .map( ([mid,x,y] :[string,number,number]) =>mid)
-        
+            .filter(([_, x, y]) => x > x0 && x < x1 && y > y0 && y < y1)
+            .map(([mid, x, y]: [string, number, number]) => mid)
     }
-    convert([x,y]) {
+    convert([x, y]) {
         const transform = this.drawingArea.overallTranform
-       
-        return [(x-transform.translateX)/transform.scale,(y-transform.translateY)/transform.scale]
+
+        return [
+            (x - transform.translateX) / transform.scale,
+            (y - transform.translateY) / transform.scale,
+        ]
     }
 }

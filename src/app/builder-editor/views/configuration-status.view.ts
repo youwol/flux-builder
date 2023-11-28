@@ -1,27 +1,22 @@
-import { ConfigurationStatus} from "@youwol/flux-core";
-import { VirtualDOM } from "@youwol/flux-view";
-import { DataTreeView } from "./data-tree.view";
+import { ConfigurationStatus } from '@youwol/flux-core'
+import { VirtualDOM } from '@youwol/flux-view'
+import { DataTreeView } from './data-tree.view'
 
-
-export namespace ConfigurationStatusView{
-
-
-    export class State{
-
-        public readonly status :  ConfigurationStatus<unknown>
-        public readonly typingErrors : DataTreeView.State | undefined
-        public readonly missingFields : DataTreeView.State | undefined
-        public readonly unexpectedFields : DataTreeView.State | undefined
+export namespace ConfigurationStatusView {
+    export class State {
+        public readonly status: ConfigurationStatus<unknown>
+        public readonly typingErrors: DataTreeView.State | undefined
+        public readonly missingFields: DataTreeView.State | undefined
+        public readonly unexpectedFields: DataTreeView.State | undefined
 
         public readonly stringLengthLimit: number
         constructor({
             status,
-            stringLengthLimit
+            stringLengthLimit,
         }: {
-            status: ConfigurationStatus<unknown>,
+            status: ConfigurationStatus<unknown>
             stringLengthLimit?: number
         }) {
-
             this.status = status
             this.stringLengthLimit = stringLengthLimit || 100
 
@@ -31,95 +26,110 @@ export namespace ConfigurationStatusView{
             // They are not necessarly the same, not sure what's the best way to fix this problem yet
             const statusAny = status as any
 
-            if( statusAny.intrus.length == 0 && !statusAny.typeErrors && !statusAny.missings)
-                {return} 
+            if (
+                statusAny.intrus.length == 0 &&
+                !statusAny.typeErrors &&
+                !statusAny.missings
+            ) {
+                return
+            }
 
-            if( statusAny.typeErrors && statusAny.typeErrors.length > 0 )
-                {this.typingErrors = new DataTreeView.State({
+            if (statusAny.typeErrors && statusAny.typeErrors.length > 0) {
+                this.typingErrors = new DataTreeView.State({
                     title: 'typing errors',
-                    data: statusAny.typeErrors
-                })}
-            if(  statusAny.missings && statusAny.missings.length > 0 )
-                {this.missingFields = new DataTreeView.State({
+                    data: statusAny.typeErrors,
+                })
+            }
+            if (statusAny.missings && statusAny.missings.length > 0) {
+                this.missingFields = new DataTreeView.State({
                     title: 'missing fields',
-                    data: statusAny.missings
-                })}
-            if(statusAny.intrus.length>0)
-                {this.unexpectedFields = new DataTreeView.State({
+                    data: statusAny.missings,
+                })
+            }
+            if (statusAny.intrus.length > 0) {
+                this.unexpectedFields = new DataTreeView.State({
                     title: 'unexpected fields',
-                    data: statusAny.intrus
-                })}
+                    data: statusAny.intrus,
+                })
+            }
         }
     }
 
     type TOptions = {
-        containerClass?: string,
-        containerStyle?: {[key:string]: string},
+        containerClass?: string
+        containerStyle?: { [key: string]: string }
     }
 
     export class View implements VirtualDOM {
-
-        static defaultOptions  = {
+        static defaultOptions = {
             containerClass: 'd-flex flex-column',
-            containerStyle: { 'min-height':'0px'},
+            containerStyle: { 'min-height': '0px' },
         }
 
         public readonly state: State
         public readonly class: string
-        public readonly style: {[key: string]: string}
+        public readonly style: { [key: string]: string }
         public readonly children: Array<VirtualDOM>
 
         constructor({
             state,
             options,
             ...rest
-        }:
-        {
-            state: State,
+        }: {
+            state: State
             options?: TOptions
         }) {
             Object.assign(this, rest)
-            const styling : TOptions = {...View.defaultOptions, ...(options ? options : {}) }
+            const styling: TOptions = {
+                ...View.defaultOptions,
+                ...(options ? options : {}),
+            }
             this.state = state
             this.class = styling.containerClass
             this.style = styling.containerStyle
 
-            const views = [this.state.typingErrors, this.state.missingFields, this.state.unexpectedFields]
-            .filter( d => d)
-            .map( state => new DataTreeView.View({ state}))
+            const views = [
+                this.state.typingErrors,
+                this.state.missingFields,
+                this.state.unexpectedFields,
+            ]
+                .filter((d) => d)
+                .map((state) => new DataTreeView.View({ state }))
 
-            this.children = (views.length==0) 
-                ? [ { innerText: 'Your configuration is validated'} ]
-                : views            
+            this.children =
+                views.length == 0
+                    ? [{ innerText: 'Your configuration is validated' }]
+                    : views
         }
     }
 
-    export function journalWidget( data: ConfigurationStatus<unknown>) : VirtualDOM{
-
+    export function journalWidget(
+        data: ConfigurationStatus<unknown>,
+    ): VirtualDOM {
         const dataState = new DataTreeView.State({
-            title: "merged configuration",
-            data: data.result
+            title: 'merged configuration',
+            data: data.result,
         })
         const configurationState = new State({
-            status:data
+            status: data,
         })
 
         return {
-            children:[
+            children: [
                 {
                     class: 'd-flex justify-content-around w-100',
-                    style:{'white-space': 'nowrap'},
+                    style: { 'white-space': 'nowrap' },
                     children: [
-                        new DataTreeView.View({state: dataState}),
-                        {class:'px-4'},
-                        new View({state:configurationState})
-                    ]
-                }
-            ]
+                        new DataTreeView.View({ state: dataState }),
+                        { class: 'px-4' },
+                        new View({ state: configurationState }),
+                    ],
+                },
+            ],
         }
     }
 
-/*
+    /*
     function headerView(status: ConfigurationStatus<unknown>){
 
         let icon = {}

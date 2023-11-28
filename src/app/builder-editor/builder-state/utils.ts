@@ -1,31 +1,42 @@
-import { Component, Project, GroupModules, ModuleFlux} from '@youwol/flux-core';
-import { filter } from 'rxjs/operators';
-import { toProjectData } from './factory-utils';
-
+import { Component, Project, GroupModules, ModuleFlux } from '@youwol/flux-core'
+import { filter } from 'rxjs/operators'
+import { toProjectData } from './factory-utils'
 
 export function uuidv4() {
-    return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
-      const r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8);
-      return v.toString(16);
-    });
-  }
+    return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(
+        /[xy]/g,
+        function (c) {
+            const r = (Math.random() * 16) | 0,
+                v = c == 'x' ? r : (r & 0x3) | 0x8
+            return v.toString(16)
+        },
+    )
+}
 
-  function css(el, doc) {
-    const sheets = doc.styleSheets, ret = [];
-    el.matches = el.matches || el.webkitMatchesSelector || el.mozMatchesSelector 
-        || el.msMatchesSelector || el.oMatchesSelector;
+function css(el, doc) {
+    const sheets = doc.styleSheets,
+        ret = []
+    el.matches =
+        el.matches ||
+        el.webkitMatchesSelector ||
+        el.mozMatchesSelector ||
+        el.msMatchesSelector ||
+        el.oMatchesSelector
     for (const i in sheets) {
-        const rules = sheets[i].rules || sheets[i].cssRules;
+        const rules = sheets[i].rules || sheets[i].cssRules
         for (const r in rules) {
-            if (el.matches(rules[r]["selectorText"])) {
-                ret.push(rules[r].cssText);
+            if (el.matches(rules[r]['selectorText'])) {
+                ret.push(rules[r].cssText)
             }
         }
     }
-    return ret;
+    return ret
 }
 
-  export function packageAssetComponent(component: Component.Module | GroupModules.Module, project: Project) {
+export function packageAssetComponent(
+    component: Component.Module | GroupModules.Module,
+    project: Project,
+) {
     /*
     let allModules = [component, ...component.getAllChildren()]
     let modules = allModules.filter( m=>!(m instanceof PluginFlux))
@@ -76,41 +87,49 @@ export function uuidv4() {
         runnerRendering:{layout:innerHtml,style:[...cssItems].reduce( (acc,e)=>acc+" "+e,"")}
         }
         */
-       return undefined
-  }
-  
+    return undefined
+}
 
-  export function packageAssetProject(project: Project){
-
+export function packageAssetProject(project: Project) {
     const publishRequest = {
-      asset:{
-        name: project.name,
-        description: project.description
-      },
-      project:toProjectData(project)
-      }
+        asset: {
+            name: project.name,
+            description: project.description,
+        },
+        project: toProjectData(project),
+    }
     return publishRequest
-  }
+}
 
+export function plugBuilderViewsSignals(
+    modules: Array<ModuleFlux>,
+    actions,
+    redirections$,
+) {
+    modules.forEach((mdle) => {
+        // This should go somewhere else above at some point (when multiple FluxAppstore data will be needed)
+        if (!mdle.Factory.consumersData.FluxAppstore) {
+            mdle.Factory.consumersData.FluxAppstore = { notifiersPluged: false }
+        }
 
-  export function plugBuilderViewsSignals(modules: Array<ModuleFlux>, actions, redirections$){
-
-      modules.forEach( mdle => {
-
-          // This should go somewhere else above at some point (when multiple FluxAppstore data will be needed) 
-          if(!mdle.Factory.consumersData.FluxAppstore)
-            {mdle.Factory.consumersData.FluxAppstore = {notifiersPluged: false}}
-
-          // notifier is static, we subscribe only one time to it
-          if(mdle.Factory.BuilderView.notifier$ && !mdle.Factory.consumersData.FluxAppstore.notifiersPluged){
-
-              mdle.Factory.BuilderView.notifier$.pipe( 
-                  filter((event:any)=>event.type=="configurationUpdated"))
-              .subscribe( (event)=> {
-                  actions[event.type] && actions[event.type](event.data)
-              })
-              mdle.Factory.BuilderView.notifier$.subscribe(d => redirections$.next(d)) 
-              mdle.Factory.consumersData.FluxAppstore.notifiersPluged = true
-          }
-      })
-  }
+        // notifier is static, we subscribe only one time to it
+        if (
+            mdle.Factory.BuilderView.notifier$ &&
+            !mdle.Factory.consumersData.FluxAppstore.notifiersPluged
+        ) {
+            mdle.Factory.BuilderView.notifier$
+                .pipe(
+                    filter(
+                        (event: any) => event.type == 'configurationUpdated',
+                    ),
+                )
+                .subscribe((event) => {
+                    actions[event.type] && actions[event.type](event.data)
+                })
+            mdle.Factory.BuilderView.notifier$.subscribe((d) =>
+                redirections$.next(d),
+            )
+            mdle.Factory.consumersData.FluxAppstore.notifiersPluged = true
+        }
+    })
+}

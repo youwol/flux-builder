@@ -16,7 +16,7 @@ const defaultFeaturesParam = 'fg2'
 const defaultAltFeaturesParam = 'frx3'
 
 const oneLetterFeature = ['f', 'g', 'r', 'x', '1', '2', '3'] as const
-type OneLetterFeature = typeof oneLetterFeature[number]
+type OneLetterFeature = (typeof oneLetterFeature)[number]
 
 const oneLetterMapping: Record<OneLetterFeature, Feature> = {
     f: 'flow-builder',

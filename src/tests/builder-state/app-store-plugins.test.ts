@@ -1,78 +1,106 @@
-
-import  './dependencies'
-import { AppStore, AppObservables,getPlugins, AppBuildViewObservables } from '../../app/builder-editor/builder-state'
+import './dependencies'
+import {
+    AppStore,
+    AppObservables,
+    getPlugins,
+    AppBuildViewObservables,
+} from '../../app/builder-editor/builder-state'
 import { SimpleModule2, SimplePlugin, testPack } from '../common/simple-module'
-import { ModuleConfiguration, instantiateProjectModules,instantiateProjectPlugins, Workflow} from '@youwol/flux-core'
+import {
+    ModuleConfiguration,
+    instantiateProjectModules,
+    instantiateProjectPlugins,
+    Workflow,
+} from '@youwol/flux-core'
 import { environment } from '../common/dependencies'
 import { Subject } from 'rxjs'
 
-function setupProject({modulesCount}:{modulesCount:number}): any {
+function setupProject({ modulesCount }: { modulesCount: number }): any {
+    const appStore: AppStore = new AppStore(
+        environment,
+        AppObservables.getInstance(),
+        AppBuildViewObservables.getInstance(),
+    )
+    new Array(modulesCount).fill(0).map(() => appStore.addModule(SimpleModule2))
+    const workflow = appStore.project.workflow
+    expect(appStore.project.workflow.modules).toHaveLength(modulesCount + 1)
+    const mdles = workflow.modules.filter(
+        (mdle) => mdle instanceof SimpleModule2.Module,
+    ) as SimpleModule2.Module[]
 
-  const appStore: AppStore = new AppStore(
-      environment,
-      AppObservables.getInstance(),
-      AppBuildViewObservables.getInstance()
-  )
-  new Array(modulesCount).fill(0).map( () => appStore.addModule(SimpleModule2) )
-  const workflow = appStore.project.workflow
-  expect(appStore.project.workflow.modules).toHaveLength(modulesCount+1)
-  const mdles = workflow.modules.filter(mdle => mdle instanceof SimpleModule2.Module) as SimpleModule2.Module[]
-
-  return [appStore, ...mdles]
+    return [appStore, ...mdles]
 }
 
-
 test('instantiate plugins', () => {
-  const workflow$ = new Subject<Workflow>()
-  const modulesData = [{
-    moduleId : "unique-id-0",
-    factoryId:{module:"SimpleModule", pack:"flux-test"},
-    configuration:{
-      title:"title module id 0",
-      description:"",
-      data:{
-        property0:1
-      }
-    }
-  }]
-  const factory = new Map( 
-    Object.values(testPack.modules)
-    .map( (mdleFact) => [( JSON.stringify({module:mdleFact['id'], pack:testPack.name})), mdleFact ])
-  )
-  const modules =  instantiateProjectModules(modulesData,factory, environment, workflow$)
+    const workflow$ = new Subject<Workflow>()
+    const modulesData = [
+        {
+            moduleId: 'unique-id-0',
+            factoryId: { module: 'SimpleModule', pack: 'flux-test' },
+            configuration: {
+                title: 'title module id 0',
+                description: '',
+                data: {
+                    property0: 1,
+                },
+            },
+        },
+    ]
+    const factory = new Map(
+        Object.values(testPack.modules).map((mdleFact) => [
+            JSON.stringify({ module: mdleFact['id'], pack: testPack.name }),
+            mdleFact,
+        ]),
+    )
+    const modules = instantiateProjectModules(
+        modulesData,
+        factory,
+        environment,
+        workflow$,
+    )
 
-  const pluginsData = [{
-    moduleId : "unique-id-1",
-    factoryId:{module:"SimplePlugin", pack:"flux-test"},
-    parentModuleId:"unique-id-0",
-    configuration:{
-      title:"title plugin id 1",
-      description:"",
-      data:{
-        property0:-1
-      }
-    }
-  }]
-  const factory2 = new Map( 
-    Object.values(testPack.modules)
-    .map( (mdleFact) => [( JSON.stringify({module:mdleFact['id'], pack:testPack.name})), mdleFact ])
-  )
-  const plugins =  instantiateProjectPlugins(pluginsData,modules,factory2, environment)
-  
-  expect(plugins).toHaveLength(1)
-  
-  const plugin = plugins[0]
-  expect(plugin.inputSlots).toHaveLength(1)
-  expect(plugin.Factory.uid).toBe("SimplePlugin@flux-test")
-  expect(plugin.inputSlots[0].moduleId).toBe("unique-id-1")
-  expect(plugin.inputSlots[0].slotId).toBe("input0-plugin")
-  expect(plugin.outputSlots).toHaveLength(0)
-  expect(plugin.configuration.title).toBe("title plugin id 1")
-  expect(plugin.configuration.data.property0).toEqual(-1)
-  expect(plugin.parentModule).toEqual(modules[0])
+    const pluginsData = [
+        {
+            moduleId: 'unique-id-1',
+            factoryId: { module: 'SimplePlugin', pack: 'flux-test' },
+            parentModuleId: 'unique-id-0',
+            configuration: {
+                title: 'title plugin id 1',
+                description: '',
+                data: {
+                    property0: -1,
+                },
+            },
+        },
+    ]
+    const factory2 = new Map(
+        Object.values(testPack.modules).map((mdleFact) => [
+            JSON.stringify({ module: mdleFact['id'], pack: testPack.name }),
+            mdleFact,
+        ]),
+    )
+    const plugins = instantiateProjectPlugins(
+        pluginsData,
+        modules,
+        factory2,
+        environment,
+    )
+
+    expect(plugins).toHaveLength(1)
+
+    const plugin = plugins[0]
+    expect(plugin.inputSlots).toHaveLength(1)
+    expect(plugin.Factory.uid).toBe('SimplePlugin@flux-test')
+    expect(plugin.inputSlots[0].moduleId).toBe('unique-id-1')
+    expect(plugin.inputSlots[0].slotId).toBe('input0-plugin')
+    expect(plugin.outputSlots).toHaveLength(0)
+    expect(plugin.configuration.title).toBe('title plugin id 1')
+    expect(plugin.configuration.data.property0).toEqual(-1)
+    expect(plugin.parentModule).toEqual(modules[0])
 })
 
-test('get available plugins', () => {/*
+test('get available plugins', () => {
+    /*
     AppDebugEnvironment.getInstance().debugOn = false
 
     let appStore : AppStore = AppStore.getInstance(environment)
@@ -88,55 +116,66 @@ test('get available plugins', () => {/*
     expect(plugins2.length).toEqual(0)
 
     appStore.updateProjectToIndexHistory(0, appStore.indexHistory)*/
-  })
+})
 
-  
 test('add module with plugin', () => {
-  
-  const [appStore, mdle] = setupProject({modulesCount:1})
+    const [appStore, mdle] = setupProject({ modulesCount: 1 })
 
-  appStore.addPlugin(SimplePlugin, mdle)
+    appStore.addPlugin(SimplePlugin, mdle)
 
-  const plugins = getPlugins(mdle.moduleId, appStore.project)
-  expect(plugins).toHaveLength(1)
-  expect(appStore.project.workflow.plugins).toHaveLength(1)
-  const plugin = appStore.project.workflow.plugins[0]
-  expect(plugin.Factory.uid).toBe("SimplePlugin@flux-test")
-  expect(plugin.inputSlots).toHaveLength(1)
-  expect(plugin.inputSlots[0].slotId).toBe("input0-plugin")
-  expect(plugin.outputSlots).toHaveLength(0)
+    const plugins = getPlugins(mdle.moduleId, appStore.project)
+    expect(plugins).toHaveLength(1)
+    expect(appStore.project.workflow.plugins).toHaveLength(1)
+    const plugin = appStore.project.workflow.plugins[0]
+    expect(plugin.Factory.uid).toBe('SimplePlugin@flux-test')
+    expect(plugin.inputSlots).toHaveLength(1)
+    expect(plugin.inputSlots[0].slotId).toBe('input0-plugin')
+    expect(plugin.outputSlots).toHaveLength(0)
 
-  appStore.undo()
-  const plugins2 = getPlugins(mdle.moduleId, appStore.project)
-  expect(plugins2).toHaveLength(0)
-  expect(appStore.project.workflow.plugins).toHaveLength(0)
+    appStore.undo()
+    const plugins2 = getPlugins(mdle.moduleId, appStore.project)
+    expect(plugins2).toHaveLength(0)
+    expect(appStore.project.workflow.plugins).toHaveLength(0)
 
-  appStore.redo()
-  expect(appStore.project.workflow.plugins).toHaveLength(1)
-  expect(appStore.project.workflow.plugins[0]).toEqual(plugin)    
-  appStore.updateProjectToIndexHistory(0, appStore.indexHistory)
-
+    appStore.redo()
+    expect(appStore.project.workflow.plugins).toHaveLength(1)
+    expect(appStore.project.workflow.plugins[0]).toEqual(plugin)
+    appStore.updateProjectToIndexHistory(0, appStore.indexHistory)
 })
 
 test('add module with plugin + module update', () => {
-  // From bug https://gitlab.com/youwol/platform/-/issues/17
-  
-  let [appStore, mdle] = setupProject({modulesCount:1})
-  let plugin = appStore.addPlugin(SimplePlugin, mdle )
-  expect(plugin.configuration.data.property0).toBe(0)
-  expect(plugin.configuration.title).toBe("SimplePlugin")
-  appStore.updateModule(plugin, new ModuleConfiguration( {title:"new title",description:"", data:{property0:1} } ))
+    // From bug https://gitlab.com/youwol/platform/-/issues/17
 
-  plugin = appStore.getModule(plugin.moduleId)
-  expect(plugin.configuration.data.property0).toBe(1)  
-  expect(plugin.configuration.title).toBe("new title")
+    let [appStore, mdle] = setupProject({ modulesCount: 1 })
+    let plugin = appStore.addPlugin(SimplePlugin, mdle)
+    expect(plugin.configuration.data.property0).toBe(0)
+    expect(plugin.configuration.title).toBe('SimplePlugin')
+    appStore.updateModule(
+        plugin,
+        new ModuleConfiguration({
+            title: 'new title',
+            description: '',
+            data: { property0: 1 },
+        }),
+    )
 
-  appStore.updateModule(mdle, new ModuleConfiguration( {title:"new title",description:"", data:{property0:2} } ))
+    plugin = appStore.getModule(plugin.moduleId)
+    expect(plugin.configuration.data.property0).toBe(1)
+    expect(plugin.configuration.title).toBe('new title')
 
-  mdle = appStore.getModule(mdle.moduleId)
-  expect(mdle.configuration.data.property0).toBe(2)
+    appStore.updateModule(
+        mdle,
+        new ModuleConfiguration({
+            title: 'new title',
+            description: '',
+            data: { property0: 2 },
+        }),
+    )
 
-  plugin = appStore.getModule(plugin.moduleId)
-  expect(plugin.configuration.data.property0).toBe(1)
-  expect(plugin.configuration.title).toBe("new title")
+    mdle = appStore.getModule(mdle.moduleId)
+    expect(mdle.configuration.data.property0).toBe(2)
+
+    plugin = appStore.getModule(plugin.moduleId)
+    expect(plugin.configuration.data.property0).toBe(1)
+    expect(plugin.configuration.title).toBe('new title')
 })
