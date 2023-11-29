@@ -1,6 +1,6 @@
-/** @format */
+import { Config } from 'jest'
 
-module.exports = {
+const jestConfig: Config = {
     preset: 'ts-jest',
     testEnvironment: 'jsdom',
     reporters: ['default', 'jest-junit' /*, 'jest-sonar'*/],
@@ -28,3 +28,4 @@ module.exports = {
         {},
     ),
 }
+export default jestConfig

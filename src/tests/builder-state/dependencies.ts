@@ -1,5 +1,5 @@
 console.log = (...args) => {}
-class FakeBroadcastChannel {
-    constructor(a) {}
-}
-window['BroadcastChannel'] = FakeBroadcastChannel as any
+
+window['BroadcastChannel'] = class {
+    constructor() {}
+} as any
